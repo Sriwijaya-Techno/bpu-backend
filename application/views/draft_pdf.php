@@ -110,7 +110,7 @@ function penyebut($nilai)
 <body>
     <htmlpagefooter name="otherpagesfooter" style="display:none">
         <div style="text-align:center;">
-            <footer style="">
+            <footer>
                 <table cellpadding="1" cellspacing="1" style="margin-left: 420px;border: 1px solid;font-size: 8pt">
                     <tbody>
                         <tr>
@@ -158,7 +158,7 @@ function penyebut($nilai)
         <table width="100%" style="font-weight: bold;">
             <tr>
                 <td width="100%" style="vertical-align:top;text-align:center">
-                    <p style="">
+                    <p>
                         ANTARA<br>
                         <?= ($draft_lembaga[0]->draft_status == 'p1' ? $base_setting[0]->bs_nama : $draft_lembaga[0]->lembaga_nama) ?>
                         <br>
