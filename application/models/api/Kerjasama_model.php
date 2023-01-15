@@ -95,6 +95,17 @@ class Kerjasama_model extends CI_Model
         return $query->result();
     }
 
+    public function get_draft_lembaga_kerjasama($id_draft)
+    {
+        $this->db->select("draft_kerjasama.*, lembaga.*");
+        $this->db->from("draft_kerjasama");
+        $this->db->join("lembaga", "lembaga.lembaga_id = draft_kerjasama.id_lembaga");
+        $this->db->where("draft_kerjasama.id", $id_draft);
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
     public function insert_kerjasama($data = [])
     {
         return $this->db->insert("kerjasama", $data);
@@ -151,6 +162,12 @@ class Kerjasama_model extends CI_Model
     }
 
     public function update_status_draft_kerjasama($id, $data)
+    {
+        $this->db->where("id_kerjasama", $id);
+        return $this->db->update("draft_kerjasama", $data);
+    }
+
+    public function update_file_draft_kerjasama($id, $data)
     {
         $this->db->where("id_kerjasama", $id);
         return $this->db->update("draft_kerjasama", $data);
