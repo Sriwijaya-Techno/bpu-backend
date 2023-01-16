@@ -10,7 +10,7 @@ class Kerjasama extends REST_Controller
         parent::__construct();
         //load database
         $this->load->database();
-        $this->load->model(array("api/kerjasama_model", "api/rab_model", "api/pasal_model", "api/base_setting_model", "api/lembaga_status_model"));
+        $this->load->model(array("api/kerjasama_model", "api/rab_model", "api/pasal_model", "api/base_setting_model", "api/lembaga_status_model", "api/lembaga_model"));
         $this->load->library(array("form_validation"));
         $this->load->helper("security");
     }
@@ -80,12 +80,26 @@ class Kerjasama extends REST_Controller
         $id_kerjasama = $this->get("id_kerjasama");
 
         if (!empty($id_kerjasama)) {
-            $kerjasama = $this->kerjasama_model->get_rab_kerjasama($id_kerjasama);
+            $base_setting = $this->base_setting_model->get_base_settings();
+            $lembaga = $this->lembaga_model->get_lembagas($id_kerjasama);
+            $draft = $this->kerjasama_model->get_draft_kerjasama($id_kerjasama);
+            $pasal = [];
+            if (count($draft) > 0) {
+                $draft_id = $draft[0]->id;
+                $pasal = $this->kerjasama_model->get_pasal_draft($draft_id);
+            }
+
+            $data = array(
+                "base_setting" => $base_setting,
+                "draft" => $draft,
+                "pasal" => $pasal,
+                "lembaga" => $lembaga,
+            );
 
             $this->response([
                 'status' => "Success",
                 'message' => 'Data Berhasil Dimuat',
-                'data' => $kerjasama,
+                'data' => $data,
             ], 200);
         } else {
             $this->response([
@@ -658,39 +672,11 @@ class Kerjasama extends REST_Controller
         $status = $this->put("status");
 
         if (!empty($status)) {
-            $pembayaran = $this->kerjasama_model->get_pembayaran_kerjasama($id_kerjasama);
+            $draft = array(
+                "status" => $status,
+            );
 
-            $is_status_lunas = true;
-            for ($i = 0; $i < count($pembayaran); $i++) {
-                if ($pembayaran[$i]->status == 'belum dibayar') {
-                    $is_status_lunas = false;
-                }
-            }
-
-            if ($is_status_lunas) {
-                $kerjasama = array(
-                    "status" => "disetujui",
-                );
-
-                if ($this->kerjasama_model->update_status_kerjasama($id_kerjasama, $kerjasama)) {
-                    $this->response([
-                        'status' => "Sukses",
-                        'message' => 'Pembayaran Berhasil',
-                    ], REST_Controller::HTTP_OK);
-                } else {
-                    $this->response([
-                        'status' => "Gagal",
-                        'message' => 'Pembayaran Gagal',
-                    ], REST_Controller::HTTP_BAD_REQUEST);
-                }
-            } else {
-                $this->response([
-                    'status' => "Sukses",
-                    'message' => 'Pembayaran Berhasil',
-                ], REST_Controller::HTTP_OK);
-            }
-
-            if ($this->kerjasama_model->update_status_draft_kerjasama($id_kerjasama, $kerjasama)) {
+            if ($this->kerjasama_model->update_status_draft_kerjasama($id_kerjasama, $draft)) {
                 $status_draft = $this->kerjasama_model->get_status_draft_kerjasama($id_kerjasama);
 
                 if ($status_draft[0]->status == 'disetujui') {

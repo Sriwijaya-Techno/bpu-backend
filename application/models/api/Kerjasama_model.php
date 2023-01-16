@@ -55,12 +55,21 @@ class Kerjasama_model extends CI_Model
         return $query->result();
     }
 
-    public function get_drat_kerjasama($id_kerjasama)
+    public function get_draft_kerjasama($id_kerjasama)
     {
         $this->db->select("*");
-        $this->db->from("rab_kerjasama");
-        $this->db->join("rab", "rab.id = rab_kerjasama.id_rab");
-        $this->db->where("rab_kerjasama.id_kerjasama", $id_kerjasama);
+        $this->db->from("draft_kerjasama");
+        $this->db->where("id_kerjasama", $id_kerjasama);
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
+    public function get_pasal_draft($draft_id)
+    {
+        $this->db->select("*");
+        $this->db->from("pasal");
+        $this->db->where("draft_id", $draft_id);
         $query = $this->db->get();
 
         return $query->result();
