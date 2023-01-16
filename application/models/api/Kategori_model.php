@@ -11,8 +11,9 @@ class Kategori_model extends CI_Model
 
     public function get_kategoris()
     {
-        $this->db->select("*");
+        $this->db->select("kategori.id_layanan, kategori.id AS id_kategori, layanan.nama AS nama_layanan, kategori.nama AS nama_kategori");
         $this->db->from("kategori");
+        $this->db->join("layanan", "layanan.id = kategori.id_layanan");
         $query = $this->db->get();
 
         return $query->result();
@@ -20,7 +21,6 @@ class Kategori_model extends CI_Model
 
     public function insert_kategori($data = [])
     {
-
         return $this->db->insert("kategori", $data);
     }
 }
