@@ -80,9 +80,24 @@ class Kerjasama extends REST_Controller
         $id_kerjasama = $this->get("id_kerjasama");
 
         if (!empty($id_kerjasama)) {
+            $dir_draft = realpath(APPPATH . '../assets/uploads/draft');
+            $dir_lembaga_logo =  realpath(APPPATH . '../assets/uploads/lembaga_logo');
+            $dir_bs_logo =  realpath(APPPATH . '../assets/uploads/logo');
+
             $base_setting = $this->base_setting_model->get_base_settings();
+            for ($i = 0; $i < count($base_setting); $i++) {
+                $base_setting[$i]->bs_logo = $dir_bs_logo . '\\' . $base_setting[$i]->bs_logo;
+            }
+
             $lembaga = $this->lembaga_model->get_lembagas($id_kerjasama);
+            for ($i = 0; $i < count($lembaga); $i++) {
+                $lembaga[$i]->lembaga_logo = $dir_lembaga_logo . '\\' . $lembaga[$i]->lembaga_logo;
+            }
+
             $draft = $this->kerjasama_model->get_draft_kerjasama($id_kerjasama);
+            for ($i = 0; $i < count($draft); $i++) {
+                $draft[$i]->draft_file = $dir_draft . '\\' . $draft[$i]->draft_file;
+            }
             $pasal = [];
             if (count($draft) > 0) {
                 $draft_id = $draft[0]->id;
