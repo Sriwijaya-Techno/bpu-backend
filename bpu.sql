@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jan 16, 2023 at 02:26 AM
+-- Generation Time: Jan 16, 2023 at 02:53 AM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.33
 
@@ -92,7 +92,7 @@ CREATE TABLE `detail_kerjasama` (
 --
 
 INSERT INTO `detail_kerjasama` (`id`, `id_kerjasama`, `judul_kegiatan`, `ruang_lingkup`, `deskripsi`, `lama_pekerjaan`, `tanggal_mulai`, `tanggal_akhir`, `metode_pembayaran`, `jumlah_termin`, `nilai_kontrak`, `status`) VALUES
-(1, 1, 'jk1', 'rl1', 'desc1', 30, NULL, NULL, 'termin', 3, 100000000, 'usul');
+(1, 1, 'jk1', 'rl1', 'desc1', 30, NULL, NULL, 'termin', 3, 100000000, 'disetujui');
 
 -- --------------------------------------------------------
 
@@ -120,7 +120,7 @@ CREATE TABLE `draft_kerjasama` (
 --
 
 INSERT INTO `draft_kerjasama` (`id`, `id_kerjasama`, `id_lembaga`, `draft_nomorp1`, `draft_nomorp2`, `draft_tanggal_mulai`, `draft_info`, `draft_lokasi`, `draft_keterangan`, `draft_file`, `draft_status`, `status`) VALUES
-(1, 1, 1, '1', '2', '2022-01-16', 'info', 'lokasi', 'keterangan', 'Draft_ kerjasama_KIRKLARELI UNIVERSITY_lokasi.pdf', 'p1', 'usul');
+(1, 1, 1, '1', '2', '2022-01-16', 'info', 'lokasi', 'keterangan', 'Draft_ kerjasama_KIRKLARELI UNIVERSITY_lokasi.pdf', 'p1', 'disetujui');
 
 -- --------------------------------------------------------
 
@@ -603,9 +603,9 @@ CREATE TABLE `pembayaran` (
 --
 
 INSERT INTO `pembayaran` (`id`, `id_kerjasama`, `nominal`, `tujuan_rekening`, `tanggal`, `bukti_pembayaran`, `status`) VALUES
-(1, 1, 30000000, '123456', '2023-01-15', 'SS2.PNG', 'lunas'),
-(2, 1, 30000000, '123456', '2023-01-15', 'SS23.PNG', 'lunas'),
-(3, 1, 40000000, '123456', '2023-01-15', 'SS22.PNG', 'lunas');
+(1, 1, 40000000, '123456', '2023-01-15', 'SS24.PNG', 'lunas'),
+(2, 1, 30000000, '123456', '2023-01-15', 'SS25.PNG', 'lunas'),
+(3, 1, 30000000, '123456', '2023-01-15', 'SS26.PNG', 'lunas');
 
 -- --------------------------------------------------------
 
