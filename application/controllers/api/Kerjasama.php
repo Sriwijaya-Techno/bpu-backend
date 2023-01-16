@@ -75,6 +75,26 @@ class Kerjasama extends REST_Controller
         }
     }
 
+    public function draft_get()
+    {
+        $id_kerjasama = $this->get("id_kerjasama");
+
+        if (!empty($id_kerjasama)) {
+            $kerjasama = $this->kerjasama_model->get_rab_kerjasama($id_kerjasama);
+
+            $this->response([
+                'status' => "Success",
+                'message' => 'Data Berhasil Dimuat',
+                'data' => $kerjasama,
+            ], 200);
+        } else {
+            $this->response([
+                'status' => "Error",
+                'message' => 'Data Tidak Boleh Kosong',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+
     public function pembayaran_get()
     {
         $id_kerjasama = $this->get("id_kerjasama");
@@ -371,11 +391,12 @@ class Kerjasama extends REST_Controller
                         'default_font' => 'Arial'
                     ]);
 
-                    $filename = 'assets/uploads/draft/Draft_ kerjasama_' . $data['draft_lembaga'][0]->lembaga_nama . '_' . $data['draft_lembaga'][0]->draft_lokasi . '.pdf';
+                    $filename = 'Draft_ kerjasama_' . $data['draft_lembaga'][0]->lembaga_nama . '_' . $data['draft_lembaga'][0]->draft_lokasi . '.pdf';
+                    $path = 'assets/uploads/draft/' . $filename;
                     $data = $this->load->view('draft_pdf', $data, TRUE);
                     $mpdf->setFooter('aaa {PAGENO}');
                     $mpdf->WriteHTML($data);
-                    $mpdf->Output($filename, \Mpdf\Output\Destination::FILE);
+                    $mpdf->Output($path, \Mpdf\Output\Destination::FILE);
 
                     $data_file = array(
                         "draft_file" => $filename

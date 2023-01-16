@@ -23,4 +23,10 @@ class Company_model extends CI_Model
     {
         return $this->db->insert("company_profile", $data);
     }
+
+    public function update_company_profile($id, $data)
+    {
+        $this->db->where("id", $id);
+        return $this->db->update("company_profile", $data);
+    }
 }
