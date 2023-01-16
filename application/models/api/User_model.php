@@ -19,6 +19,41 @@ class User_model extends CI_Model
         return $query->result();
     }
 
+    public function get_user_by_email($email)
+    {
+
+        $this->db->select("*");
+        $this->db->from("user");
+        $this->db->where("email", $email);
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
+    public function get_user_by_username($username)
+    {
+
+        $this->db->select("*");
+        $this->db->from("user");
+        $this->db->where("username", $username);
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
+    public function login($email, $password, $tipe_akun)
+    {
+
+        $this->db->select("*");
+        $this->db->from("user");
+        $this->db->where("email", $email);
+        $this->db->where("password", $password);
+        $this->db->where("tipe_akun", $tipe_akun);
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
     public function insert_user($data = array())
     {
 

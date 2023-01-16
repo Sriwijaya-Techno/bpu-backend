@@ -15,7 +15,6 @@ class User extends REST_Controller
         $this->load->helper("security");
     }
 
-    // GET: <project_url>/index.php/user
     public function index_get()
     {
         $users = $this->user_model->get_users();
@@ -25,5 +24,93 @@ class User extends REST_Controller
             'message' => 'Data Berhasil Dimuat',
             'data' => $users,
         ], 200);
+    }
+
+    public function register_post()
+    {
+        $username = $this->security->xss_clean($this->post("username"));
+        $email = $this->security->xss_clean($this->post("email"));
+        $password = $this->security->xss_clean($this->post("password"));
+        $tipe_akun = $this->security->xss_clean($this->post("tipe_akun"));
+        $this->form_validation->set_rules("username", "Username", "required");
+        $this->form_validation->set_rules("email", "Email", "required|valid_email");
+        $this->form_validation->set_rules("password", "Password", "required");
+        $this->form_validation->set_rules("tipe_akun", "Tipe_akun", "required");
+        if ($this->form_validation->run() === FALSE) {
+            $this->response([
+                'status' => "Error",
+                'message' => 'Data Gagal Ditambah',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            if (!empty($username) && !empty($email) && !empty($password) && !empty($tipe_akun)) {
+                $user_email = $this->user_model->get_user_by_email($email);
+                if (count($user_email) > 0) {
+                    $this->response([
+                        'status' => "Gagal",
+                        'message' => 'Data Email Sudah Teregistrasi',
+                    ], REST_Controller::HTTP_OK);
+                } else {
+                    $user = array(
+                        "username" => $username,
+                        "email" => $email,
+                        "password" => md5($password),
+                        "tipe_akun" => $tipe_akun,
+                    );
+
+                    if ($this->user_model->insert_user($user)) {
+                        $this->response([
+                            'status' => "Sukses",
+                            'message' => 'Data Berhasil Ditambah',
+                        ], REST_Controller::HTTP_OK);
+                    } else {
+                        $this->response([
+                            'status' => "Gagal",
+                            'message' => 'Data Gagal Ditambah',
+                        ], REST_Controller::HTTP_OK);
+                    }
+                }
+            } else {
+                $this->response([
+                    'status' => "Error",
+                    'message' => 'Data Gagal Ditambah',
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function login_post()
+    {
+        $email = $this->security->xss_clean($this->post("email"));
+        $password = $this->security->xss_clean($this->post("password"));
+        $tipe_akun = $this->security->xss_clean($this->post("tipe_akun"));
+        $this->form_validation->set_rules("email", "Email", "required|valid_email");
+        $this->form_validation->set_rules("password", "Password", "required");
+        $this->form_validation->set_rules("tipe_akun", "Tipe_akun", "required");
+        if ($this->form_validation->run() === FALSE) {
+            $this->response([
+                'status' => "Error",
+                'message' => 'Data Gagal Ditambah',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            if (!empty($email) && !empty($password) && !empty($tipe_akun)) {
+                $login_user = $this->user_model->login($email, md5($password), $tipe_akun);
+                if (count($login_user) > 0) {
+                    $this->response([
+                        'status' => "Sukses",
+                        'message' => 'Berhasil Login',
+                    ], REST_Controller::HTTP_OK);
+                } else {
+                    $this->response([
+                        'status' => "Gagal",
+                        'message' => 'Gagal Login',
+                    ], REST_Controller::HTTP_OK);
+                }
+            } else {
+                $this->response([
+                    'status' => "Error",
+                    'message' => 'Data Harus Diisi',
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
     }
 }
