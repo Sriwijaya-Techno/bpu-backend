@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jan 16, 2023 at 02:53 AM
+-- Generation Time: Jan 16, 2023 at 07:59 PM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.33
 
@@ -64,7 +64,7 @@ CREATE TABLE `company_profile` (
 --
 
 INSERT INTO `company_profile` (`id`, `user_id`, `nama_perusahaan`, `alamat_email`, `telepon`, `alamat_perusahaan`, `logo`, `visi_misi`) VALUES
-(1, 1, 'scafol', 'shaffanmadanny@gmail.com', '081272487113', 'Jln Syakikirti', '757b1168641ae0a503bd0f2fd287a66b.jpg', 'sampai titik terawal');
+(1, 1, 'scafol', 'shaffanmadanny@gmail.com', '08127248', 'Jln Syakikir', 'cngo2.jpeg', 'sampai titik terawal');
 
 -- --------------------------------------------------------
 
@@ -131,8 +131,17 @@ INSERT INTO `draft_kerjasama` (`id`, `id_kerjasama`, `id_lembaga`, `draft_nomorp
 CREATE TABLE `img_item_kategori` (
   `id` int(11) NOT NULL,
   `id_item_kategori` int(11) NOT NULL,
-  `gambar` int(11) NOT NULL
+  `gambar` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `img_item_kategori`
+--
+
+INSERT INTO `img_item_kategori` (`id`, `id_item_kategori`, `gambar`) VALUES
+(1, 1, 'SS6.PNG'),
+(2, 1, 'SS7.PNG'),
+(3, 1, 'SS8.PNG');
 
 -- --------------------------------------------------------
 
@@ -146,6 +155,13 @@ CREATE TABLE `item_kategori` (
   `judul` text NOT NULL,
   `deskripsi` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `item_kategori`
+--
+
+INSERT INTO `item_kategori` (`id`, `id_kategori`, `judul`, `deskripsi`) VALUES
+(1, 1, 'judul 1', 'deskripsi 1');
 
 -- --------------------------------------------------------
 
@@ -710,17 +726,18 @@ INSERT INTO `rab_kerjasama` (`id`, `id_kerjasama`, `id_rab`, `status`) VALUES
 
 CREATE TABLE `user` (
   `id` int(11) NOT NULL,
+  `username` varchar(100) NOT NULL,
   `email` varchar(150) NOT NULL,
   `password` varchar(100) NOT NULL,
-  `tipe_akun` enum('1','2') NOT NULL
+  `tipe_akun` enum('Mahasiswa','Dosen/Pegawai','Institusi/Pemerintahan','Masyarakat Umum') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `email`, `password`, `tipe_akun`) VALUES
-(1, 'shaffanmadanny@gmail.com', '123456', '1');
+INSERT INTO `user` (`id`, `username`, `email`, `password`, `tipe_akun`) VALUES
+(1, 'shaffan', 'shaffanmadanny@gmail.com', '6209f26e17cc96d256fd40ed2b85416d', 'Mahasiswa');
 
 --
 -- Indexes for dumped tables
@@ -876,13 +893,13 @@ ALTER TABLE `draft_kerjasama`
 -- AUTO_INCREMENT for table `img_item_kategori`
 --
 ALTER TABLE `img_item_kategori`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `item_kategori`
 --
 ALTER TABLE `item_kategori`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `kategori`

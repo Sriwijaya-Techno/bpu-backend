@@ -38,4 +38,16 @@ class Item_kategori_model extends CI_Model
     {
         return $this->db->insert("img_item_kategori", $data);
     }
+
+    public function update_item_kategori($id_item_kategori, $data = [])
+    {
+        $this->db->where("id", $id_item_kategori);
+        return $this->db->update("item_kategori", $data);
+    }
+
+    public function delete_imgs_item_kategori($id_item_kategori)
+    {
+        $this->db->where("id_item_kategori", $id_item_kategori);
+        return $this->db->delete("img_item_kategori");
+    }
 }
