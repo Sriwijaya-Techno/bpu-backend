@@ -33,4 +33,11 @@ class Pasal_model extends CI_Model
     {
         return $this->db->insert("pasal", $data);
     }
+
+    public function update_pasal($draft_id, $pasal_kode, $data)
+    {
+        $this->db->where("draft_id", $draft_id);
+        $this->db->where("pasal_kode", $pasal_kode);
+        return $this->db->update("pasal", $data);
+    }
 }

@@ -146,6 +146,12 @@ class Kerjasama_model extends CI_Model
         return $this->db->insert("draft_kerjasama", $data);
     }
 
+    public function update_draft_kerjasama($id, $data)
+    {
+        $this->db->where("id", $id);
+        return $this->db->update("draft_kerjasama", $data);
+    }
+
     public function insert_pembayaran_kerjasama($data = [])
     {
         return $this->db->insert("pembayaran", $data);
