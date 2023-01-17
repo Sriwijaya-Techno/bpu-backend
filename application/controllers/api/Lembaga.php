@@ -122,7 +122,11 @@ class Lembaga extends REST_Controller
 
     public function index_get()
     {
+        $dir_lembaga_logo =  realpath(APPPATH . '../assets/uploads/lembaga_logo');
         $lembagas = $this->lembaga_model->get_lembagas();
+        for ($i = 0; $i < count($lembagas); $i++) {
+            $lembagas[$i]->lembaga_logo = $dir_lembaga_logo . '\\' . $lembagas[$i]->lembaga_logo;
+        }
 
         $this->response([
             'status' => "Success",

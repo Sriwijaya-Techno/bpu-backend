@@ -193,9 +193,14 @@ class Item_kategori extends REST_Controller
     {
         $id_kategori = $this->security->xss_clean($this->get("id_kategori"));
         $items_kategori = $this->item_kategori_model->get_items_kategori($id_kategori);
+        $dir_item_kategori =  realpath(APPPATH . '../assets/uploads/item_kategori');
 
         for ($i = 0; $i < count($items_kategori); $i++) {
             $img_item = $this->item_kategori_model->get_imgs_item_kategori($items_kategori[$i]->id);
+
+            for ($j = 0; $j < count($img_item); $j++) {
+                $img_item[$j]->gambar = $dir_item_kategori . '\\' . $img_item[$j]->gambar;
+            }
 
             $items_kategori[$i]->gambar = $img_item;
         }
