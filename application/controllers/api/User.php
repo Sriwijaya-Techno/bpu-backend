@@ -82,18 +82,16 @@ class User extends REST_Controller
     {
         $email = $this->security->xss_clean($this->post("email"));
         $password = $this->security->xss_clean($this->post("password"));
-        $tipe_akun = $this->security->xss_clean($this->post("tipe_akun"));
         $this->form_validation->set_rules("email", "Email", "required|valid_email");
         $this->form_validation->set_rules("password", "Password", "required");
-        $this->form_validation->set_rules("tipe_akun", "Tipe_akun", "required");
         if ($this->form_validation->run() === FALSE) {
             $this->response([
                 'status' => "Error",
                 'message' => 'Data Gagal Ditambah',
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            if (!empty($email) && !empty($password) && !empty($tipe_akun)) {
-                $login_user = $this->user_model->login($email, md5($password), $tipe_akun);
+            if (!empty($email) && !empty($password)) {
+                $login_user = $this->user_model->login($email, md5($password));
                 if (count($login_user) > 0) {
                     $this->response([
                         'status' => "Sukses",

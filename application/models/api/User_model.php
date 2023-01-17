@@ -41,14 +41,13 @@ class User_model extends CI_Model
         return $query->result();
     }
 
-    public function login($email, $password, $tipe_akun)
+    public function login($email, $password)
     {
 
         $this->db->select("*");
         $this->db->from("user");
         $this->db->where("email", $email);
         $this->db->where("password", $password);
-        $this->db->where("tipe_akun", $tipe_akun);
         $query = $this->db->get();
 
         return $query->result();
