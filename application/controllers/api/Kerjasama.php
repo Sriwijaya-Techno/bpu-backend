@@ -363,7 +363,7 @@ class Kerjasama extends REST_Controller
 
         $this->response([
             'status' => "Sukses",
-            'message' => 'Data Berhasil Ditambah',
+            'message' => 'Data Berhasil Diupdate',
         ], REST_Controller::HTTP_OK);
     }
 
