@@ -9,11 +9,21 @@ class Item_kategori_model extends CI_Model
         $this->load->database();
     }
 
-    public function get_items_kategori($id_kategori)
+    public function get_all_items_kategori()
     {
         $this->db->select("*");
         $this->db->from("item_kategori");
-        $this->db->where("id_kategori", $id_kategori);
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+    public function get_items_kategori($id_kategori = '')
+    {
+        $this->db->select("*");
+        $this->db->from("item_kategori");
+        if (!empty($id_kategori)) {
+            $this->db->where("id_kategori", $id_kategori);
+        }
         $query = $this->db->get();
 
         return $query->result();

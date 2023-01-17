@@ -206,4 +206,21 @@ class Item_kategori extends REST_Controller
             'data' => $items_kategori,
         ], 200);
     }
+
+    public function get_all_get()
+    {
+        $items_kategori = $this->item_kategori_model->get_all_items_kategori();
+
+        for ($i = 0; $i < count($items_kategori); $i++) {
+            $img_item = $this->item_kategori_model->get_imgs_item_kategori($items_kategori[$i]->id);
+
+            $items_kategori[$i]->gambar = $img_item;
+        }
+
+        $this->response([
+            'status' => "Success",
+            'message' => 'Data Berhasil Dimuat',
+            'data' => $items_kategori,
+        ], 200);
+    }
 }

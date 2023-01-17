@@ -36,7 +36,7 @@ class Kategori extends REST_Controller
                     $this->response([
                         'status' => "Sukses",
                         'message' => 'Data Berhasil Ditambah',
-                    ], REST_Controller::HTTP_BAD_REQUEST);
+                    ], REST_Controller::HTTP_OK);
                 } else {
                     $this->response([
                         'status' => "Error",
