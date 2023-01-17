@@ -219,8 +219,12 @@ class Company extends REST_Controller
     {
         $user_id = $this->security->xss_clean($this->get("user_id"));
 
+        $dir_logo =  realpath(APPPATH . '../assets/uploads/logo');
         if (!empty($user_id)) {
             $company_profiles = $this->company_model->get_company_profile_by_user_id($user_id);
+            for ($i = 0; $i < count($company_profiles); $i++) {
+                $company_profiles[$i]->logo = $dir_logo . '\\' . $company_profiles[$i]->logo;
+            }
             $this->response([
                 'status' => "Success",
                 'message' => 'Data Berhasil Dimuat',
