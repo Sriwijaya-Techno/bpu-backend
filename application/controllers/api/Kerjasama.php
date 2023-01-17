@@ -248,15 +248,15 @@ class Kerjasama extends REST_Controller
                         ], REST_Controller::HTTP_OK);
                     } else {
                         $this->response([
-                            'status' => "Error",
+                            'status' => "Gagal",
                             'message' => 'Data Gagal Ditambah',
-                        ], REST_Controller::HTTP_BAD_REQUEST);
+                        ], REST_Controller::HTTP_OK);
                     }
                 } else {
                     $this->response([
-                        'status' => "Error",
+                        'status' => "Gagal",
                         'message' => 'Data Gagal Ditambah',
-                    ], REST_Controller::HTTP_BAD_REQUEST);
+                    ], REST_Controller::HTTP_OK);
                 }
             } else {
                 $this->response([
@@ -265,6 +265,106 @@ class Kerjasama extends REST_Controller
                 ], REST_Controller::HTTP_BAD_REQUEST);
             }
         }
+    }
+
+    public function rab_collection_post()
+    {
+        $body = file_get_contents('php://input');
+        $data = json_decode($body);
+        $id_kerjasama = $data->id_kerjasama;
+        $data_rabs = $data->rab;
+
+        for ($i = 0; $i < count($data_rabs); $i++) {
+            if ($data_rabs[$i]->id_rab != 0) {
+                $rab = array(
+                    "nama" => $data_rabs[$i]->nama,
+                    "satuan" => $data_rabs[$i]->satuan,
+                    "volume" => $data_rabs[$i]->volume,
+                    "harga" => $data_rabs[$i]->harga,
+                    "total" => $data_rabs[$i]->total,
+                );
+
+                if ($this->rab_model->update_rab($data_rabs[$i]->id_rab, $rab)) {
+                    $rab_kerjasama = array(
+                        "status" => "usul",
+                    );
+                    if (!$this->kerjasama_model->update_rab_kerjasama($id_kerjasama, $data_rabs[$i]->id_rab, $rab_kerjasama)) {
+                        $this->response([
+                            'status' => "Gagal",
+                            'message' => 'Gagal Mengolah Data',
+                        ], REST_Controller::HTTP_OK);
+                    }
+                } else {
+                    $this->response([
+                        'status' => "Gagal",
+                        'message' => 'Gagal Mengolah Data',
+                    ], REST_Controller::HTTP_OK);
+                }
+            }
+        }
+
+        $rab_kerjasama = $this->kerjasama_model->get_rab_kerjasama($id_kerjasama);
+        for ($i = 0; $i < count($rab_kerjasama); $i++) {
+            $id_data_exist = false;
+            for ($j = 0; $j < count($data_rabs); $j++) {
+                if ($rab_kerjasama[$i]->id_rab == $data_rabs[$j]->id_rab) {
+                    $id_data_exist = true;
+                }
+            }
+
+            if (!$id_data_exist) {
+                if (!$this->kerjasama_model->delete_rab_kerjasama($rab_kerjasama[$i]->id_kerjasama, $rab_kerjasama[$i]->id_rab)) {
+                    $this->response([
+                        'status' => "Gagal",
+                        'message' => 'Gagal Mengolah Data',
+                    ], REST_Controller::HTTP_OK);
+                }
+
+                if (!$this->rab_model->delete_rab($rab_kerjasama[$i]->id_rab)) {
+                    $this->response([
+                        'status' => "Gagal",
+                        'message' => 'Gagal Mengolah Data',
+                    ], REST_Controller::HTTP_OK);
+                }
+            }
+        }
+
+        for ($i = 0; $i < count($data_rabs); $i++) {
+            if ($data_rabs[$i]->id_rab == 0) {
+                $rab = array(
+                    "nama" => $data_rabs[$i]->nama,
+                    "satuan" => $data_rabs[$i]->satuan,
+                    "volume" => $data_rabs[$i]->volume,
+                    "harga" => $data_rabs[$i]->harga,
+                    "total" => $data_rabs[$i]->total,
+                );
+
+                if ($this->rab_model->insert_rab($rab)) {
+                    $id_rab = $this->db->insert_id();
+                    $rab_kerjasama = array(
+                        "id_kerjasama" => $id_kerjasama,
+                        "id_rab" => $id_rab,
+                    );
+
+                    if (!$this->kerjasama_model->insert_rab_kerjasama($rab_kerjasama)) {
+                        $this->response([
+                            'status' => "Gagal",
+                            'message' => 'Gagal Mengolah Data',
+                        ], REST_Controller::HTTP_OK);
+                    }
+                } else {
+                    $this->response([
+                        'status' => "Gagal",
+                        'message' => 'Gagal Mengolah Data',
+                    ], REST_Controller::HTTP_OK);
+                }
+            }
+        }
+
+        $this->response([
+            'status' => "Sukses",
+            'message' => 'Data Berhasil Ditambah',
+        ], REST_Controller::HTTP_OK);
     }
 
     public function draft_post()

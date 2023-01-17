@@ -141,6 +141,20 @@ class Kerjasama_model extends CI_Model
         return $this->db->insert("rab_kerjasama", $data);
     }
 
+    public function update_rab_kerjasama($id_kerjasama, $id_rab, $data = [])
+    {
+        $this->db->where("id_kerjasama", $id_kerjasama);
+        $this->db->where("id_rab", $id_rab);
+        return $this->db->update("rab_kerjasama", $data);
+    }
+
+    public function delete_rab_kerjasama($id_kerjasama, $id_rab)
+    {
+        $this->db->where("id_kerjasama", $id_kerjasama);
+        $this->db->where("id_rab", $id_rab);
+        return $this->db->delete("rab_kerjasama");
+    }
+
     public function insert_draft_kerjasama($data = [])
     {
         return $this->db->insert("draft_kerjasama", $data);

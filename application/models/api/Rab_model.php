@@ -22,4 +22,16 @@ class Rab_model extends CI_Model
     {
         return $this->db->insert("rab", $data);
     }
+
+    public function update_rab($id_rab, $data = [])
+    {
+        $this->db->where("id", $id_rab);
+        return $this->db->update("rab", $data);
+    }
+
+    public function delete_rab($id_rab)
+    {
+        $this->db->where("id", $id_rab);
+        return $this->db->delete("rab");
+    }
 }
