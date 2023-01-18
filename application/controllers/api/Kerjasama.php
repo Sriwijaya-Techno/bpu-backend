@@ -831,11 +831,12 @@ class Kerjasama extends REST_Controller
         $ruang_lingkup = $this->put("ruang_lingkup");
         $deskripsi = $this->put("deskripsi");
         $lama_pekerjaan = $this->put("lama_pekerjaan");
+        $tanggal_mulai = $this->put("tanggal_mulai");
         $metode_pembayaran = $this->put("metode_pembayaran");
         $jumlah_termin = $this->put("jumlah_termin");
         $nilai_kontrak = $this->put("nilai_kontrak");
 
-        if (!empty($id_detail) && !empty($judul_kegiatan) && !empty($ruang_lingkup) && !empty($deskripsi) && !empty($lama_pekerjaan) && !empty($metode_pembayaran) && !empty($nilai_kontrak)) {
+        if (!empty($id_detail) && !empty($judul_kegiatan) && !empty($ruang_lingkup) && !empty($deskripsi) && !empty($lama_pekerjaan) && !empty($tanggal_mulai) && !empty($metode_pembayaran) && !empty($nilai_kontrak)) {
             if ($metode_pembayaran == 'sekaligus') {
                 $jumlah_termin = 0;
             } else {
@@ -844,11 +845,14 @@ class Kerjasama extends REST_Controller
                 }
             }
 
+            $tanggal_akhir = date('Y-m-d', strtotime($tanggal_mulai . ' + ' . $lama_pekerjaan . ' days'));
             $kerjasama = array(
                 "judul_kegiatan" => $judul_kegiatan,
                 "ruang_lingkup" => $ruang_lingkup,
                 "deskripsi" => $deskripsi,
                 "lama_pekerjaan" => $lama_pekerjaan,
+                "tanggal_mulai" => $tanggal_mulai,
+                "tanggal_akhir" => $tanggal_akhir,
                 "metode_pembayaran" => $metode_pembayaran,
                 "jumlah_termin" => $jumlah_termin,
                 "nilai_kontrak" => $nilai_kontrak,
