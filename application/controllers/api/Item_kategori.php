@@ -20,11 +20,13 @@ class Item_kategori extends REST_Controller
         $id_kategori = $this->security->xss_clean($this->post("id_kategori"));
         $judul = $this->security->xss_clean($this->post("judul"));
         $deskripsi = $this->security->xss_clean($this->post("deskripsi"));
+        $fasilitas = $this->security->xss_clean($this->post("fasilitas"));
+        $ketentuan = $this->security->xss_clean($this->post("ketentuan"));
         $this->form_validation->set_rules("id_kategori", "Id_kategori", "required");
         $this->form_validation->set_rules("judul", "Judul", "required");
         $this->form_validation->set_rules("deskripsi", "Deskripsi", "required");
         if ($this->form_validation->run() === FALSE) {
-            $this->response([
+            return $this->response([
                 'status' => "Error",
                 'message' => 'Data Gagal Ditambah',
             ], REST_Controller::HTTP_BAD_REQUEST);
@@ -36,35 +38,51 @@ class Item_kategori extends REST_Controller
                     "deskripsi" => $deskripsi,
                 );
 
+                if (!empty($fasilitas)) {
+                    $item_kategori['fasilitas'] = $fasilitas;
+                }
+
+                if (!empty($ketentuan)) {
+                    $item_kategori['ketentuan'] = $ketentuan;
+                }
+
                 if ($this->item_kategori_model->insert_item_kategori($item_kategori)) {
                     $id_item_kategori = $this->db->insert_id();
-                    $files = $_FILES;
-                    $cpt = count($_FILES['gambar']['name']);
-                    $dir = realpath(APPPATH . '../assets/uploads/item_kategori');
                     $filenames = [];
-                    for ($i = 0; $i < $cpt; $i++) {
-                        $_FILES['gambar']['name'] = $files['gambar']['name'][$i];
-                        $_FILES['gambar']['type'] = $files['gambar']['type'][$i];
-                        $_FILES['gambar']['tmp_name'] = $files['gambar']['tmp_name'][$i];
-                        $_FILES['gambar']['error'] = $files['gambar']['error'][$i];
-                        $_FILES['gambar']['size'] = $files['gambar']['size'][$i];
+                    $files = $_FILES;
 
-                        $config['upload_path']          = $dir;
-                        $config['allowed_types']        = 'gif|jpg|jpeg|png';
-                        $config['max_size']             = 1024 * 10;
+                    $cpt = count($_FILES['gambar']['name']);
+                    if (!empty($_FILES['gambar']['name'][0])) {
+                        $dir = realpath(APPPATH . '../assets/uploads/item_kategori');
+                        for ($i = 0; $i < $cpt; $i++) {
+                            $_FILES['gambar']['name'] = $files['gambar']['name'][$i];
+                            $_FILES['gambar']['type'] = $files['gambar']['type'][$i];
+                            $_FILES['gambar']['tmp_name'] = $files['gambar']['tmp_name'][$i];
+                            $_FILES['gambar']['error'] = $files['gambar']['error'][$i];
+                            $_FILES['gambar']['size'] = $files['gambar']['size'][$i];
 
-                        $this->load->library('upload', $config);
-                        $this->upload->initialize($config);
-                        if (!$this->upload->do_upload('gambar')) {
-                            $error = array('error' => $this->upload->display_errors());
-                            $data = array(
-                                "status"    => "Gagal",
-                                "pesan"     => $error,
-                            );
-                        } else {
-                            $upload_data = $this->upload->data();
-                            array_push($filenames, $upload_data['file_name']);
+                            $config['upload_path']          = $dir;
+                            $config['allowed_types']        = 'gif|jpg|jpeg|png';
+                            $config['max_size']             = 1024 * 10;
+
+                            $this->load->library('upload', $config);
+                            $this->upload->initialize($config);
+                            if (!$this->upload->do_upload('gambar')) {
+                                $error = array('error' => $this->upload->display_errors());
+                                $data = array(
+                                    "status"    => "Gagal",
+                                    "pesan"     => $error,
+                                );
+                            } else {
+                                $upload_data = $this->upload->data();
+                                array_push($filenames, $upload_data['file_name']);
+                            }
                         }
+                    } else {
+                        return $this->response([
+                            'status' => "Gagal",
+                            'message' => 'Data Gambar TIdak Boleh Kosong',
+                        ], REST_Controller::HTTP_OK);
                     }
 
                     for ($i = 0; $i < count($filenames); $i++) {
@@ -74,7 +92,7 @@ class Item_kategori extends REST_Controller
                         );
 
                         if (!$this->item_kategori_model->insert_img_item_kategori($data_img_item_kategori)) {
-                            $this->response([
+                            return $this->response([
                                 'status' => "Gagal",
                                 'message' => 'Data Gagal Ditambah',
                             ], REST_Controller::HTTP_OK);
@@ -86,13 +104,13 @@ class Item_kategori extends REST_Controller
                         'message' => 'Data Berhasil Ditambah',
                     ], REST_Controller::HTTP_OK);
                 } else {
-                    $this->response([
+                    return $this->response([
                         'status' => "Gagal",
                         'message' => 'Data Gagal Ditambah',
                     ], REST_Controller::HTTP_OK);
                 }
             } else {
-                $this->response([
+                return $this->response([
                     'status' => "Error",
                     'message' => 'Data Gagal Ditambah',
                 ], REST_Controller::HTTP_BAD_REQUEST);
@@ -105,11 +123,13 @@ class Item_kategori extends REST_Controller
         $id_item_kategori = $this->security->xss_clean($this->post("id_item_kategori"));
         $judul = $this->security->xss_clean($this->post("judul"));
         $deskripsi = $this->security->xss_clean($this->post("deskripsi"));
+        $fasilitas = $this->security->xss_clean($this->post("fasilitas"));
+        $ketentuan = $this->security->xss_clean($this->post("ketentuan"));
         $this->form_validation->set_rules("id_item_kategori", "Id_item_kategori", "required");
         $this->form_validation->set_rules("judul", "Judul", "required");
         $this->form_validation->set_rules("deskripsi", "Deskripsi", "required");
         if ($this->form_validation->run() === FALSE) {
-            $this->response([
+            return $this->response([
                 'status' => "Gagal",
                 'message' => 'Data Gagal Diverifikasi',
             ], REST_Controller::HTTP_BAD_REQUEST);
@@ -119,6 +139,14 @@ class Item_kategori extends REST_Controller
                     "judul" => $judul,
                     "deskripsi" => $deskripsi,
                 );
+
+                if (!empty($fasilitas)) {
+                    $item_kategori['fasilitas'] = $fasilitas;
+                }
+
+                if (!empty($ketentuan)) {
+                    $item_kategori['ketentuan'] = $ketentuan;
+                }
 
                 if ($this->item_kategori_model->update_item_kategori($id_item_kategori, $item_kategori)) {
                     $img_item = $this->item_kategori_model->get_imgs_item_kategori($id_item_kategori);
@@ -131,57 +159,60 @@ class Item_kategori extends REST_Controller
                     $cpt = count($_FILES['gambar']['name']);
                     $dir = realpath(APPPATH . '../assets/uploads/item_kategori');
                     $filenames = [];
-                    for ($i = 0; $i < $cpt; $i++) {
-                        $_FILES['gambar']['name'] = $files['gambar']['name'][$i];
-                        $_FILES['gambar']['type'] = $files['gambar']['type'][$i];
-                        $_FILES['gambar']['tmp_name'] = $files['gambar']['tmp_name'][$i];
-                        $_FILES['gambar']['error'] = $files['gambar']['error'][$i];
-                        $_FILES['gambar']['size'] = $files['gambar']['size'][$i];
 
-                        $config['upload_path']          = $dir;
-                        $config['allowed_types']        = 'gif|jpg|jpeg|png';
-                        $config['max_size']             = 1024 * 10;
+                    if (!empty($_FILES['gambar']['name'][0])) {
+                        for ($i = 0; $i < $cpt; $i++) {
+                            $_FILES['gambar']['name'] = $files['gambar']['name'][$i];
+                            $_FILES['gambar']['type'] = $files['gambar']['type'][$i];
+                            $_FILES['gambar']['tmp_name'] = $files['gambar']['tmp_name'][$i];
+                            $_FILES['gambar']['error'] = $files['gambar']['error'][$i];
+                            $_FILES['gambar']['size'] = $files['gambar']['size'][$i];
 
-                        $this->load->library('upload', $config);
-                        $this->upload->initialize($config);
-                        if (!$this->upload->do_upload('gambar')) {
-                            $error = array('error' => $this->upload->display_errors());
-                            $data = array(
-                                "status"    => "Gagal",
-                                "pesan"     => $error,
+                            $config['upload_path']          = $dir;
+                            $config['allowed_types']        = 'gif|jpg|jpeg|png';
+                            $config['max_size']             = 1024 * 10;
+
+                            $this->load->library('upload', $config);
+                            $this->upload->initialize($config);
+                            if (!$this->upload->do_upload('gambar')) {
+                                $error = array('error' => $this->upload->display_errors());
+                                $data = array(
+                                    "status"    => "Gagal",
+                                    "pesan"     => $error,
+                                );
+                            } else {
+                                $upload_data = $this->upload->data();
+                                array_push($filenames, $upload_data['file_name']);
+                            }
+                        }
+
+                        for ($i = 0; $i < count($filenames); $i++) {
+                            $data_img_item_kategori = array(
+                                "id_item_kategori" => $id_item_kategori,
+                                "gambar" => $filenames[$i],
                             );
-                        } else {
-                            $upload_data = $this->upload->data();
-                            array_push($filenames, $upload_data['file_name']);
+
+                            if (!$this->item_kategori_model->insert_img_item_kategori($data_img_item_kategori)) {
+                                return $this->response([
+                                    'status' => "Gagal",
+                                    'message' => 'Data Gagal Diupdate',
+                                ], REST_Controller::HTTP_OK);
+                            }
                         }
                     }
 
-                    for ($i = 0; $i < count($filenames); $i++) {
-                        $data_img_item_kategori = array(
-                            "id_item_kategori" => $id_item_kategori,
-                            "gambar" => $filenames[$i],
-                        );
-
-                        if (!$this->item_kategori_model->insert_img_item_kategori($data_img_item_kategori)) {
-                            $this->response([
-                                'status' => "Gagal",
-                                'message' => 'Data Gagal Diupdate',
-                            ], REST_Controller::HTTP_OK);
-                        }
-                    }
-
-                    $this->response([
+                    return $this->response([
                         'status' => "Sukses",
                         'message' => 'Data Berhasil Diupdate',
                     ], REST_Controller::HTTP_OK);
                 } else {
-                    $this->response([
+                    return $this->response([
                         'status' => "Gagal",
                         'message' => 'Data Gagal Diupdate',
                     ], REST_Controller::HTTP_OK);
                 }
             } else {
-                $this->response([
+                return $this->response([
                     'status' => "Error",
                     'message' => 'Data Harus Diisi',
                 ], REST_Controller::HTTP_BAD_REQUEST);

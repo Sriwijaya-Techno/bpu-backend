@@ -22,6 +22,14 @@ class Kerjasama extends REST_Controller
         if (!empty($user_id)) {
             $kerjasama = $this->kerjasama_model->get_kerjasamas_by_id($user_id);
 
+            for ($i = 0; $i < count($kerjasama); $i++) {
+                if ($kerjasama[$i]->status != 'disetujui') {
+                    $kerjasama[$i]->tanggal_mulai = '-';
+                    $kerjasama[$i]->tanggal_akhir = '-';
+                    $kerjasama[$i]->nilai_kontrak = '-';
+                }
+            }
+
             $this->response([
                 'status' => "Success",
                 'message' => 'Data Berhasil Dimuat',
@@ -991,7 +999,7 @@ class Kerjasama extends REST_Controller
 
                 if ($status_draft[0]->status == 'disetujui') {
                     $kerjasama = array(
-                        "status" => "pembayaran",
+                        "status" => "disetujui",
                     );
                 } else {
                     $kerjasama = array(
@@ -1001,7 +1009,7 @@ class Kerjasama extends REST_Controller
 
                 if ($this->kerjasama_model->update_status_kerjasama($id_kerjasama, $kerjasama)) {
                     $detail = $this->kerjasama_model->get_detail_kerjasama($id_kerjasama);
-                    if ($kerjasama['status'] == 'pembayaran') {
+                    if ($kerjasama['status'] == 'disetujui') {
                         if ($detail[0]->metode_pembayaran == 'sekaligus') {
                             $pembayaran = array(
                                 "id_kerjasama" => $id_kerjasama,
@@ -1077,7 +1085,6 @@ class Kerjasama extends REST_Controller
 
     public function update_status_pembayaran_put()
     {
-        $id_kerjasama = $this->put("id_kerjasama");
         $id_pembayaran = $this->put("id_pembayaran");
         $status = $this->put("status");
 
@@ -1087,37 +1094,10 @@ class Kerjasama extends REST_Controller
             );
 
             if ($this->kerjasama_model->update_pembayaran_kerjasama($id_pembayaran, $pembayaran)) {
-                $pembayaran = $this->kerjasama_model->get_pembayaran_kerjasama($id_kerjasama);
-
-                $is_status_lunas = true;
-                for ($i = 0; $i < count($pembayaran); $i++) {
-                    if ($pembayaran[$i]->status == 'belum dibayar' || $pembayaran[$i]->status == 'ditolak' || $pembayaran[$i]->status == 'menunggu konfirmasi') {
-                        $is_status_lunas = false;
-                    }
-                }
-
-                if ($is_status_lunas) {
-                    $kerjasama = array(
-                        "status" => "disetujui",
-                    );
-
-                    if ($this->kerjasama_model->update_status_kerjasama($id_kerjasama, $kerjasama)) {
-                        $this->response([
-                            'status' => "Sukses",
-                            'message' => 'Data Berhasil Diverifikasi',
-                        ], REST_Controller::HTTP_OK);
-                    } else {
-                        $this->response([
-                            'status' => "Gagal",
-                            'message' => 'Data Gagal Diverifikasi',
-                        ], REST_Controller::HTTP_OK);
-                    }
-                } else {
-                    $this->response([
-                        'status' => "Sukses",
-                        'message' => 'Data Berhasil Diverifikasi',
-                    ], REST_Controller::HTTP_OK);
-                }
+                $this->response([
+                    'status' => "Sukses",
+                    'message' => 'Data Berhasil Diverifikasi',
+                ], REST_Controller::HTTP_OK);
             } else {
                 $this->response([
                     'status' => "Gagal",

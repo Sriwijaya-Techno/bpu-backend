@@ -1,5 +1,16 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+function generateRandomString($length = 6)
+{
+    $characters = '0123456789abcdefghijklmnopqrs092u3tuvwxyzaskdhfhf9882323ABCDEFGHIJKLMNksadf9044OPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+
 // if (!function_exists('tgl_indo')) {
 //     function tgl_indo($tgl)
 //     {
