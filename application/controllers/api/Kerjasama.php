@@ -578,6 +578,7 @@ class Kerjasama extends REST_Controller
         $draft_keterangan = $this->post("draft_keterangan");
         $draft_status = $this->post("draft_status");
         $pasal_1 = $this->post('pasal_1');
+        $pasal_2 = $this->post('pasal_2');
         $pasal_3 = $this->post('pasal_3');
         $pasal_4 = $this->post('pasal_4');
         $pasal_5 = $this->post('pasal_5');
@@ -680,9 +681,6 @@ class Kerjasama extends REST_Controller
                     !empty($pasal_1) && !empty($pasal_3) && !empty($pasal_4) &&
                     !empty($pasal_5) && !empty($pasal_6) && !empty($pasal_7) && !empty($pasal_8)
                 ) {
-
-                    $checklist = json_decode($this->post("checklist"))->checklist;
-
                     if (!empty($id_draft)) {
                         $draft = array(
                             "id_lembaga" => $id_lembaga,
@@ -697,13 +695,6 @@ class Kerjasama extends REST_Controller
                         );
 
                         if ($this->kerjasama_model->update_draft_kerjasama($id_draft, $draft)) {
-                            $ch = [];
-                            foreach ($checklist as $checkbox) {
-                                $ch[] = $checkbox;
-                            }
-
-                            $pasal_2 = implode('#@#', $ch);
-
                             $arrpsl = [
                                 '0' => $pasal_1,
                                 '1' => $pasal_2,
@@ -795,13 +786,6 @@ class Kerjasama extends REST_Controller
 
                         $this->kerjasama_model->insert_draft_kerjasama($draft);
                         $id_draft = $this->db->insert_id();
-
-                        $ch = [];
-                        foreach ($checklist as $checkbox) {
-                            $ch[] = $checkbox;
-                        }
-
-                        $pasal_2 = implode('#@#', $ch);
 
                         $arrpsl = [
                             '0' => $pasal_1,
