@@ -176,7 +176,7 @@ class Kerjasama extends REST_Controller
                 'message' => 'Data Gagal Divalidasi',
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            if (!empty($id_kategori) && !empty($user_id) && !empty($nomor)) {
+            if (!empty($id_item_kategori) && !empty($user_id) && !empty($nomor)) {
                 $kerjasama = array(
                     "id_item_kategori" => $id_item_kategori,
                     "user_id" => $user_id,
