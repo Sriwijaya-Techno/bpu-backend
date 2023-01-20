@@ -126,6 +126,21 @@ class Kerjasama_model extends CI_Model
         return $query->result();
     }
 
+    public function cek_draft_kerjasama_by_id_kerjasama($id_kerjasama)
+    {
+        $this->db->select("count(*) AS jumlah_data");
+        $this->db->from("draft_kerjasama");
+        $this->db->where("id_kerjasama", $id_kerjasama);
+        $query = $this->db->get();
+        $jumlah_data = $query->result();
+
+        if ($jumlah_data > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function insert_kerjasama($data = [])
     {
         return $this->db->insert("kerjasama", $data);

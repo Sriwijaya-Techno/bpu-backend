@@ -567,7 +567,8 @@ class Kerjasama extends REST_Controller
 
     public function update_draft_post()
     {
-        $id_draft = $this->post("id_draf");
+        $id_kerjasama = $this->post("id_kerjasama");
+        $id_draft = $this->post("id_draft");
         $id_lembaga = $this->post("id_lembaga");
         $draft_nomorp1 = $this->post("draft_nomorp1");
         $draft_nomorp2 = $this->post("draft_nomorp2");
@@ -584,10 +585,17 @@ class Kerjasama extends REST_Controller
         $pasal_7 = $this->post('pasal_7');
         $pasal_8 = $this->post('pasal_8');
 
+        if ($this->kerjasama_model->cek_draft_kerjasama_by_id_kerjasama($id_kerjasama) && empty($id_draft)) {
+            return $this->response([
+                'status' => "Gagal",
+                'message' => 'Draf Kerjasama Sudah Dibuat',
+            ], REST_Controller::HTTP_OK);
+        }
+
         if (
             !empty($draft_nomorp1) && !empty($id_lembaga) && !empty($draft_nomorp2) && !empty($draft_tanggal_mulai) &&
             !empty($draft_info) && !empty($draft_lokasi) && !empty($draft_keterangan) && !empty($draft_status) &&
-            !empty($id_draft)
+            !empty($id_kerjasama)
         ) {
             $draft_file = '';
             if (!empty($_FILES['draft_file']['name'])) {
@@ -616,28 +624,55 @@ class Kerjasama extends REST_Controller
                     $upload_data = $this->upload->data();
                     $draft_file = $upload_data['file_name'];
 
-                    $draft = array(
-                        "id_lembaga" => $id_lembaga,
-                        "draft_nomorp1" => $draft_nomorp1,
-                        "draft_nomorp2" => $draft_nomorp2,
-                        "draft_tanggal_mulai" => $draft_tanggal_mulai,
-                        "draft_info" => $draft_info,
-                        "draft_lokasi" => $draft_lokasi,
-                        "draft_keterangan" => $draft_keterangan,
-                        "draft_file" => $draft_file,
-                        "draft_status" => $draft_status,
-                    );
+                    if (!empty($id_draft)) {
+                        $draft = array(
+                            "id_lembaga" => $id_lembaga,
+                            "draft_nomorp1" => $draft_nomorp1,
+                            "draft_nomorp2" => $draft_nomorp2,
+                            "draft_tanggal_mulai" => $draft_tanggal_mulai,
+                            "draft_info" => $draft_info,
+                            "draft_lokasi" => $draft_lokasi,
+                            "draft_keterangan" => $draft_keterangan,
+                            "draft_file" => $draft_file,
+                            "draft_status" => $draft_status,
+                        );
 
-                    if ($this->kerjasama_model->update_draft_kerjasama($id_draft, $draft)) {
-                        $this->response([
-                            'status' => "Sukses",
-                            'message' => 'Data Berhasil Diupdate',
-                        ], REST_Controller::HTTP_OK);
+                        if ($this->kerjasama_model->update_draft_kerjasama($id_draft, $draft)) {
+                            return $this->response([
+                                'status' => "Sukses",
+                                'message' => 'Data Berhasil Diupdate',
+                            ], REST_Controller::HTTP_OK);
+                        } else {
+                            return $this->response([
+                                'status' => "Gagal",
+                                'message' => 'Data Gagal Diupdate',
+                            ], REST_Controller::HTTP_OK);
+                        }
                     } else {
-                        $this->response([
-                            'status' => "Gagal",
-                            'message' => 'Data Gagal Diupdate',
-                        ], REST_Controller::HTTP_OK);
+                        $draft = array(
+                            "id_kerjasama" => $id_kerjasama,
+                            "id_lembaga" => $id_lembaga,
+                            "draft_nomorp1" => $draft_nomorp1,
+                            "draft_nomorp2" => $draft_nomorp2,
+                            "draft_tanggal_mulai" => $draft_tanggal_mulai,
+                            "draft_info" => $draft_info,
+                            "draft_lokasi" => $draft_lokasi,
+                            "draft_keterangan" => $draft_keterangan,
+                            "draft_file" => $draft_file,
+                            "draft_status" => $draft_status,
+                        );
+
+                        if ($this->kerjasama_model->insert_draft_kerjasama($draft)) {
+                            return $this->response([
+                                'status' => "Sukses",
+                                'message' => 'Data Berhasil Ditambah',
+                            ], REST_Controller::HTTP_OK);
+                        } else {
+                            return $this->response([
+                                'status' => "Gagal",
+                                'message' => 'Data Gagal Ditambah',
+                            ], REST_Controller::HTTP_OK);
+                        }
                     }
                 }
             } else {
@@ -645,20 +680,122 @@ class Kerjasama extends REST_Controller
                     !empty($pasal_1) && !empty($pasal_3) && !empty($pasal_4) &&
                     !empty($pasal_5) && !empty($pasal_6) && !empty($pasal_7) && !empty($pasal_8)
                 ) {
-                    $checklist = json_decode($this->post("checklist"))->checklist;
-                    $draft = array(
-                        "id_lembaga" => $id_lembaga,
-                        "draft_nomorp1" => $draft_nomorp1,
-                        "draft_nomorp2" => $draft_nomorp2,
-                        "draft_tanggal_mulai" => $draft_tanggal_mulai,
-                        "draft_info" => $draft_info,
-                        "draft_lokasi" => $draft_lokasi,
-                        "draft_keterangan" => $draft_keterangan,
-                        "draft_file" => $draft_file,
-                        "draft_status" => $draft_status,
-                    );
 
-                    if ($this->kerjasama_model->update_draft_kerjasama($id_draft, $draft)) {
+                    $checklist = json_decode($this->post("checklist"))->checklist;
+
+                    if (!empty($id_draft)) {
+                        $draft = array(
+                            "id_lembaga" => $id_lembaga,
+                            "draft_nomorp1" => $draft_nomorp1,
+                            "draft_nomorp2" => $draft_nomorp2,
+                            "draft_tanggal_mulai" => $draft_tanggal_mulai,
+                            "draft_info" => $draft_info,
+                            "draft_lokasi" => $draft_lokasi,
+                            "draft_keterangan" => $draft_keterangan,
+                            "draft_file" => $draft_file,
+                            "draft_status" => $draft_status,
+                        );
+
+                        if ($this->kerjasama_model->update_draft_kerjasama($id_draft, $draft)) {
+                            $ch = [];
+                            foreach ($checklist as $checkbox) {
+                                $ch[] = $checkbox;
+                            }
+
+                            $pasal_2 = implode('#@#', $ch);
+
+                            $arrpsl = [
+                                '0' => $pasal_1,
+                                '1' => $pasal_2,
+                                '2' => $pasal_3,
+                                '3' => $pasal_4,
+                                '4' => $pasal_5,
+                                '5' => $pasal_6,
+                                '6' => $pasal_7,
+                                '7' => $pasal_8,
+                            ];
+
+                            for ($i = 0; $i < 7; $i++) {
+                                $pasal_kode = $i + 1;
+                                $dat = [
+                                    'pasal_isi'   =>    $arrpsl[$i],
+                                ];
+                                $this->pasal_model->update_pasal($id_draft, $pasal_kode, $dat);
+                            }
+
+                            $title = "draft_kerjsama";
+                            $base_setting = $this->base_setting_model->get_base_settings();
+                            $ls_grab = $this->lembaga_status_model->get_lembaga_statuses();
+                            $pasal = $this->pasal_model->get_pasals_by_id($id_draft);
+                            $draft_lembaga = $this->kerjasama_model->get_draft_lembaga_kerjasama($id_draft);
+
+                            $data = array(
+                                "title" => $title,
+                                "ls_grab" => $ls_grab,
+                                "pasal" => $pasal,
+                                "base_setting" => $base_setting,
+                                "draft_lembaga" => $draft_lembaga,
+                            );
+
+                            $mpdf = new \Mpdf\Mpdf([
+                                'mode' => 'utf-8',
+                                'format' => 'A4',
+                                'margin_left' => 24,
+                                'margin_right' => 24,
+                                'margin_header' => 0,
+                                'margin_footer' => 0,
+                                'margin-bottom'    => 20,
+                                'margin-top'    => 20,
+                                'orientation' => 'P',
+                                'default_font_size' => 11,
+                                'default_font' => 'Arial'
+                            ]);
+
+                            $filename = 'Draft_ kerjasama_' . $data['draft_lembaga'][0]->lembaga_nama . '_' . $data['draft_lembaga'][0]->draft_lokasi . '.pdf';
+                            $path = 'assets/uploads/draft/' . $filename;
+                            $data = $this->load->view('draft_pdf', $data, TRUE);
+                            $mpdf->setFooter('aaa {PAGENO}');
+                            $mpdf->WriteHTML($data);
+                            $mpdf->Output($path, \Mpdf\Output\Destination::FILE);
+
+                            $data_file = array(
+                                "draft_file" => $filename
+                            );
+
+                            if ($this->kerjasama_model->update_file_draft_kerjasama($draft_lembaga[0]->id, $data_file)) {
+                                return $this->response([
+                                    'status' => "Sukses",
+                                    'message' => 'Data Berhasil Diupdate',
+                                ], REST_Controller::HTTP_OK);
+                            } else {
+                                return $this->response([
+                                    'status' => "Gagal",
+                                    'message' => 'Data Gagal Diupdate',
+                                ], REST_Controller::HTTP_OK);
+                            }
+                        } else {
+                            return $this->response([
+                                'status' => "Gagal",
+                                'message' => 'Data Gagal Diupdate',
+                            ], REST_Controller::HTTP_OK);
+                        }
+                    } else {
+                        $draft = array(
+                            "id_kerjasama" => $id_kerjasama,
+                            "id_lembaga" => $id_lembaga,
+                            "draft_nomorp1" => $draft_nomorp1,
+                            "draft_nomorp2" => $draft_nomorp2,
+                            "draft_tanggal_mulai" => $draft_tanggal_mulai,
+                            "draft_info" => $draft_info,
+                            "draft_lokasi" => $draft_lokasi,
+                            "draft_keterangan" => $draft_keterangan,
+                            "draft_file" => $draft_file,
+                            "draft_status" => $draft_status,
+                        );
+
+                        $this->kerjasama_model->insert_draft_kerjasama($draft);
+                        $id_draft = $this->db->insert_id();
+
                         $ch = [];
                         foreach ($checklist as $checkbox) {
                             $ch[] = $checkbox;
@@ -678,11 +815,12 @@ class Kerjasama extends REST_Controller
                         ];
 
                         for ($i = 0; $i < 7; $i++) {
-                            $pasal_kode = $i + 1;
                             $dat = [
+                                'draft_id'    =>    $id_draft,
+                                'pasal_kode'  =>    $i + 1,
                                 'pasal_isi'   =>    $arrpsl[$i],
                             ];
-                            $this->pasal_model->update_pasal($id_draft, $pasal_kode, $dat);
+                            $this->pasal_model->insert_pasal($dat);
                         }
 
                         $title = "draft_kerjsama";
@@ -724,32 +862,27 @@ class Kerjasama extends REST_Controller
                             "draft_file" => $filename
                         );
 
-                        if ($this->kerjasama_model->update_file_draft_kerjasama($draft_lembaga[0]->id, $data_file)) {
-                            $this->response([
+                        if ($this->kerjasama_model->update_file_draft_kerjasama($id_kerjasama, $data_file)) {
+                            return $this->response([
                                 'status' => "Sukses",
-                                'message' => 'Data Berhasil Diupdate',
+                                'message' => 'Data Berhasil Ditambah',
                             ], REST_Controller::HTTP_OK);
                         } else {
-                            $this->response([
+                            return $this->response([
                                 'status' => "Gagal",
-                                'message' => 'Data Gagal Diupdate',
+                                'message' => 'Data Gagal Ditambah',
                             ], REST_Controller::HTTP_OK);
                         }
-                    } else {
-                        $this->response([
-                            'status' => "Gagal",
-                            'message' => 'Data Gagal Diupdate',
-                        ], REST_Controller::HTTP_OK);
                     }
                 } else {
-                    $this->response([
+                    return $this->response([
                         'status' => "Gagal",
                         'message' => 'Data Gagal Diupdate',
                     ], REST_Controller::HTTP_OK);
                 }
             }
         } else {
-            $this->response([
+            return $this->response([
                 'status' => "Error",
                 'message' => 'Data Tidak Boleh Kosong',
             ], REST_Controller::HTTP_BAD_REQUEST);
