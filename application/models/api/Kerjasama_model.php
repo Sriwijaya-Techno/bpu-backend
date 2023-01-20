@@ -33,10 +33,10 @@ class Kerjasama_model extends CI_Model
 
     public function get_kerjasamas_by_id($user_id)
     {
-        $this->db->select("kerjasama.id AS id_kerjasama, detail_kerjasama.id AS id_detail, kerjasama.nomor, kategori.nama AS layanan, kerjasama.status, 
+        $this->db->select("kerjasama.id AS id_kerjasama, detail_kerjasama.id AS id_detail, kerjasama.nomor, item_kategori.judul, kerjasama.status, 
                             detail_kerjasama.tanggal_mulai, detail_kerjasama.tanggal_akhir, detail_kerjasama.nilai_kontrak");
         $this->db->from("kerjasama");
-        $this->db->join("kategori", "kategori.id = kerjasama.id_kategori");
+        $this->db->join("item_kategori", "item_kategori.id = kerjasama.id_item_kategori");
         $this->db->join("detail_kerjasama", "detail_kerjasama.id_kerjasama = kerjasama.id");
         $this->db->where("user_id", $user_id);
         $query = $this->db->get();

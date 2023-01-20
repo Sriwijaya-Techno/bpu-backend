@@ -22,6 +22,8 @@ class Kerjasama extends REST_Controller
         if (!empty($user_id)) {
             $kerjasama = $this->kerjasama_model->get_kerjasamas_by_id($user_id);
 
+            print_r($kerjasama);
+
             for ($i = 0; $i < count($kerjasama); $i++) {
                 if ($kerjasama[$i]->status != 'disetujui') {
                     $kerjasama[$i]->tanggal_mulai = '-';
