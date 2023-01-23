@@ -563,7 +563,7 @@ class Kerjasama extends REST_Controller
                                 "draft_file" => $filename
                             );
 
-                            if ($this->kerjasama_model->update_file_draft_kerjasama($company_profile[0]->id, $data_file)) {
+                            if ($this->kerjasama_model->update_file_draft_kerjasama($draft_company[0]->id, $data_file)) {
                                 return $this->response([
                                     'status' => "Sukses",
                                     'message' => 'Data Berhasil Diupdate',
