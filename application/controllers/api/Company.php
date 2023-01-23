@@ -18,14 +18,18 @@ class Company extends REST_Controller
     public function index_post()
     {
         $user_id = $this->security->xss_clean($this->post("user_id"));
+        $cps_id = $this->security->xss_clean($this->post("cps_id"));
         $nama_perusahaan = $this->security->xss_clean($this->post("nama_perusahaan"));
+        $nama_pimpinan = $this->security->xss_clean($this->post("nama_pimpinan"));
         $alamat_email = $this->security->xss_clean($this->post("alamat_email"));
         $telepon = $this->security->xss_clean($this->post("telepon"));
         $alamat_perusahaan = $this->security->xss_clean($this->post("alamat_perusahaan"));
         $visi_misi = $this->security->xss_clean($this->post("visi_misi"));
 
         $this->form_validation->set_rules("user_id", "User_id", "required");
+        $this->form_validation->set_rules("cps_id", "Cps_id", "required");
         $this->form_validation->set_rules("nama_perusahaan", "Nama_perusahaan", "required");
+        $this->form_validation->set_rules("nama_pimpinan", "Nama_pimpinan", "required");
         $this->form_validation->set_rules("alamat_email", "Alamat_email", "required|valid_email");
         $this->form_validation->set_rules("telepon", "Telepon", "required");
         $this->form_validation->set_rules("alamat_perusahaan", "Alamat_perusahaan", "required");
@@ -37,7 +41,7 @@ class Company extends REST_Controller
                 'message' => 'Data Gagal Divalidasi',
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            if (!empty($user_id) && !empty($nama_perusahaan) && !empty($alamat_email) && !empty($telepon) && !empty($alamat_perusahaan) && !empty($visi_misi)) {
+            if (!empty($user_id) && !empty($cps_id) && !empty($nama_perusahaan) && !empty($nama_pimpinan) && !empty($alamat_email) && !empty($telepon) && !empty($alamat_perusahaan) && !empty($visi_misi)) {
                 if (!empty($_FILES['logo']['name'])) {
                     $files = $_FILES;
                     $dir = realpath(APPPATH . '../assets/uploads/logo');
@@ -65,7 +69,9 @@ class Company extends REST_Controller
 
                         $company = array(
                             "user_id" => $user_id,
+                            "cps_id" => $cps_id,
                             "nama_perusahaan" => $nama_perusahaan,
+                            "nama_pimpinan" => $nama_pimpinan,
                             "alamat_email" => $alamat_email,
                             "telepon" => $telepon,
                             "alamat_perusahaan" => $alamat_perusahaan,
@@ -88,7 +94,9 @@ class Company extends REST_Controller
                 } else {
                     $company = array(
                         "user_id" => $user_id,
+                        "cps_id" => $cps_id,
                         "nama_perusahaan" => $nama_perusahaan,
+                        "nama_pimpinan" => $nama_pimpinan,
                         "alamat_email" => $alamat_email,
                         "telepon" => $telepon,
                         "alamat_perusahaan" => $alamat_perusahaan,
@@ -119,14 +127,18 @@ class Company extends REST_Controller
     public function update_post()
     {
         $company_id = $this->security->xss_clean($this->post("company_id"));
+        $cps_id = $this->security->xss_clean($this->post("cps_id"));
         $nama_perusahaan = $this->security->xss_clean($this->post("nama_perusahaan"));
+        $nama_pimpinan = $this->security->xss_clean($this->post("nama_pimpinan"));
         $alamat_email = $this->security->xss_clean($this->post("alamat_email"));
         $telepon = $this->security->xss_clean($this->post("telepon"));
         $alamat_perusahaan = $this->security->xss_clean($this->post("alamat_perusahaan"));
         $visi_misi = $this->security->xss_clean($this->post("visi_misi"));
 
         $this->form_validation->set_rules("company_id", "Company_id", "required");
+        $this->form_validation->set_rules("cps_id", "Cps_id", "required");
         $this->form_validation->set_rules("nama_perusahaan", "Nama_perusahaan", "required");
+        $this->form_validation->set_rules("nama_pimpinan", "Nama_pimpinan", "required");
         $this->form_validation->set_rules("alamat_email", "Alamat_email", "required|valid_email");
         $this->form_validation->set_rules("telepon", "Telepon", "required");
         $this->form_validation->set_rules("alamat_perusahaan", "Alamat_perusahaan", "required");
@@ -138,7 +150,7 @@ class Company extends REST_Controller
                 'message' => 'Data Gagal Divalidasi',
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            if (!empty($company_id) && !empty($nama_perusahaan) && !empty($alamat_email) && !empty($telepon) && !empty($alamat_perusahaan) && !empty($visi_misi)) {
+            if (!empty($company_id) && !empty($cps_id) && !empty($nama_perusahaan) && !empty($nama_pimpinan) && !empty($alamat_email) && !empty($telepon) && !empty($alamat_perusahaan) && !empty($visi_misi)) {
                 if (!empty($_FILES['logo']['name'])) {
                     $files = $_FILES;
                     $dir = realpath(APPPATH . '../assets/uploads/logo');
@@ -165,7 +177,9 @@ class Company extends REST_Controller
                         $upload_data = $this->upload->data();
 
                         $company = array(
+                            "cps_id" => $cps_id,
                             "nama_perusahaan" => $nama_perusahaan,
+                            "nama_pimpinan" => $nama_pimpinan,
                             "alamat_email" => $alamat_email,
                             "telepon" => $telepon,
                             "alamat_perusahaan" => $alamat_perusahaan,
@@ -187,7 +201,9 @@ class Company extends REST_Controller
                     }
                 } else {
                     $company = array(
+                        "cps_id" => $cps_id,
                         "nama_perusahaan" => $nama_perusahaan,
+                        "nama_pimpinan" => $nama_pimpinan,
                         "alamat_email" => $alamat_email,
                         "telepon" => $telepon,
                         "alamat_perusahaan" => $alamat_perusahaan,

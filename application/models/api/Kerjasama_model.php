@@ -115,11 +115,11 @@ class Kerjasama_model extends CI_Model
         return $query->result();
     }
 
-    public function get_draft_lembaga_kerjasama($id_draft)
+    public function get_draft_cp_kerjasama($id_draft)
     {
-        $this->db->select("draft_kerjasama.*, lembaga.*");
+        $this->db->select("draft_kerjasama.*, company_profile.*");
         $this->db->from("draft_kerjasama");
-        $this->db->join("lembaga", "lembaga.lembaga_id = draft_kerjasama.id_lembaga");
+        $this->db->join("company_profile", "company_profile.id = draft_kerjasama.id_cp");
         $this->db->where("draft_kerjasama.id", $id_draft);
         $query = $this->db->get();
 
@@ -144,8 +144,6 @@ class Kerjasama_model extends CI_Model
         $this->db->where("id_kerjasama", $id_kerjasama);
         $query = $this->db->get();
         $jumlah_data = $query->row();
-
-        print_r($jumlah_data->jumlah_data);
 
         if ($jumlah_data->jumlah_data > 0) {
             return true;

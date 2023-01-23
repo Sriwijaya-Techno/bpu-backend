@@ -138,7 +138,7 @@ function penyebut($nilai)
         <table width="100%">
             <tr>
                 <td width="35%" style="vertical-align:middle;text-align: center;">
-                    <img src="<?= ($draft_lembaga[0]->draft_status == 'p1' ? $_SERVER["DOCUMENT_ROOT"] . '/bpu-backend/assets/uploads/base_setting/' . $base_setting[0]->bs_logo : $_SERVER["DOCUMENT_ROOT"] . '/bpu-backend/assets/uploads/lembaga/' . $draft_lembaga[0]->lembaga_id . '/logo/' . $draft_lembaga[0]->lembaga_logo) ?>" style="max-width: 250px;max-height: 150px">
+                    <img src="<?= ($draft_company[0]->draft_status == 'p1' ? $_SERVER["DOCUMENT_ROOT"] . '/bpu-backend/assets/uploads/base_setting/' . $base_setting[0]->bs_logo : $_SERVER["DOCUMENT_ROOT"] . '/bpu-backend/assets/uploads/lembaga/' . $draft_company[0]->id_cv . '/logo/' . $draft_company[0]->logo) ?>" style="max-width: 250px;max-height: 150px">
                 </td>
                 <td width="70%" style="vertical-align:middle;text-align: center;font-size: 15pt;font-weight: bold">
                     <p>
@@ -147,7 +147,7 @@ function penyebut($nilai)
                     <p><i>(MEMORANDUM OF UNDERSTANDING)</i></p>
                 </td>
                 <td width="35%" style="vertical-align:middle;text-align: center;">
-                    <img src="<?= ($draft_lembaga[0]->draft_status != 'p1' ? $_SERVER["DOCUMENT_ROOT"] . '/bpu-backend/assets/uploads/base_setting/' . $base_setting[0]->bs_logo : $_SERVER["DOCUMENT_ROOT"] . '/bpu-backend/assets/uploads/lembaga_logo/' . $draft_lembaga[0]->lembaga_logo) ?>" style="max-width: 250px;max-height: 150px">
+                    <img src="<?= ($draft_company[0]->draft_status != 'p1' ? $_SERVER["DOCUMENT_ROOT"] . '/bpu-backend/assets/uploads/base_setting/' . $base_setting[0]->bs_logo : $_SERVER["DOCUMENT_ROOT"] . '/bpu-backend/assets/uploads/logo/' . $draft_company[0]->logo) ?>" style="max-width: 250px;max-height: 150px">
                 </td>
             </tr>
         </table>
@@ -160,10 +160,10 @@ function penyebut($nilai)
                 <td width="100%" style="vertical-align:top;text-align:center">
                     <p>
                         ANTARA<br>
-                        <?= ($draft_lembaga[0]->draft_status == 'p1' ? $base_setting[0]->bs_nama : $draft_lembaga[0]->lembaga_nama) ?>
+                        <?= ($draft_company[0]->draft_status == 'p1' ? $base_setting[0]->bs_nama : $draft_company[0]->nama_perusahaan) ?>
                         <br>
                         DENGAN<br>
-                        <?= ($draft_lembaga[0]->draft_status != 'p1' ? $base_setting[0]->bs_nama : $draft_lembaga[0]->lembaga_nama) ?>
+                        <?= ($draft_company[0]->draft_status != 'p1' ? $base_setting[0]->bs_nama : $draft_company[0]->nama_perusahaan) ?>
                         <br><br>
                         TENTANG<br>
                         PENDIDIKAN, PENELITIAN, PENGABDIAN KEPADA MASYARAKAT DAN PENGEMBANGAN KELEMBAGAAN
@@ -178,13 +178,13 @@ function penyebut($nilai)
             <tr>
                 <td width="45%" style="text-align: right"><br>NOMOR:</td>
                 <td width="55%">
-                    <p><br><?= ($draft_lembaga[0]->draft_status == 'p1' ? $draft_lembaga[0]->draft_nomorp1 : $draft_lembaga[0]->draft_nomorp2) ?></p>
+                    <p><br><?= ($draft_company[0]->draft_status == 'p1' ? $draft_company[0]->draft_nomorp1 : $draft_company[0]->draft_nomorp2) ?></p>
                 </td>
             </tr>
             <tr>
                 <td width="45%" style="text-align: right">NOMOR:</td>
                 <td width="55%">
-                    <p><?= ($draft_lembaga[0]->draft_status != 'p1' ? $draft_lembaga[0]->draft_nomorp1 : $draft_lembaga[0]->draft_nomorp2) ?></p>
+                    <p><?= ($draft_company[0]->draft_status != 'p1' ? $draft_company[0]->draft_nomorp1 : $draft_company[0]->draft_nomorp2) ?></p>
                 </td>
             </tr>
         </table>
@@ -194,7 +194,7 @@ function penyebut($nilai)
         <table width="100%" style="margin-top: 10px">
             <tr>
                 <td width="100%">
-                    Pada hari ini <?= nama_hari($draft_lembaga[0]->draft_tanggal_mulai) ?> tanggal <?= terbilang(date('d', strtotime($draft_lembaga[0]->draft_tanggal_mulai))) ?> bulan <?= terbilang(date('m', strtotime($draft_lembaga[0]->draft_tanggal_mulai))) ?> tahun <?= terbilang(date('Y', strtotime($draft_lembaga[0]->draft_tanggal_mulai))) ?> (<?= date('d-m-Y', strtotime($draft_lembaga[0]->draft_tanggal_mulai)) ?>) bertempat di <?= $draft_lembaga[0]->draft_lokasi ?>, kami yang bertanda tangan dibawah ini:
+                    Pada hari ini <?= nama_hari($draft_company[0]->draft_tanggal_mulai) ?> tanggal <?= terbilang(date('d', strtotime($draft_company[0]->draft_tanggal_mulai))) ?> bulan <?= terbilang(date('m', strtotime($draft_company[0]->draft_tanggal_mulai))) ?> tahun <?= terbilang(date('Y', strtotime($draft_company[0]->draft_tanggal_mulai))) ?> (<?= date('d-m-Y', strtotime($draft_company[0]->draft_tanggal_mulai)) ?>) bertempat di <?= $draft_company[0]->draft_lokasi ?>, kami yang bertanda tangan dibawah ini:
                 </td>
             </tr>
         </table>
@@ -207,21 +207,21 @@ function penyebut($nilai)
             <tr>
                 <td width="4%" style="font-weight: bold;vertical-align: top;">I.</td>
                 <td width="47%" style="font-weight: bold;vertical-align: top;">
-                    <?= ($draft_lembaga[0]->draft_status == 'p1' ? $base_setting[0]->bs_rektor : $draft_lembaga[0]->lembaga_pimpinan_nama) ?>
+                    <?= ($draft_company[0]->draft_status == 'p1' ? $base_setting[0]->bs_rektor : $draft_company[0]->lembaga_pimpinan_nama) ?>
                 </td>
                 <td width="2%" style="vertical-align: top;">:</td>
                 <td width="47%" style="text-align: justify;vertical-align: top">
-                    <?= ($draft_lembaga[0]->draft_status == 'p1' ? $base_setting[0]->bs_keterangan : $draft_lembaga[0]->draft_keterangan) ?>
+                    <?= ($draft_company[0]->draft_status == 'p1' ? $base_setting[0]->bs_keterangan : $draft_company[0]->draft_keterangan) ?>
                     , selanjutnya disebut <b>PIHAK PERTAMA</b>, dan<br><br>
                 </td>
             </tr>
             <tr>
                 <td width="4%" style="font-weight: bold;vertical-align: top;">II.</td>
                 <td width="47%" style="font-weight: bold;vertical-align: top;">
-                    <?= ($draft_lembaga[0]->draft_status != 'p1' ? $base_setting[0]->bs_rektor : $draft_lembaga[0]->lembaga_pimpinan_nama) ?>
+                    <?= ($draft_company[0]->draft_status != 'p1' ? $base_setting[0]->bs_rektor : $draft_company[0]->nama_pimpinan) ?>
                 </td>
                 <td width="2%" style="vertical-align: top;">:</td>
-                <td width="47%" style="text-align: justify;vertical-align: top"><?= ($draft_lembaga[0]->draft_status != 'p1' ? $base_setting[0]->bs_keterangan : $draft_lembaga[0]->draft_keterangan) ?>. Selanjutnya disebut sebagai <b>PIHAK KEDUA.</b></td>
+                <td width="47%" style="text-align: justify;vertical-align: top"><?= ($draft_company[0]->draft_status != 'p1' ? $base_setting[0]->bs_keterangan : $draft_company[0]->draft_keterangan) ?>. Selanjutnya disebut sebagai <b>PIHAK KEDUA.</b></td>
             </tr>
         </table>
     </div>
@@ -237,7 +237,7 @@ function penyebut($nilai)
                     (1)
                 </td>
                 <td width="92%">
-                    Bahwa <b>PIHAK PERTAMA</b> adalah <?= ($draft_lembaga[0]->draft_status == 'p1' ? 'Perguruan Tinggi Negeri Badan Layanan Umum (PTN-BLU) yang menyelenggarakan  pendidikan, penelitian dan pengabdian kepada masyarakat di bidang sains, teknologi, sosial humaniora dan seni. ' : $draft_lembaga[0]->draft_info) ?>
+                    Bahwa <b>PIHAK PERTAMA</b> adalah <?= ($draft_company[0]->draft_status == 'p1' ? 'Perguruan Tinggi Negeri Badan Layanan Umum (PTN-BLU) yang menyelenggarakan  pendidikan, penelitian dan pengabdian kepada masyarakat di bidang sains, teknologi, sosial humaniora dan seni. ' : $draft_company[0]->draft_info) ?>
                 </td>
             </tr>
             <tr>
@@ -245,7 +245,7 @@ function penyebut($nilai)
                     (2)
                 </td>
                 <td width="92%">
-                    Bahwa <b>PIHAK KEDUA</b> adalah <?= ($draft_lembaga[0]->draft_status != 'p1' ? 'Perguruan Tinggi Negeri Badan Layanan Umum (PTN-BLU) yang menyelenggarakan  pendidikan, penelitian dan pengabdian kepada masyarakat di bidang sains, teknologi, sosial humaniora dan seni. ' : $draft_lembaga[0]->draft_info) ?>
+                    Bahwa <b>PIHAK KEDUA</b> adalah <?= ($draft_company[0]->draft_status != 'p1' ? 'Perguruan Tinggi Negeri Badan Layanan Umum (PTN-BLU) yang menyelenggarakan  pendidikan, penelitian dan pengabdian kepada masyarakat di bidang sains, teknologi, sosial humaniora dan seni. ' : $draft_company[0]->draft_info) ?>
                 </td>
             </tr>
             <tr>
@@ -274,7 +274,7 @@ function penyebut($nilai)
     <br>
 
     <?php foreach ($pasal as $pp) :
-        if ($pp->draft_id == $draft_lembaga[0]->id) { ?>
+        if ($pp->draft_id == $draft_company[0]->id) { ?>
             <div class="wrapper">
                 <div id="container">
                     <div id="row">
@@ -315,13 +315,13 @@ function penyebut($nilai)
                 </tr>
                 <tr style="font-weight: bold;">
                     <td width="40%" style="vertical-align: top">
-                        <b><?= ($draft_lembaga[0]->draft_status == 'p1' ? $base_setting[0]->bs_nama : $draft_lembaga[0]->lembaga_nama) ?></b>
+                        <b><?= ($draft_company[0]->draft_status == 'p1' ? $base_setting[0]->bs_nama : $draft_company[0]->nama_perusahaan) ?></b>
                     </td>
                     <td width="20%">
                         &nbsp;
                     </td>
                     <td width="40%" style="vertical-align: top">
-                        <b><?= ($draft_lembaga[0]->draft_status != 'p1' ? $base_setting[0]->bs_nama : $draft_lembaga[0]->lembaga_nama) ?></b>
+                        <b><?= ($draft_company[0]->draft_status != 'p1' ? $base_setting[0]->bs_nama : $draft_company[0]->nama_perusahaan) ?></b>
                     </td>
                 </tr>
                 <tr>
@@ -330,24 +330,24 @@ function penyebut($nilai)
                 <tr style="font-weight: bold;">
                     <td width="45%" style="vertical-align: bottom">
                         <br>
-                        <b><?= ($draft_lembaga[0]->draft_status == 'p1' ? $base_setting[0]->bs_rektor : $draft_lembaga[0]->lembaga_pimpinan_nama) ?></b>
+                        <b><?= ($draft_company[0]->draft_status == 'p1' ? $base_setting[0]->bs_rektor : $draft_company[0]->nama_pimpinan) ?></b>
                     </td>
                     <td width="10%">
                         &nbsp;
                     </td>
                     <td width="45%" style="vertical-align: bottom">
-                        <b><?= ($draft_lembaga[0]->draft_status != 'p1' ? $base_setting[0]->bs_rektor : $draft_lembaga[0]->lembaga_pimpinan_nama) ?></b>
+                        <b><?= ($draft_company[0]->draft_status != 'p1' ? $base_setting[0]->bs_rektor : $draft_company[0]->nama_pimpinan) ?></b>
                     </td>
                 </tr>
                 <tr>
                     <td width="45%" style="vertical-align: top">
                         <?php
-                        if ($draft_lembaga[0]->draft_status == 'p1') {
+                        if ($draft_company[0]->draft_status == 'p1') {
                             echo "Rektor";
                         } else {
-                            foreach ($ls_grab as $ls) :
-                                if ($draft_lembaga[0]->ls_id == $ls->ls_id) {
-                                    echo $ls->ls_nama;
+                            foreach ($cps_grab as $cps) :
+                                if ($draft_company[0]->cps_id == $cps->cps_id) {
+                                    echo $cps->cps_nama;
                                 }
                             endforeach;
                         }
@@ -358,13 +358,12 @@ function penyebut($nilai)
                     </td>
                     <td width="45%" style="vertical-align: top">
                         <?php
-                        if ($draft_lembaga[0]->draft_status != 'p1') {
+                        if ($draft_company[0]->draft_status != 'p1') {
                             echo "Rektor";
                         } else {
-
-                            foreach ($ls_grab as $ls) :
-                                if ($draft_lembaga[0]->ls_id == $ls->ls_id) {
-                                    echo $ls->ls_nama;
+                            foreach ($cps_grab as $cps) :
+                                if ($draft_company[0]->cps_id == $cps->cps_id) {
+                                    echo $cps->cps_nama;
                                 }
                             endforeach;
                         }

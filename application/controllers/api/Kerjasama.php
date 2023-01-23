@@ -10,7 +10,7 @@ class Kerjasama extends REST_Controller
         parent::__construct();
         //load database
         $this->load->database();
-        $this->load->model(array("api/kerjasama_model", "api/rab_model", "api/pasal_model", "api/base_setting_model", "api/lembaga_status_model", "api/lembaga_model"));
+        $this->load->model(array("api/kerjasama_model", "api/rab_model", "api/pasal_model", "api/base_setting_model", "api/company_profile_status_model"));
         $this->load->library(array("form_validation"));
         $this->load->helper("security");
     }
@@ -375,201 +375,11 @@ class Kerjasama extends REST_Controller
         ], REST_Controller::HTTP_OK);
     }
 
-    public function draft_post()
-    {
-        $id_kerjasama = $this->post("id_kerjasama");
-        $id_lembaga = $this->post("id_lembaga");
-        $draft_nomorp1 = $this->post("draft_nomorp1");
-        $draft_nomorp2 = $this->post("draft_nomorp2");
-        $draft_tanggal_mulai = $this->post("draft_tanggal_mulai");
-        $draft_info = $this->post("draft_info");
-        $draft_lokasi = $this->post("draft_lokasi");
-        $draft_keterangan = $this->post("draft_keterangan");
-        $draft_status = $this->post("draft_status");
-        $pasal_1 = $this->post('pasal_1');
-        $pasal_3 = $this->post('pasal_3');
-        $pasal_4 = $this->post('pasal_4');
-        $pasal_5 = $this->post('pasal_5');
-        $pasal_6 = $this->post('pasal_6');
-        $pasal_7 = $this->post('pasal_7');
-        $pasal_8 = $this->post('pasal_8');
-
-        if (
-            !empty($draft_nomorp1) && !empty($id_lembaga) && !empty($draft_nomorp2) && !empty($draft_tanggal_mulai) &&
-            !empty($draft_info) && !empty($draft_lokasi) && !empty($draft_keterangan) && !empty($draft_status) &&
-            !empty($id_kerjasama)
-        ) {
-            $draft_file = '';
-            if (!empty($_FILES['draft_file']['name'])) {
-                $files = $_FILES;
-                $dir = realpath(APPPATH . '../assets/uploads/draft');
-
-                $_FILES['draft_file']['name'] = $files['draft_file']['name'];
-                $_FILES['draft_file']['type'] = $files['draft_file']['type'];
-                $_FILES['draft_file']['tmp_name'] = $files['draft_file']['tmp_name'];
-                $_FILES['draft_file']['error'] = $files['draft_file']['error'];
-                $_FILES['draft_file']['size'] = $files['draft_file']['size'];
-
-                $config['upload_path']          = $dir;
-                $config['allowed_types']        = 'pdf';
-                $config['max_size']             = 1024 * 10;
-
-                $this->load->library('upload', $config);
-                $this->upload->initialize($config);
-                if (!$this->upload->do_upload('draft_file')) {
-                    $error = array('error' => $this->upload->display_errors());
-                    $data = array(
-                        "status"    => "Gagal",
-                        "pesan"     => $error,
-                    );
-                } else {
-                    $upload_data = $this->upload->data();
-                    $draft_file = $upload_data['file_name'];
-
-                    $draft = array(
-                        "id_kerjasama" => $id_kerjasama,
-                        "id_lembaga" => $id_lembaga,
-                        "draft_nomorp1" => $draft_nomorp1,
-                        "draft_nomorp2" => $draft_nomorp2,
-                        "draft_tanggal_mulai" => $draft_tanggal_mulai,
-                        "draft_info" => $draft_info,
-                        "draft_lokasi" => $draft_lokasi,
-                        "draft_keterangan" => $draft_keterangan,
-                        "draft_file" => $draft_file,
-                        "draft_status" => $draft_status,
-                    );
-
-                    if ($this->kerjasama_model->insert_draft_kerjasama($draft)) {
-                        $this->response([
-                            'status' => "Sukses",
-                            'message' => 'Data Berhasil Ditambah',
-                        ], REST_Controller::HTTP_OK);
-                    } else {
-                        $this->response([
-                            'status' => "Gagal",
-                            'message' => 'Data Gagal Ditambah',
-                        ], REST_Controller::HTTP_OK);
-                    }
-                }
-            } else {
-                if (
-                    !empty($pasal_1) && !empty($pasal_3) && !empty($pasal_4) &&
-                    !empty($pasal_5) && !empty($pasal_6) && !empty($pasal_7) && !empty($pasal_8)
-                ) {
-                    $checklist = json_decode($this->post("checklist"))->checklist;
-                    $draft = array(
-                        "id_kerjasama" => $id_kerjasama,
-                        "id_lembaga" => $id_lembaga,
-                        "draft_nomorp1" => $draft_nomorp1,
-                        "draft_nomorp2" => $draft_nomorp2,
-                        "draft_tanggal_mulai" => $draft_tanggal_mulai,
-                        "draft_info" => $draft_info,
-                        "draft_lokasi" => $draft_lokasi,
-                        "draft_keterangan" => $draft_keterangan,
-                        "draft_file" => $draft_file,
-                        "draft_status" => $draft_status,
-                    );
-
-                    $this->kerjasama_model->insert_draft_kerjasama($draft);
-                    $id_draft = $this->db->insert_id();
-
-                    $ch = [];
-                    foreach ($checklist as $checkbox) {
-                        $ch[] = $checkbox;
-                    }
-
-                    $pasal_2 = implode('#@#', $ch);
-
-                    $arrpsl = [
-                        '0' => $pasal_1,
-                        '1' => $pasal_2,
-                        '2' => $pasal_3,
-                        '3' => $pasal_4,
-                        '4' => $pasal_5,
-                        '5' => $pasal_6,
-                        '6' => $pasal_7,
-                        '7' => $pasal_8,
-                    ];
-
-                    for ($i = 0; $i < 7; $i++) {
-                        $dat = [
-                            'draft_id'    =>    $id_draft,
-                            'pasal_kode'  =>    $i + 1,
-                            'pasal_isi'   =>    $arrpsl[$i],
-                        ];
-                        $this->pasal_model->insert_pasal($dat);
-                    }
-
-                    $title = "draft_kerjsama";
-                    $base_setting = $this->base_setting_model->get_base_settings();
-                    $ls_grab = $this->lembaga_status_model->get_lembaga_statuses();
-                    $pasal = $this->pasal_model->get_pasals_by_id($id_draft);
-                    $draft_lembaga = $this->kerjasama_model->get_draft_lembaga_kerjasama($id_draft);
-
-                    $data = array(
-                        "title" => $title,
-                        "ls_grab" => $ls_grab,
-                        "pasal" => $pasal,
-                        "base_setting" => $base_setting,
-                        "draft_lembaga" => $draft_lembaga,
-                    );
-
-                    $mpdf = new \Mpdf\Mpdf([
-                        'mode' => 'utf-8',
-                        'format' => 'A4',
-                        'margin_left' => 24,
-                        'margin_right' => 24,
-                        'margin_header' => 0,
-                        'margin_footer' => 0,
-                        'margin-bottom'    => 20,
-                        'margin-top'    => 20,
-                        'orientation' => 'P',
-                        'default_font_size' => 11,
-                        'default_font' => 'Arial'
-                    ]);
-
-                    $filename = 'Draft_ kerjasama_' . $data['draft_lembaga'][0]->lembaga_nama . '_' . $data['draft_lembaga'][0]->draft_lokasi . '.pdf';
-                    $path = 'assets/uploads/draft/' . $filename;
-                    $data = $this->load->view('draft_pdf', $data, TRUE);
-                    $mpdf->setFooter('aaa {PAGENO}');
-                    $mpdf->WriteHTML($data);
-                    $mpdf->Output($path, \Mpdf\Output\Destination::FILE);
-
-                    $data_file = array(
-                        "draft_file" => $filename
-                    );
-
-                    if ($this->kerjasama_model->update_file_draft_kerjasama($id_kerjasama, $data_file)) {
-                        $this->response([
-                            'status' => "Sukses",
-                            'message' => 'Data Berhasil Ditambah',
-                        ], REST_Controller::HTTP_OK);
-                    } else {
-                        $this->response([
-                            'status' => "Gagal",
-                            'message' => 'Data Gagal Ditambah',
-                        ], REST_Controller::HTTP_OK);
-                    }
-                } else {
-                    $this->response([
-                        'status' => "Gagal",
-                        'message' => 'Data Gagal Ditambah',
-                    ], REST_Controller::HTTP_OK);
-                }
-            }
-        } else {
-            $this->response([
-                'status' => "Error",
-                'message' => 'Data Tidak Boleh Kosong',
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }
-    }
-
     public function update_draft_post()
     {
         $id_kerjasama = $this->post("id_kerjasama");
         $id_draft = $this->post("id_draft");
-        $id_lembaga = $this->post("id_lembaga");
+        $id_cp = $this->post("id_cp");
         $draft_nomorp1 = $this->post("draft_nomorp1");
         $draft_nomorp2 = $this->post("draft_nomorp2");
         $draft_tanggal_mulai = $this->post("draft_tanggal_mulai");
@@ -594,7 +404,7 @@ class Kerjasama extends REST_Controller
         }
 
         if (
-            !empty($draft_nomorp1) && !empty($id_lembaga) && !empty($draft_nomorp2) && !empty($draft_tanggal_mulai) &&
+            !empty($draft_nomorp1) && !empty($id_cp) && !empty($draft_nomorp2) && !empty($draft_tanggal_mulai) &&
             !empty($draft_info) && !empty($draft_lokasi) && !empty($draft_keterangan) && !empty($draft_status) &&
             !empty($id_kerjasama)
         ) {
@@ -627,7 +437,7 @@ class Kerjasama extends REST_Controller
 
                     if (!empty($id_draft)) {
                         $draft = array(
-                            "id_lembaga" => $id_lembaga,
+                            "id_cp" => $id_cp,
                             "draft_nomorp1" => $draft_nomorp1,
                             "draft_nomorp2" => $draft_nomorp2,
                             "draft_tanggal_mulai" => $draft_tanggal_mulai,
@@ -652,7 +462,7 @@ class Kerjasama extends REST_Controller
                     } else {
                         $draft = array(
                             "id_kerjasama" => $id_kerjasama,
-                            "id_lembaga" => $id_lembaga,
+                            "id_cp" => $id_cp,
                             "draft_nomorp1" => $draft_nomorp1,
                             "draft_nomorp2" => $draft_nomorp2,
                             "draft_tanggal_mulai" => $draft_tanggal_mulai,
@@ -678,12 +488,12 @@ class Kerjasama extends REST_Controller
                 }
             } else {
                 if (
-                    !empty($pasal_1) && !empty($pasal_3) && !empty($pasal_4) &&
+                    !empty($pasal_1) && !empty($pasal_2) && !empty($pasal_3) && !empty($pasal_4) &&
                     !empty($pasal_5) && !empty($pasal_6) && !empty($pasal_7) && !empty($pasal_8)
                 ) {
                     if (!empty($id_draft)) {
                         $draft = array(
-                            "id_lembaga" => $id_lembaga,
+                            "id_cp" => $id_cp,
                             "draft_nomorp1" => $draft_nomorp1,
                             "draft_nomorp2" => $draft_nomorp2,
                             "draft_tanggal_mulai" => $draft_tanggal_mulai,
@@ -716,16 +526,16 @@ class Kerjasama extends REST_Controller
 
                             $title = "draft_kerjsama";
                             $base_setting = $this->base_setting_model->get_base_settings();
-                            $ls_grab = $this->lembaga_status_model->get_lembaga_statuses();
+                            $cps_grab = $this->company_profile_status_model->get_company_profile_statuses();
                             $pasal = $this->pasal_model->get_pasals_by_id($id_draft);
-                            $draft_lembaga = $this->kerjasama_model->get_draft_lembaga_kerjasama($id_draft);
+                            $draft_company = $this->kerjasama_model->get_draft_cp_kerjasama($id_draft);
 
                             $data = array(
                                 "title" => $title,
-                                "ls_grab" => $ls_grab,
+                                "cps_grab" => $cps_grab,
                                 "pasal" => $pasal,
                                 "base_setting" => $base_setting,
-                                "draft_lembaga" => $draft_lembaga,
+                                "draft_company" => $draft_company,
                             );
 
                             $mpdf = new \Mpdf\Mpdf([
@@ -742,7 +552,7 @@ class Kerjasama extends REST_Controller
                                 'default_font' => 'Arial'
                             ]);
 
-                            $filename = 'Draft_ kerjasama_' . $data['draft_lembaga'][0]->lembaga_nama . '_' . $data['draft_lembaga'][0]->draft_lokasi . '.pdf';
+                            $filename = 'Draft_ kerjasama_' . $data['draft_company'][0]->nama_perusahaan . '_' . $data['draft_company'][0]->draft_lokasi . '.pdf';
                             $path = 'assets/uploads/draft/' . $filename;
                             $data = $this->load->view('draft_pdf', $data, TRUE);
                             $mpdf->setFooter('aaa {PAGENO}');
@@ -753,7 +563,7 @@ class Kerjasama extends REST_Controller
                                 "draft_file" => $filename
                             );
 
-                            if ($this->kerjasama_model->update_file_draft_kerjasama($draft_lembaga[0]->id, $data_file)) {
+                            if ($this->kerjasama_model->update_file_draft_kerjasama($company_profile[0]->id, $data_file)) {
                                 return $this->response([
                                     'status' => "Sukses",
                                     'message' => 'Data Berhasil Diupdate',
@@ -773,7 +583,7 @@ class Kerjasama extends REST_Controller
                     } else {
                         $draft = array(
                             "id_kerjasama" => $id_kerjasama,
-                            "id_lembaga" => $id_lembaga,
+                            "id_cp" => $id_cp,
                             "draft_nomorp1" => $draft_nomorp1,
                             "draft_nomorp2" => $draft_nomorp2,
                             "draft_tanggal_mulai" => $draft_tanggal_mulai,
@@ -809,16 +619,16 @@ class Kerjasama extends REST_Controller
 
                         $title = "draft_kerjsama";
                         $base_setting = $this->base_setting_model->get_base_settings();
-                        $ls_grab = $this->lembaga_status_model->get_lembaga_statuses();
+                        $cps_grab = $this->company_profile_status_model->get_company_profile_statuses();
                         $pasal = $this->pasal_model->get_pasals_by_id($id_draft);
-                        $draft_lembaga = $this->kerjasama_model->get_draft_lembaga_kerjasama($id_draft);
+                        $draft_company = $this->kerjasama_model->get_draft_cp_kerjasama($id_draft);
 
                         $data = array(
                             "title" => $title,
-                            "ls_grab" => $ls_grab,
+                            "cps_grab" => $cps_grab,
                             "pasal" => $pasal,
                             "base_setting" => $base_setting,
-                            "draft_lembaga" => $draft_lembaga,
+                            "draft_company" => $draft_company,
                         );
 
                         $mpdf = new \Mpdf\Mpdf([
@@ -835,7 +645,7 @@ class Kerjasama extends REST_Controller
                             'default_font' => 'Arial'
                         ]);
 
-                        $filename = 'Draft_ kerjasama_' . $data['draft_lembaga'][0]->lembaga_nama . '_' . $data['draft_lembaga'][0]->draft_lokasi . '.pdf';
+                        $filename = 'Draft_ kerjasama_' . $data['draft_company'][0]->nama_perusahaan . '_' . $data['draft_company'][0]->draft_lokasi . '.pdf';
                         $path = 'assets/uploads/draft/' . $filename;
                         $data = $this->load->view('draft_pdf', $data, TRUE);
                         $mpdf->setFooter('aaa {PAGENO}');

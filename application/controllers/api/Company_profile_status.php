@@ -2,7 +2,7 @@
 
 require APPPATH . 'libraries/REST_Controller.php';
 
-class Lembaga_status extends REST_Controller
+class Company_profile_status extends REST_Controller
 {
 
     public function __construct()
@@ -10,27 +10,27 @@ class Lembaga_status extends REST_Controller
         parent::__construct();
         //load database
         $this->load->database();
-        $this->load->model(array("api/lembaga_status_model"));
+        $this->load->model(array("api/company_profile_status_model"));
         $this->load->library(array("form_validation"));
         $this->load->helper("security");
     }
 
     public function index_post()
     {
-        $ls_nama = $this->security->xss_clean($this->post("ls_nama"));
-        $this->form_validation->set_rules("ls_nama", "Ls_nama", "required");
+        $cp_nama = $this->security->xss_clean($this->post("cp_nama"));
+        $this->form_validation->set_rules("cp_nama", "Cp_nama", "required");
         if ($this->form_validation->run() === FALSE) {
             $this->response([
                 'status' => "Error",
                 'message' => 'Data Gagal Ditambah',
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            if (!empty($ls_nama)) {
-                $lembaga_status = array(
-                    "ls_nama" => $ls_nama,
+            if (!empty($cp_nama)) {
+                $cp_status = array(
+                    "cp_nama" => $cp_nama,
                 );
 
-                if ($this->lembaga_status_model->insert_kategori($lembaga_status)) {
+                if ($this->company_profile_status_model->insert_company_profile_status($cp_status)) {
                     $this->response([
                         'status' => "Sukses",
                         'message' => 'Data Berhasil Ditambah',
@@ -52,7 +52,7 @@ class Lembaga_status extends REST_Controller
 
     public function index_get()
     {
-        $users = $this->kategori_model->get_kategoris();
+        $users = $this->company_profile_status_model->get_company_profile_statuses();
 
         $this->response([
             'status' => "Success",
