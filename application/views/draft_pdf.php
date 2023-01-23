@@ -138,7 +138,7 @@ function penyebut($nilai)
         <table width="100%">
             <tr>
                 <td width="35%" style="vertical-align:middle;text-align: center;">
-                    <img src="<?= ($draft_company[0]->draft_status == 'p1' ? $_SERVER["DOCUMENT_ROOT"] . '/bpu-backend/assets/uploads/base_setting/' . $base_setting[0]->bs_logo : $_SERVER["DOCUMENT_ROOT"] . '/bpu-backend/assets/uploads/lembaga/' . $draft_company[0]->id_cv . '/logo/' . $draft_company[0]->logo) ?>" style="max-width: 250px;max-height: 150px">
+                    <img src="<?= ($draft_company[0]->draft_status == 'p1' ? $_SERVER["DOCUMENT_ROOT"] . '/bpu-backend/assets/uploads/base_setting/' . $base_setting[0]->bs_logo : $_SERVER["DOCUMENT_ROOT"] . '/bpu-backend/assets/uploads/logo/' . $draft_company[0]->logo) ?>" style="max-width: 250px;max-height: 150px">
                 </td>
                 <td width="70%" style="vertical-align:middle;text-align: center;font-size: 15pt;font-weight: bold">
                     <p>
@@ -207,7 +207,7 @@ function penyebut($nilai)
             <tr>
                 <td width="4%" style="font-weight: bold;vertical-align: top;">I.</td>
                 <td width="47%" style="font-weight: bold;vertical-align: top;">
-                    <?= ($draft_company[0]->draft_status == 'p1' ? $base_setting[0]->bs_rektor : $draft_company[0]->lembaga_pimpinan_nama) ?>
+                    <?= ($draft_company[0]->draft_status == 'p1' ? $base_setting[0]->bs_rektor : $draft_company[0]->nama_pimpinan) ?>
                 </td>
                 <td width="2%" style="vertical-align: top;">:</td>
                 <td width="47%" style="text-align: justify;vertical-align: top">
