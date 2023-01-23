@@ -138,7 +138,7 @@ function penyebut($nilai)
         <table width="100%">
             <tr>
                 <td width="35%" style="vertical-align:middle;text-align: center;">
-                    <img src="<?= ($draft_company[0]->draft_status == 'p1' ? $_SERVER["DOCUMENT_ROOT"] . '/bpu-backend/assets/uploads/base_setting/' . $base_setting[0]->bs_logo : $_SERVER["DOCUMENT_ROOT"] . '/bpu-backend/assets/uploads/logo/' . $draft_company[0]->logo) ?>" style="max-width: 250px;max-height: 150px">
+                    <img src="<?= ($draft_company[0]->draft_status == 'p1' ? $bs_logo . '/' . $base_setting[0]->bs_logo : $cp_logo . '/' . $draft_company[0]->logo) ?>" style="max-width: 250px;max-height: 150px">
                 </td>
                 <td width="70%" style="vertical-align:middle;text-align: center;font-size: 15pt;font-weight: bold">
                     <p>
@@ -147,7 +147,7 @@ function penyebut($nilai)
                     <p><i>(MEMORANDUM OF UNDERSTANDING)</i></p>
                 </td>
                 <td width="35%" style="vertical-align:middle;text-align: center;">
-                    <img src="<?= ($draft_company[0]->draft_status != 'p1' ? $_SERVER["DOCUMENT_ROOT"] . '/bpu-backend/assets/uploads/base_setting/' . $base_setting[0]->bs_logo : $_SERVER["DOCUMENT_ROOT"] . '/bpu-backend/assets/uploads/logo/' . $draft_company[0]->logo) ?>" style="max-width: 250px;max-height: 150px">
+                    <img src="<?= ($draft_company[0]->draft_status != 'p1' ? $bs_logo . '/' . $base_setting[0]->bs_logo : $cp_logo . '/' . $draft_company[0]->logo) ?>" style="max-width: 250px;max-height: 150px">
                 </td>
             </tr>
         </table>

@@ -491,6 +491,8 @@ class Kerjasama extends REST_Controller
                     !empty($pasal_1) && !empty($pasal_2) && !empty($pasal_3) && !empty($pasal_4) &&
                     !empty($pasal_5) && !empty($pasal_6) && !empty($pasal_7) && !empty($pasal_8)
                 ) {
+                    $dir_logo =  realpath(APPPATH . '../assets/uploads/logo');
+                    $dir_bs_logo =  realpath(APPPATH . '../assets/uploads/base_setting');
                     if (!empty($id_draft)) {
                         $draft = array(
                             "id_cp" => $id_cp,
@@ -534,6 +536,8 @@ class Kerjasama extends REST_Controller
                                 "title" => $title,
                                 "cps_grab" => $cps_grab,
                                 "pasal" => $pasal,
+                                "cp_logo" => $dir_logo,
+                                "bs_logo" => $dir_bs_logo,
                                 "base_setting" => $base_setting,
                                 "draft_company" => $draft_company,
                             );
@@ -627,6 +631,8 @@ class Kerjasama extends REST_Controller
                             "title" => $title,
                             "cps_grab" => $cps_grab,
                             "pasal" => $pasal,
+                            "cp_logo" => $dir_logo,
+                            "bs_logo" => $dir_bs_logo,
                             "base_setting" => $base_setting,
                             "draft_company" => $draft_company,
                         );
