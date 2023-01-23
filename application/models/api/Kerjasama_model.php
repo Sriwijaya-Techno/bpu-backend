@@ -126,6 +126,17 @@ class Kerjasama_model extends CI_Model
         return $query->result();
     }
 
+    public function get_company_profile_by_id_kerjasama($id_kerjasama)
+    {
+        $this->db->select("company_profile.*");
+        $this->db->from("kerjasama");
+        $this->db->join("company_profile", "company_profile.user_id = kerjasama.user_id");
+        $this->db->where("kerjasama.id", $id_kerjasama);
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
     public function cek_draft_kerjasama_by_id_kerjasama($id_kerjasama)
     {
         $this->db->select("count(*) AS jumlah_data");
