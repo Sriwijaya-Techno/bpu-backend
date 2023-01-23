@@ -132,9 +132,11 @@ class Kerjasama_model extends CI_Model
         $this->db->from("draft_kerjasama");
         $this->db->where("id_kerjasama", $id_kerjasama);
         $query = $this->db->get();
-        $jumlah_data = $query->result();
+        $jumlah_data = $query->row();
 
-        if ($jumlah_data > 0) {
+        print_r($jumlah_data->jumlah_data);
+
+        if ($jumlah_data->jumlah_data > 0) {
             return true;
         } else {
             return false;

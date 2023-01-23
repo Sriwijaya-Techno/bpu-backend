@@ -274,57 +274,16 @@ function penyebut($nilai)
     <br>
 
     <?php foreach ($pasal as $pp) :
-        if ($pp->draft_id == $draft_lembaga[0]->id) {
-    ?>
+        if ($pp->draft_id == $draft_lembaga[0]->id) { ?>
             <div class="wrapper">
-                <?php
-                if ($pp->pasal_kode == 2) { ?>
-                    <table width='100%'>
-                        <tr>
-                            <td colspan="2" style="text-align: center;font-weight: bold;">
-                                <br>PASAL 2
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="text-align: center;font-weight: bold;">
-                                RUANG LINGKUP KERJASAMA
-                            </td>
-                        </tr>
-                        <tr style="text-align: left">
-                            <td colspan="2">
-                                <br>
-                                Ruang lingkup kerjasama yang akan dilaksanakan antara lain dalam bidang:
-                            </td>
-                        </tr>
-                        <?php
-                        $ex = explode('#@#', $pp->pasal_isi);
-                        $no = 0;
-                        foreach ($ex as $item) :
-                            $no++;
-                        ?>
-                            <tr>
-                                <td width="2%">
-                                    (<?= $no; ?>)
-                                </td>
-                                <td width="98%">
-                                    <?= $item ?>
-                                </td>
-                            </tr>
-                        <?php
-                        endforeach;
-                        echo "</table>";
-                    } else {
-                        ?>
-                        <div id="container">
-                            <div id="row">
-                                <div id="right">
-                                    <br><?= $pp->pasal_isi ?>
-                                </div>
-                            </div>
+                <div id="container">
+                    <div id="row">
+                        <div id="right">
+                            <br><?= $pp->pasal_isi ?>
                         </div>
-                    <?php } ?>
+                    </div>
+                </div>
             </div>
-
     <?php }
     endforeach; ?>
 
