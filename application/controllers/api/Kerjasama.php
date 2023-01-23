@@ -919,6 +919,11 @@ class Kerjasama extends REST_Controller
                             "status"    => "Gagal",
                             "pesan"     => $error,
                         );
+
+                        return $this->response([
+                            'status' => "Gagal",
+                            'message' => $error,
+                        ], REST_Controller::HTTP_OK);
                     } else {
                         $upload_data = $this->upload->data();
                         $pembayaran = array(
@@ -930,25 +935,25 @@ class Kerjasama extends REST_Controller
                         );
 
                         if ($this->kerjasama_model->update_pembayaran_kerjasama($id_pembayaran, $pembayaran)) {
-                            $this->response([
+                            return $this->response([
                                 'status' => "Sukses",
                                 'message' => 'Pembayaran Berhasil',
                             ], REST_Controller::HTTP_OK);
                         } else {
-                            $this->response([
+                            return $this->response([
                                 'status' => "Gagal",
                                 'message' => 'Pembayaran Gagal',
-                            ], REST_Controller::HTTP_BAD_REQUEST);
+                            ], REST_Controller::HTTP_OK);
                         }
                     }
                 } else {
-                    $this->response([
+                    return $this->response([
                         'status' => "Gagal",
                         'message' => 'Bukti Pembayaran Harus Disertakan',
                     ], REST_Controller::HTTP_BAD_REQUEST);
                 }
             } else {
-                $this->response([
+                return $this->response([
                     'status' => "Error",
                     'message' => 'Data Tidak Boleh Kosong',
                 ], REST_Controller::HTTP_BAD_REQUEST);
