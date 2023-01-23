@@ -717,7 +717,7 @@ class Kerjasama extends REST_Controller
                     $_FILES['bukti_pembayaran']['size'] = $files['bukti_pembayaran']['size'];
 
                     $config['upload_path']          = $dir;
-                    $config['allowed_types']        = 'gif|jpg|jpeg|png';
+                    $config['allowed_types']        = 'jpg|jpeg|png|pdf';
                     $config['max_size']             = 1024 * 10;
 
                     $this->load->library('upload', $config);
