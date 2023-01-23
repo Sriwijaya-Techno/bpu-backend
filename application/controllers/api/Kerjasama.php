@@ -487,120 +487,22 @@ class Kerjasama extends REST_Controller
                     }
                 }
             } else {
-                if (
-                    !empty($pasal_1) && !empty($pasal_2) && !empty($pasal_3) && !empty($pasal_4) &&
-                    !empty($pasal_5) && !empty($pasal_6) && !empty($pasal_7) && !empty($pasal_8)
-                ) {
-                    $dir_logo =  realpath(APPPATH . '../assets/uploads/logo');
-                    $dir_bs_logo =  realpath(APPPATH . '../assets/uploads/base_setting');
-                    if (!empty($id_draft)) {
-                        $draft = array(
-                            "id_cp" => $id_cp,
-                            "draft_nomorp1" => $draft_nomorp1,
-                            "draft_nomorp2" => $draft_nomorp2,
-                            "draft_tanggal_mulai" => $draft_tanggal_mulai,
-                            "draft_info" => $draft_info,
-                            "draft_lokasi" => $draft_lokasi,
-                            "draft_keterangan" => $draft_keterangan,
-                            "draft_file" => $draft_file,
-                            "draft_status" => $draft_status,
-                        );
+                $dir_logo =  realpath(APPPATH . '../assets/uploads/logo');
+                $dir_bs_logo =  realpath(APPPATH . '../assets/uploads/base_setting');
+                if (!empty($id_draft)) {
+                    $draft = array(
+                        "id_cp" => $id_cp,
+                        "draft_nomorp1" => $draft_nomorp1,
+                        "draft_nomorp2" => $draft_nomorp2,
+                        "draft_tanggal_mulai" => $draft_tanggal_mulai,
+                        "draft_info" => $draft_info,
+                        "draft_lokasi" => $draft_lokasi,
+                        "draft_keterangan" => $draft_keterangan,
+                        "draft_file" => $draft_file,
+                        "draft_status" => $draft_status,
+                    );
 
-                        if ($this->kerjasama_model->update_draft_kerjasama($id_draft, $draft)) {
-                            $arrpsl = [
-                                '0' => $pasal_1,
-                                '1' => $pasal_2,
-                                '2' => $pasal_3,
-                                '3' => $pasal_4,
-                                '4' => $pasal_5,
-                                '5' => $pasal_6,
-                                '6' => $pasal_7,
-                                '7' => $pasal_8,
-                            ];
-
-                            for ($i = 0; $i < 7; $i++) {
-                                $pasal_kode = $i + 1;
-                                $dat = [
-                                    'pasal_isi'   =>    $arrpsl[$i],
-                                ];
-                                $this->pasal_model->update_pasal($id_draft, $pasal_kode, $dat);
-                            }
-
-                            $title = "draft_kerjsama";
-                            $base_setting = $this->base_setting_model->get_base_settings();
-                            $cps_grab = $this->company_profile_status_model->get_company_profile_statuses();
-                            $pasal = $this->pasal_model->get_pasals_by_id($id_draft);
-                            $draft_company = $this->kerjasama_model->get_draft_cp_kerjasama($id_draft);
-
-                            $data = array(
-                                "title" => $title,
-                                "cps_grab" => $cps_grab,
-                                "pasal" => $pasal,
-                                "cp_logo" => $dir_logo,
-                                "bs_logo" => $dir_bs_logo,
-                                "base_setting" => $base_setting,
-                                "draft_company" => $draft_company,
-                            );
-
-                            $mpdf = new \Mpdf\Mpdf([
-                                'mode' => 'utf-8',
-                                'format' => 'A4',
-                                'margin_left' => 24,
-                                'margin_right' => 24,
-                                'margin_header' => 0,
-                                'margin_footer' => 0,
-                                'margin-bottom'    => 20,
-                                'margin-top'    => 20,
-                                'orientation' => 'P',
-                                'default_font_size' => 11,
-                                'default_font' => 'Arial'
-                            ]);
-
-                            $filename = 'Draft_ kerjasama_' . $data['draft_company'][0]->nama_perusahaan . '_' . $data['draft_company'][0]->draft_lokasi . '.pdf';
-                            $path = 'assets/uploads/draft/' . $filename;
-                            $data = $this->load->view('draft_pdf', $data, TRUE);
-                            $mpdf->setFooter('aaa {PAGENO}');
-                            $mpdf->WriteHTML($data);
-                            $mpdf->Output($path, \Mpdf\Output\Destination::FILE);
-
-                            $data_file = array(
-                                "draft_file" => $filename
-                            );
-
-                            if ($this->kerjasama_model->update_file_draft_kerjasama($draft_company[0]->id, $data_file)) {
-                                return $this->response([
-                                    'status' => "Sukses",
-                                    'message' => 'Data Berhasil Diupdate',
-                                ], REST_Controller::HTTP_OK);
-                            } else {
-                                return $this->response([
-                                    'status' => "Gagal",
-                                    'message' => 'Data Gagal Diupdate',
-                                ], REST_Controller::HTTP_OK);
-                            }
-                        } else {
-                            return $this->response([
-                                'status' => "Gagal",
-                                'message' => 'Data Gagal Diupdate',
-                            ], REST_Controller::HTTP_OK);
-                        }
-                    } else {
-                        $draft = array(
-                            "id_kerjasama" => $id_kerjasama,
-                            "id_cp" => $id_cp,
-                            "draft_nomorp1" => $draft_nomorp1,
-                            "draft_nomorp2" => $draft_nomorp2,
-                            "draft_tanggal_mulai" => $draft_tanggal_mulai,
-                            "draft_info" => $draft_info,
-                            "draft_lokasi" => $draft_lokasi,
-                            "draft_keterangan" => $draft_keterangan,
-                            "draft_file" => $draft_file,
-                            "draft_status" => $draft_status,
-                        );
-
-                        $this->kerjasama_model->insert_draft_kerjasama($draft);
-                        $id_draft = $this->db->insert_id();
-
+                    if ($this->kerjasama_model->update_draft_kerjasama($id_draft, $draft)) {
                         $arrpsl = [
                             '0' => $pasal_1,
                             '1' => $pasal_2,
@@ -613,12 +515,11 @@ class Kerjasama extends REST_Controller
                         ];
 
                         for ($i = 0; $i < 7; $i++) {
+                            $pasal_kode = $i + 1;
                             $dat = [
-                                'draft_id'    =>    $id_draft,
-                                'pasal_kode'  =>    $i + 1,
                                 'pasal_isi'   =>    $arrpsl[$i],
                             ];
-                            $this->pasal_model->insert_pasal($dat);
+                            $this->pasal_model->update_pasal($id_draft, $pasal_kode, $dat);
                         }
 
                         $title = "draft_kerjsama";
@@ -662,23 +563,313 @@ class Kerjasama extends REST_Controller
                             "draft_file" => $filename
                         );
 
-                        if ($this->kerjasama_model->update_file_draft_kerjasama($id_kerjasama, $data_file)) {
+                        if ($this->kerjasama_model->update_file_draft_kerjasama($draft_company[0]->id, $data_file)) {
                             return $this->response([
                                 'status' => "Sukses",
-                                'message' => 'Data Berhasil Ditambah',
+                                'message' => 'Data Berhasil Diupdate',
                             ], REST_Controller::HTTP_OK);
                         } else {
                             return $this->response([
                                 'status' => "Gagal",
-                                'message' => 'Data Gagal Ditambah',
+                                'message' => 'Data Gagal Diupdate',
                             ], REST_Controller::HTTP_OK);
                         }
+                    } else {
+                        return $this->response([
+                            'status' => "Gagal",
+                            'message' => 'Data Gagal Diupdate',
+                        ], REST_Controller::HTTP_OK);
                     }
                 } else {
-                    return $this->response([
-                        'status' => "Gagal",
-                        'message' => 'Data Gagal Diupdate',
-                    ], REST_Controller::HTTP_OK);
+                    if (empty($pasal_1)) {
+                        $pasal_1 = '<h3>
+                                <div style="text-align: center;">
+                                    <span style="font-family: Arial; color: inherit;">
+                                        PASAL 1
+                                    </span>
+                                </div>
+                                <span style="font-family: Arial; color: inherit;">
+                                    <div style="text-align: center;">
+                                        <span style="color: inherit;">
+                                            MAKSUD DAN TUJUAN
+                                        </span>
+                                    </div>
+                                    <br>
+                                </span>
+                            </h3>
+                            <h3>
+                                <ol style="font-size: 13px;">
+                                    <li style="text-align: left; margin-bottom: 0.0001pt; line-height: normal;">
+                                        <span lang="IN" style="text-align: justify; text-indent: -21.3pt; color: inherit; font-family: Arial;"><span style="font-weight: normal;">
+                                        Nota Kesepahaman Bersama ini disusun dengan maksud untuk memberikan dasar hukum bagi </span>PARA PIHAK<span style="font-weight: normal;"> dalam melaksanakan kerjasama guna meningkatkan kemampuan segenap potensi dan sumber daya yang dimiliki </span>PARA PIHAK
+                                    </span>
+                                </li>
+                                <li style="text-align: left; margin-bottom: 0.0001pt; line-height: normal;">
+                                    <span lang="IN" style="text-align: justify; text-indent: -21.3pt; color: inherit; font-family: Arial; font-weight: normal;">
+                                    Nota Kesepahaman Bersama ini bertujuan untuk meningkatkan kualitas pelaksanaan tugas dan fungsi </span><span lang="IN" style="text-align: justify; text-indent: -21.3pt; color: inherit; font-family: Arial;">PARA PIHAK</span><span lang="IN" style="text-align: justify; text-indent: -21.3pt; color: inherit; font-family: Arial; font-weight: normal;"> sesuai kewenangan yang dimiliki
+                                    </span>
+                                </li>
+                            </ol>
+                        </h3>';
+                    }
+
+                    if (empty($pasal_2)) {
+                        $pasal_2 = '<h3>
+                            <div style="text-align: center;">
+                                <span style="font-family: Arial; color: inherit;">
+                                    PASAL 2
+                                </span>
+                            </div>
+                            <span style="font-family: Arial; color: inherit;">
+                                <div style="text-align: center;">
+                                    <span style="color: inherit;">
+                                        RUANG
+                                        LINGKUP KERJASAMA
+                                    </span>
+                                </div>
+                                <br>
+                            </span>
+                        </h3>';
+                    }
+
+                    if (empty($pasal_3)) {
+                        $pasal_3 = '<h3>
+                            <div style="text-align: center;">
+                                <span style="font-family: Arial; color: inherit;">
+                                    PASAL 3
+                                </span>
+                            </div>
+                            <span style="font-family: Arial; color: inherit;">
+                                <div style="text-align: center;">
+                                    <span style="color: inherit;">
+                                        TUGAS PARA PIHAK
+                                    </span>
+                                </div>
+                                <br>
+                            </span>
+                        </h3>
+                    
+                        <div style="text-align: left;">
+                            <span lang="IN" style="font-weight: 400; font-size: 13px; color: inherit; text-align: justify; font-family: Arial, sans-serif;"> 
+                                <b>PARA PIHAK</b> dalam batas-batas kewenangan yang ada dan sumber daya yang tersedia akan saling menyediakan fasilitas yang diperlukan untuk pelaksanaan kerjasama sesuai dengan ruang lingkup kerjasama yang tersebut pada Pasal 2.
+                            </span>
+                            <br>
+                        </div>';
+                    }
+
+                    if (empty($pasal_4)) {
+                        $pasal_4 = '<h3>
+                            <div style="text-align: center;">
+                                <span style="font-family: Arial; color: inherit;">
+                                    PASAL 4
+                                </span>
+                            </div>
+                            <span style="font-family: Arial; color: inherit;">
+                                <div style="text-align: center;">
+                                    <span style="color: inherit;">
+                                        TUGAS PELAKSANAAN KEGIATAN KERJASAMA
+                                    </span>
+                                </div>
+                                <br>
+                            </span>
+                        </h3>
+                    
+                        <div style="text-align: left;">
+                            <span lang="IN" style="font-weight: 400; font-size: 13px; color: inherit; text-align: justify; font-family: Arial, sans-serif;"> 
+                                Nota Kesepahaman ini merupakan Payung dari Perjanjian Kerjasama yang disusun secara tersendiri untuk setiap bidang kerjasama yang akan dilaksanakan dan atau ditindaklanjuti oleh berbagai fakultas, lembaga atau unit di lingkungan Universitas Sriwijaya dan Universitas Bina Darma.
+                            </span>
+                            <br>
+                        </div>';
+                    }
+
+                    if (empty($pasal_5)) {
+                        $pasal_5 = '<h3>
+                            <div style="text-align: center;">
+                                <span style="font-family: Arial; color: inherit;">
+                                    PASAL 5
+                                </span>
+                            </div>
+                            <span style="font-family: Arial; color: inherit;">
+                                <div style="text-align: center;">
+                                    <span style="color: inherit;">
+                                        TUGAS PELAKSANAAN KEGIATAN KERJASAMA
+                                    </span>
+                                </div>
+                                <br>
+                            </span>
+                        </h3>
+                    
+                        <div style="text-align: left;">
+                            <span lang="IN" style="font-weight: 400; font-size: 13px; color: inherit; text-align: justify; font-family: Arial, sans-serif;"> 
+                                Nota Kesepahaman ini merupakan Payung dari Perjanjian Kerjasama yang disusun secara tersendiri untuk setiap bidang kerjasama yang akan dilaksanakan dan atau ditindaklanjuti oleh berbagai fakultas, lembaga atau unit di lingkungan Universitas Sriwijaya dan Universitas Bina Darma.
+                            </span>
+                            <br>
+                        </div>';
+                    }
+
+                    if (empty($pasal_6)) {
+                        $pasal_6 = '<h3>
+                            <div style="text-align: center;">
+                                <span style="font-family: Arial; color: inherit;">
+                                    PASAL 6
+                                </span>
+                            </div>
+                            <span style="font-family: Arial; color: inherit;">
+                                <div style="text-align: center;">
+                                    <span style="color: inherit;">
+                                        TUGAS PELAKSANAAN KEGIATAN KERJASAMA
+                                    </span>
+                                </div>
+                                <br>
+                            </span>
+                        </h3>
+                    
+                        <div style="text-align: left;">
+                            <span lang="IN" style="font-weight: 400; font-size: 13px; color: inherit; text-align: justify; font-family: Arial, sans-serif;"> 
+                                Nota Kesepahaman ini merupakan Payung dari Perjanjian Kerjasama yang disusun secara tersendiri untuk setiap bidang kerjasama yang akan dilaksanakan dan atau ditindaklanjuti oleh berbagai fakultas, lembaga atau unit di lingkungan Universitas Sriwijaya dan Universitas Bina Darma.
+                            </span>
+                            <br>
+                        </div>';
+                    }
+
+                    if (empty($pasal_7)) {
+                        $pasal_7 = '<h3>
+                            <div style="text-align: center;">
+                                <span style="font-family: Arial; color: inherit;">
+                                    PASAL 7
+                                </span>
+                            </div>
+                            <span style="font-family: Arial; color: inherit;">
+                                <div style="text-align: center;">
+                                    <span style="color: inherit;">
+                                        TUGAS PELAKSANAAN KEGIATAN KERJASAMA
+                                    </span>
+                                </div>
+                                <br>
+                            </span>
+                        </h3>
+                    
+                        <div style="text-align: left;">
+                            <span lang="IN" style="font-weight: 400; font-size: 13px; color: inherit; text-align: justify; font-family: Arial, sans-serif;"> 
+                                Nota Kesepahaman ini merupakan Payung dari Perjanjian Kerjasama yang disusun secara tersendiri untuk setiap bidang kerjasama yang akan dilaksanakan dan atau ditindaklanjuti oleh berbagai fakultas, lembaga atau unit di lingkungan Universitas Sriwijaya dan Universitas Bina Darma.
+                            </span>
+                            <br>
+                        </div>';
+                    }
+
+                    if (empty($pasal_8)) {
+                        $pasal_8 = '<h3>
+                            <div style="text-align: center;">
+                                <span style="font-family: Arial; color: inherit;">
+                                    PASAL 8
+                                </span>
+                            </div>
+                            <span style="font-family: Arial; color: inherit;">
+                                <div style="text-align: center;">
+                                    <span style="color: inherit;">
+                                        TUGAS PELAKSANAAN KEGIATAN KERJASAMA
+                                    </span>
+                                </div>
+                                <br>
+                            </span>
+                        </h3>
+                    
+                        <div style="text-align: left;">
+                            <span lang="IN" style="font-weight: 400; font-size: 13px; color: inherit; text-align: justify; font-family: Arial, sans-serif;"> 
+                                Nota Kesepahaman ini merupakan Payung dari Perjanjian Kerjasama yang disusun secara tersendiri untuk setiap bidang kerjasama yang akan dilaksanakan dan atau ditindaklanjuti oleh berbagai fakultas, lembaga atau unit di lingkungan Universitas Sriwijaya dan Universitas Bina Darma.
+                            </span>
+                            <br>
+                        </div>';
+                    }
+
+                    $draft = array(
+                        "id_kerjasama" => $id_kerjasama,
+                        "id_cp" => $id_cp,
+                        "draft_nomorp1" => $draft_nomorp1,
+                        "draft_nomorp2" => $draft_nomorp2,
+                        "draft_tanggal_mulai" => $draft_tanggal_mulai,
+                        "draft_info" => $draft_info,
+                        "draft_lokasi" => $draft_lokasi,
+                        "draft_keterangan" => $draft_keterangan,
+                        "draft_file" => $draft_file,
+                        "draft_status" => $draft_status,
+                    );
+
+                    $this->kerjasama_model->insert_draft_kerjasama($draft);
+                    $id_draft = $this->db->insert_id();
+
+                    $arrpsl = [
+                        '0' => $pasal_1,
+                        '1' => $pasal_2,
+                        '2' => $pasal_3,
+                        '3' => $pasal_4,
+                        '4' => $pasal_5,
+                        '5' => $pasal_6,
+                        '6' => $pasal_7,
+                        '7' => $pasal_8,
+                    ];
+
+                    for ($i = 0; $i < 8; $i++) {
+                        $dat = [
+                            'draft_id'    =>    $id_draft,
+                            'pasal_kode'  =>    $i + 1,
+                            'pasal_isi'   =>    $arrpsl[$i],
+                        ];
+                        $this->pasal_model->insert_pasal($dat);
+                    }
+
+                    $title = "draft_kerjsama";
+                    $base_setting = $this->base_setting_model->get_base_settings();
+                    $cps_grab = $this->company_profile_status_model->get_company_profile_statuses();
+                    $pasal = $this->pasal_model->get_pasals_by_id($id_draft);
+                    $draft_company = $this->kerjasama_model->get_draft_cp_kerjasama($id_draft);
+
+                    $data = array(
+                        "title" => $title,
+                        "cps_grab" => $cps_grab,
+                        "pasal" => $pasal,
+                        "cp_logo" => $dir_logo,
+                        "bs_logo" => $dir_bs_logo,
+                        "base_setting" => $base_setting,
+                        "draft_company" => $draft_company,
+                    );
+
+                    $mpdf = new \Mpdf\Mpdf([
+                        'mode' => 'utf-8',
+                        'format' => 'A4',
+                        'margin_left' => 24,
+                        'margin_right' => 24,
+                        'margin_header' => 0,
+                        'margin_footer' => 0,
+                        'margin-bottom'    => 20,
+                        'margin-top'    => 20,
+                        'orientation' => 'P',
+                        'default_font_size' => 11,
+                        'default_font' => 'Arial'
+                    ]);
+
+                    $filename = 'Draft_ kerjasama_' . $data['draft_company'][0]->nama_perusahaan . '_' . $data['draft_company'][0]->draft_lokasi . '.pdf';
+                    $path = 'assets/uploads/draft/' . $filename;
+                    $data = $this->load->view('draft_pdf', $data, TRUE);
+                    $mpdf->setFooter('aaa {PAGENO}');
+                    $mpdf->WriteHTML($data);
+                    $mpdf->Output($path, \Mpdf\Output\Destination::FILE);
+
+                    $data_file = array(
+                        "draft_file" => $filename
+                    );
+
+                    if ($this->kerjasama_model->update_file_draft_kerjasama($id_kerjasama, $data_file)) {
+                        return $this->response([
+                            'status' => "Sukses",
+                            'message' => 'Data Berhasil Ditambah',
+                        ], REST_Controller::HTTP_OK);
+                    } else {
+                        return $this->response([
+                            'status' => "Gagal",
+                            'message' => 'Data Gagal Ditambah',
+                        ], REST_Controller::HTTP_OK);
+                    }
                 }
             }
         } else {
