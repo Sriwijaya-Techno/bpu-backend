@@ -514,7 +514,7 @@ class Kerjasama extends REST_Controller
                             '7' => $pasal_8,
                         ];
 
-                        for ($i = 0; $i < 7; $i++) {
+                        for ($i = 0; $i < 8; $i++) {
                             $pasal_kode = $i + 1;
                             $dat = [
                                 'pasal_isi'   =>    $arrpsl[$i],
