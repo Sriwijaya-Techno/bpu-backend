@@ -41,6 +41,14 @@ class User_model extends CI_Model
         return $query->result();
     }
 
+    public function get_user_by_email_password($email, $password)
+    {
+        $this->db->where("email", $email);
+        $this->db->where("password", $password);
+        $data = $this->db->get("user");
+        return $data->row();
+    }
+
     public function login($email, $password)
     {
 

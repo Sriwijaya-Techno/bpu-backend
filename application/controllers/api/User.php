@@ -105,18 +105,27 @@ class User extends REST_Controller
             if (!empty($email) && !empty($password)) {
                 $login_user = $this->user_model->login($email, md5($password));
                 if (count($login_user) > 0) {
+                    $data_user = $this->user_model->get_user_by_email_password($email, md5($password));
+                    $payload['user_id'] = $data_user->id;
+                    $payload['username'] = $data_user->username;
+                    $payload['email'] = $data_user->email;
+                    $payload['tipe_akun'] = $data_user->tipe_akun;
+                    // $payload['exp'] = time() + (60 * 60); expire time : 1 jam
+
+                    $data['jwt-token'] = encode_jwt($payload);
                     $this->response([
                         'status' => "Sukses",
                         'message' => 'Berhasil Login',
+                        "data" => $data,
                     ], REST_Controller::HTTP_OK);
                 } else {
-                    $this->response([
+                    return $this->response([
                         'status' => "Gagal",
                         'message' => 'Gagal Login',
                     ], REST_Controller::HTTP_OK);
                 }
             } else {
-                $this->response([
+                return $this->response([
                     'status' => "Error",
                     'message' => 'Data Harus Diisi',
                 ], REST_Controller::HTTP_BAD_REQUEST);
