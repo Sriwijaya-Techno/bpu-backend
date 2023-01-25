@@ -144,7 +144,10 @@ class Kerjasama extends REST_Controller
             $pembayaran = $this->kerjasama_model->get_pembayaran_kerjasama($id_kerjasama);
             for ($i = 0; $i < count($pembayaran); $i++) {
                 if ($pembayaran[$i]->bukti_pembayaran != '') {
-                    $pembayaran[$i]->bukti_pembayaran = $dir_pembayaran . $pembayaran[$i]->bukti_pembayaran;
+                    $pembayaran[$i]->bukti_pembayaran = $pembayaran[$i]->bukti_pembayaran;
+                    $pembayaran[$i]->bukti_pembayaran_url = $dir_pembayaran . $pembayaran[$i]->bukti_pembayaran;
+                } else {
+                    $pembayaran[$i]->bukti_pembayaran_url = '';
                 }
             }
             $this->response([
