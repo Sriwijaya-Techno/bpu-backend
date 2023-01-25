@@ -94,16 +94,19 @@ class Kerjasama extends REST_Controller
 
             $base_setting = $this->base_setting_model->get_base_settings();
             for ($i = 0; $i < count($base_setting); $i++) {
+                $base_setting[$i]->bs_logo_url = base_url() . 'assets/uploads/base_setting/' . $base_setting[$i]->bs_logo;
                 $base_setting[$i]->bs_logo = $dir_bs_logo . '\\' . $base_setting[$i]->bs_logo;
             }
 
             $company_profile = $this->kerjasama_model->get_company_profile_by_id_kerjasama($id_kerjasama);
             for ($i = 0; $i < count($company_profile); $i++) {
+                $company_profile[$i]->logo_url = base_url() . 'assets/uploads/logo/' . $company_profile[$i]->logo;
                 $company_profile[$i]->logo = $dir_logo . '\\' . $company_profile[$i]->logo;
             }
 
             $draft = $this->kerjasama_model->get_draft_kerjasama($id_kerjasama);
             for ($i = 0; $i < count($draft); $i++) {
+                $draft[$i]->draft_file_url = base_url() . 'assets/uploads/draft/' . $draft[$i]->draft_file;
                 $draft[$i]->draft_file = $dir_draft . '\\' . $draft[$i]->draft_file;
             }
             $pasal = [];
@@ -552,12 +555,12 @@ class Kerjasama extends REST_Controller
                             'default_font' => 'Arial'
                         ]);
 
-                        $filename = 'Draft_ kerjasama_' . $data['draft_company'][0]->nama_perusahaan . '_' . $data['draft_company'][0]->draft_lokasi . '.pdf';
-                        $path = 'assets/uploads/draft/' . $filename;
-                        $data = $this->load->view('draft_pdf', $data, TRUE);
-                        $mpdf->setFooter('aaa {PAGENO}');
-                        $mpdf->WriteHTML($data);
-                        $mpdf->Output($path, \Mpdf\Output\Destination::FILE);
+                            $filename = 'Draft_kerjasama_' . $data['draft_company'][0]->nama_perusahaan . '_' . $data['draft_company'][0]->draft_lokasi . '.pdf';
+                            $path = 'assets/uploads/draft/' . $filename;
+                            $data = $this->load->view('draft_pdf', $data, TRUE);
+                            $mpdf->setFooter('aaa {PAGENO}');
+                            $mpdf->WriteHTML($data);
+                            $mpdf->Output($path, \Mpdf\Output\Destination::FILE);
 
                         $data_file = array(
                             "draft_file" => $filename
@@ -848,12 +851,12 @@ class Kerjasama extends REST_Controller
                         'default_font' => 'Arial'
                     ]);
 
-                    $filename = 'Draft_ kerjasama_' . $data['draft_company'][0]->nama_perusahaan . '_' . $data['draft_company'][0]->draft_lokasi . '.pdf';
-                    $path = 'assets/uploads/draft/' . $filename;
-                    $data = $this->load->view('draft_pdf', $data, TRUE);
-                    $mpdf->setFooter('aaa {PAGENO}');
-                    $mpdf->WriteHTML($data);
-                    $mpdf->Output($path, \Mpdf\Output\Destination::FILE);
+                        $filename = 'Draft_kerjasama_' . $data['draft_company'][0]->nama_perusahaan . '_' . $data['draft_company'][0]->draft_lokasi . '.pdf';
+                        $path = 'assets/uploads/draft/' . $filename;
+                        $data = $this->load->view('draft_pdf', $data, TRUE);
+                        $mpdf->setFooter('aaa {PAGENO}');
+                        $mpdf->WriteHTML($data);
+                        $mpdf->Output($path, \Mpdf\Output\Destination::FILE);
 
                     $data_file = array(
                         "draft_file" => $filename
