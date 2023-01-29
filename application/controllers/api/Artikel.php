@@ -183,11 +183,11 @@ class Artikel extends REST_Controller
         $desc = $this->security->xss_clean($this->get("desc"));
         $jenis = $this->security->xss_clean($this->get("jenis"));
 
-        $dir_logo =  realpath(APPPATH . '../assets/uploads/artikel');
+        $dir_logo =  base_url() . 'assets/uploads/artikel/';
 
         $artikels = $this->artikel_model->get_artikel($user_id, $artikel_id, $start, $limit, $desc, $jenis);
         for ($i = 0; $i < count($artikels); $i++) {
-            $artikels[$i]->cover = $dir_logo . '\\' . $artikels[$i]->cover;
+            $artikels[$i]->cover = $dir_logo  . $artikels[$i]->cover;
         }
         $this->response([
             'status' => "Success",
