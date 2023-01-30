@@ -30,6 +30,7 @@ class Layanan extends REST_Controller
                 $layanan = array(
                     "nama" => $nama,
                     "icon" => $icon,
+                    "slug" => slug($nama),
                 );
 
                 if ($this->layanan_model->insert_layanan($layanan)) {
@@ -38,10 +39,23 @@ class Layanan extends REST_Controller
                         'message' => 'Data Berhasil Ditambah',
                     ], REST_Controller::HTTP_OK);
                 } else {
-                    return $this->response([
-                        'status' => "Error",
-                        'message' => 'Data Gagal Ditambah',
-                    ], REST_Controller::HTTP_BAD_REQUEST);
+                    $layanan = array(
+                        "nama" => $nama,
+                        "icon" => $icon,
+                        "slug" => slug($nama) . "-" . rand(0, 99),
+                    );
+
+                    if ($this->layanan_model->insert_layanan($layanan)) {
+                        return $this->response([
+                            'status' => "Sukses",
+                            'message' => 'Data Berhasil Ditambah',
+                        ], REST_Controller::HTTP_OK);
+                    } else {
+                        return $this->response([
+                            'status' => "Error",
+                            'message' => 'Data Gagal Ditambah',
+                        ], REST_Controller::HTTP_OK);
+                    }
                 }
             } else {
                 return $this->response([

@@ -11,10 +11,11 @@ class Kerjasama_model extends CI_Model
 
     public function get_kerjasamas()
     {
-        $this->db->select("kerjasama.id AS id_kerjasama, detail_kerjasama.id AS id_detail, company_profile.nama_perusahaan, detail_kerjasama.judul_kegiatan, 
+        $this->db->select("kerjasama.id AS id_kerjasama, item_kategori.id AS id_item_kategori, detail_kerjasama.id AS id_detail, company_profile.nama_perusahaan, item_kategori.judul AS item_kategori, detail_kerjasama.judul_kegiatan, 
                             kerjasama.status, detail_kerjasama.nilai_kontrak, detail_kerjasama.tanggal_mulai, detail_kerjasama.tanggal_akhir, detail_kerjasama.metode_pembayaran");
         $this->db->from("kerjasama");
         $this->db->join("company_profile", "kerjasama.user_id = company_profile.user_id");
+        $this->db->join("item_kategori", "item_kategori.id = kerjasama.id_item_kategori");
         $this->db->join("detail_kerjasama", "detail_kerjasama.id_kerjasama = kerjasama.id");
         $query = $this->db->get();
 
@@ -33,7 +34,7 @@ class Kerjasama_model extends CI_Model
 
     public function get_kerjasamas_by_id($user_id)
     {
-        $this->db->select("kerjasama.id AS id_kerjasama, detail_kerjasama.id AS id_detail, kerjasama.nomor, item_kategori.judul, kerjasama.status, 
+        $this->db->select("kerjasama.id AS id_kerjasama, item_kategori.id AS id_item_kategori, detail_kerjasama.id AS id_detail, kerjasama.nomor, item_kategori.judul AS item_kategori, detail_kerjasama.judul_kegiatan, kerjasama.status, 
                             detail_kerjasama.tanggal_mulai, detail_kerjasama.tanggal_akhir, detail_kerjasama.nilai_kontrak");
         $this->db->from("kerjasama");
         $this->db->join("item_kategori", "item_kategori.id = kerjasama.id_item_kategori");

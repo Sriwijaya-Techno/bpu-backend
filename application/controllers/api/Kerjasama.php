@@ -166,6 +166,13 @@ class Kerjasama extends REST_Controller
     public function admin_get()
     {
         $kerjasama = $this->kerjasama_model->get_kerjasamas();
+        for ($i = 0; $i < count($kerjasama); $i++) {
+            $date1 = strtotime(date('Y-m-d'));
+            $date2 = strtotime($kerjasama[$i]->tanggal_akhir);
+            $days = ($date2 - $date1) / 86400;
+
+            $kerjasama[$i]->sisa_waktu = $days;
+        }
 
         $this->response([
             'status' => "Success",

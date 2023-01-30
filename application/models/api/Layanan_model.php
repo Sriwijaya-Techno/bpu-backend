@@ -20,7 +20,10 @@ class Layanan_model extends CI_Model
 
     public function insert_layanan($data = [])
     {
-
-        return $this->db->insert("layanan", $data);
+        try {
+            return $this->db->insert("layanan", $data);
+        } catch (\Throwable $th) {
+            return false;
+        }
     }
 }

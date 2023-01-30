@@ -19,6 +19,7 @@ class Kategori extends REST_Controller
     {
         $id = $this->security->xss_clean($this->post("id"));
         $nama = $this->security->xss_clean($this->post("nama"));
+        $icon = $this->security->xss_clean($this->post("icon"));
         $this->form_validation->set_rules("nama", "Nama", "required");
         if ($this->form_validation->run() === FALSE) {
             $this->response([
@@ -30,6 +31,8 @@ class Kategori extends REST_Controller
                 $kategori = array(
                     "id_layanan" => $id,
                     "nama" => $nama,
+                    "icon" => $icon,
+                    "slug" => slug($nama),
                 );
 
                 if ($this->kategori_model->insert_kategori($kategori)) {
@@ -38,10 +41,24 @@ class Kategori extends REST_Controller
                         'message' => 'Data Berhasil Ditambah',
                     ], REST_Controller::HTTP_OK);
                 } else {
-                    $this->response([
-                        'status' => "Error",
-                        'message' => 'Data Gagal Ditambah',
-                    ], REST_Controller::HTTP_BAD_REQUEST);
+                    $kategori = array(
+                        "id_layanan" => $id,
+                        "nama" => $nama,
+                        "icon" => $icon,
+                        "slug" => slug($nama) . "-" . rand(0, 99),
+                    );
+
+                    if ($this->kategori_model->insert_kategori($kategori)) {
+                        $this->response([
+                            'status' => "Sukses",
+                            'message' => 'Data Berhasil Ditambah',
+                        ], REST_Controller::HTTP_OK);
+                    } else {
+                        $this->response([
+                            'status' => "Error",
+                            'message' => 'Data Gagal Ditambah',
+                        ], REST_Controller::HTTP_OK);
+                    }
                 }
             } else {
                 $this->response([
