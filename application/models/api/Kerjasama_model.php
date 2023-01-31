@@ -88,7 +88,7 @@ class Kerjasama_model extends CI_Model
 
     public function cek_pembayaran_kerjasama($id_kerjasama)
     {
-        $this->db->select("count(nominal) as total_bayar");
+        $this->db->select("sum(nominal) as total_bayar");
         $this->db->from("pembayaran");
         $this->db->where("id_kerjasama", $id_kerjasama);
         $query = $this->db->get();

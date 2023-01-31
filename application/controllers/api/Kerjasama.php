@@ -402,6 +402,7 @@ class Kerjasama extends REST_Controller
         $draft_nomorp1 = $this->post("draft_nomorp1");
         $draft_nomorp2 = $this->post("draft_nomorp2");
         $draft_tanggal_mulai = $this->post("draft_tanggal_mulai");
+        $draft_tanggal_akhir = $this->post("draft_tanggal_akhir");
         $draft_info = $this->post("draft_info");
         $draft_lokasi = $this->post("draft_lokasi");
         $draft_keterangan = $this->post("draft_keterangan");
@@ -423,7 +424,7 @@ class Kerjasama extends REST_Controller
         }
 
         if (
-            !empty($draft_nomorp1) && !empty($id_cp) && !empty($draft_nomorp2) && !empty($draft_tanggal_mulai) &&
+            !empty($draft_nomorp1) && !empty($id_cp) && !empty($draft_nomorp2) && !empty($draft_tanggal_mulai) && !empty($draft_tanggal_akhir) &&
             !empty($draft_info) && !empty($draft_lokasi) && !empty($draft_keterangan) && !empty($draft_status) &&
             !empty($id_kerjasama)
         ) {
@@ -465,6 +466,7 @@ class Kerjasama extends REST_Controller
                             "draft_nomorp1" => $draft_nomorp1,
                             "draft_nomorp2" => $draft_nomorp2,
                             "draft_tanggal_mulai" => $draft_tanggal_mulai,
+                            "draft_tanggal_akhir" => $draft_tanggal_akhir,
                             "draft_info" => $draft_info,
                             "draft_lokasi" => $draft_lokasi,
                             "draft_keterangan" => $draft_keterangan,
@@ -490,6 +492,7 @@ class Kerjasama extends REST_Controller
                             "draft_nomorp1" => $draft_nomorp1,
                             "draft_nomorp2" => $draft_nomorp2,
                             "draft_tanggal_mulai" => $draft_tanggal_mulai,
+                            "draft_tanggal_akhir" => $draft_tanggal_akhir,
                             "draft_info" => $draft_info,
                             "draft_lokasi" => $draft_lokasi,
                             "draft_keterangan" => $draft_keterangan,
@@ -519,6 +522,7 @@ class Kerjasama extends REST_Controller
                         "draft_nomorp1" => $draft_nomorp1,
                         "draft_nomorp2" => $draft_nomorp2,
                         "draft_tanggal_mulai" => $draft_tanggal_mulai,
+                        "draft_tanggal_akhir" => $draft_tanggal_akhir,
                         "draft_info" => $draft_info,
                         "draft_lokasi" => $draft_lokasi,
                         "draft_keterangan" => $draft_keterangan,
@@ -812,6 +816,7 @@ class Kerjasama extends REST_Controller
                         "draft_nomorp1" => $draft_nomorp1,
                         "draft_nomorp2" => $draft_nomorp2,
                         "draft_tanggal_mulai" => $draft_tanggal_mulai,
+                        "draft_tanggal_akhir" => $draft_tanggal_akhir,
                         "draft_info" => $draft_info,
                         "draft_lokasi" => $draft_lokasi,
                         "draft_keterangan" => $draft_keterangan,
