@@ -44,7 +44,12 @@ class Company extends REST_Controller
             if (!empty($user_id) && !empty($cps_id) && !empty($nama_perusahaan) && !empty($nama_pimpinan) && !empty($alamat_email) && !empty($telepon) && !empty($alamat_perusahaan) && !empty($visi_misi)) {
                 if (!empty($_FILES['logo']['name'])) {
                     $files = $_FILES;
-                    $dir = realpath(APPPATH . '../assets/uploads/logo');
+                    $dir = realpath(APPPATH . '../assets/uploads');
+                    $filename = $dir . '\\logo\\';
+
+                    if (!file_exists($filename)) {
+                        mkdir($filename, 0775, true);
+                    }
 
                     $_FILES['logo']['name'] = $files['logo']['name'];
                     $_FILES['logo']['type'] = $files['logo']['type'];
@@ -52,7 +57,7 @@ class Company extends REST_Controller
                     $_FILES['logo']['error'] = $files['logo']['error'];
                     $_FILES['logo']['size'] = $files['logo']['size'];
 
-                    $config['upload_path']          = $dir;
+                    $config['upload_path']          = $filename;
                     $config['allowed_types']        = 'gif|jpg|jpeg|png';
                     $config['max_size']             = 1024 * 10;
 
@@ -60,10 +65,10 @@ class Company extends REST_Controller
                     $this->upload->initialize($config);
                     if (!$this->upload->do_upload('logo')) {
                         $error = array('error' => $this->upload->display_errors());
-                        $data = array(
-                            "status"    => "Gagal",
-                            "pesan"     => $error,
-                        );
+                        return $this->response([
+                            'status' => "Error",
+                            'message' => $error,
+                        ], REST_Controller::HTTP_OK);
                     } else {
                         $upload_data = $this->upload->data();
 
@@ -80,15 +85,15 @@ class Company extends REST_Controller
                         );
 
                         if ($this->company_model->insert_company_profile($company)) {
-                            $this->response([
+                            return $this->response([
                                 'status' => "Sukses",
                                 'message' => 'Data Berhasil Ditambah',
                             ], REST_Controller::HTTP_OK);
                         } else {
-                            $this->response([
+                            return $this->response([
                                 'status' => "Error",
                                 'message' => 'Data Gagal Ditambah',
-                            ], REST_Controller::HTTP_BAD_REQUEST);
+                            ], REST_Controller::HTTP_OK);
                         }
                     }
                 } else {
@@ -104,21 +109,21 @@ class Company extends REST_Controller
                     );
 
                     if ($this->company_model->insert_company_profile($company)) {
-                        $this->response([
+                        return $this->response([
                             'status' => "Sukses",
                             'message' => 'Data Berhasil Ditambah',
                         ], REST_Controller::HTTP_OK);
                     } else {
-                        $this->response([
-                            'status' => "Error",
+                        return $this->response([
+                            'status' => "Gagal",
                             'message' => 'Data Gagal Ditambah',
-                        ], REST_Controller::HTTP_BAD_REQUEST);
+                        ], REST_Controller::HTTP_OK);
                     }
                 }
             } else {
-                $this->response([
+                return $this->response([
                     'status' => "Error",
-                    'message' => 'Data Gagal Ditambah',
+                    'message' => 'Semua Data Harus Diisi',
                 ], REST_Controller::HTTP_BAD_REQUEST);
             }
         }
@@ -153,7 +158,12 @@ class Company extends REST_Controller
             if (!empty($company_id) && !empty($cps_id) && !empty($nama_perusahaan) && !empty($nama_pimpinan) && !empty($alamat_email) && !empty($telepon) && !empty($alamat_perusahaan) && !empty($visi_misi)) {
                 if (!empty($_FILES['logo']['name'])) {
                     $files = $_FILES;
-                    $dir = realpath(APPPATH . '../assets/uploads/logo');
+                    $dir = realpath(APPPATH . '../assets/uploads');
+                    $filename = $dir . '\\logo\\';
+
+                    if (!file_exists($filename)) {
+                        mkdir($filename, 0775, true);
+                    }
 
                     $_FILES['logo']['name'] = $files['logo']['name'];
                     $_FILES['logo']['type'] = $files['logo']['type'];
@@ -161,7 +171,7 @@ class Company extends REST_Controller
                     $_FILES['logo']['error'] = $files['logo']['error'];
                     $_FILES['logo']['size'] = $files['logo']['size'];
 
-                    $config['upload_path']          = $dir;
+                    $config['upload_path']          = $filename;
                     $config['allowed_types']        = 'gif|jpg|jpeg|png';
                     $config['max_size']             = 1024 * 10;
 
@@ -169,10 +179,10 @@ class Company extends REST_Controller
                     $this->upload->initialize($config);
                     if (!$this->upload->do_upload('logo')) {
                         $error = array('error' => $this->upload->display_errors());
-                        $data = array(
-                            "status"    => "Gagal",
-                            "pesan"     => $error,
-                        );
+                        return $this->response([
+                            'status' => "Error",
+                            'message' => $error,
+                        ], REST_Controller::HTTP_OK);
                     } else {
                         $upload_data = $this->upload->data();
 
@@ -188,12 +198,12 @@ class Company extends REST_Controller
                         );
 
                         if ($this->company_model->update_company_profile($company_id, $company)) {
-                            $this->response([
+                            return $this->response([
                                 'status' => "Sukses",
                                 'message' => 'Data Berhasil Diupdate',
                             ], REST_Controller::HTTP_OK);
                         } else {
-                            $this->response([
+                            return $this->response([
                                 'status' => "Gagal",
                                 'message' => 'Data Gagal Diupdate',
                             ], REST_Controller::HTTP_OK);
@@ -211,19 +221,19 @@ class Company extends REST_Controller
                     );
 
                     if ($this->company_model->update_company_profile($company_id, $company)) {
-                        $this->response([
+                        return $this->response([
                             'status' => "Sukses",
                             'message' => 'Data Berhasil Diupdate',
                         ], REST_Controller::HTTP_OK);
                     } else {
-                        $this->response([
+                        return $this->response([
                             'status' => "Gagal",
                             'message' => 'Data Gagal Diupdate',
                         ], REST_Controller::HTTP_OK);
                     }
                 }
             } else {
-                $this->response([
+                return $this->response([
                     'status' => "Error",
                     'message' => 'Data Gagal Diupdate',
                 ], REST_Controller::HTTP_BAD_REQUEST);
@@ -231,15 +241,31 @@ class Company extends REST_Controller
         }
     }
 
+    public function index_delete()
+    {
+        $id = $this->delete("id");
+
+        if ($this->company_model->delete_company_profile($id)) {
+            $this->response([
+                'status' => "Success",
+                'message' => 'Data Berhasil Dihapus',
+            ], REST_Controller::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => "Gagal",
+                'message' => 'Data Gagal Dihapus',
+            ], REST_Controller::HTTP_OK);
+        }
+    }
+
     public function index_get()
     {
         $user_id = $this->security->xss_clean($this->get("user_id"));
 
-        $dir_logo =  realpath(APPPATH . '../assets/uploads/logo');
         if (!empty($user_id)) {
             $company_profiles = $this->company_model->get_company_profile_by_user_id($user_id);
             for ($i = 0; $i < count($company_profiles); $i++) {
-                $company_profiles[$i]->logo = $dir_logo . '\\' . $company_profiles[$i]->logo;
+                $company_profiles[$i]->logo = base_url() . 'assets/uploads/logo/' . $company_profiles[$i]->logo;
             }
             $this->response([
                 'status' => "Success",

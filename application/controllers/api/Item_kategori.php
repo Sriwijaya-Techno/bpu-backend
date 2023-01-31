@@ -53,7 +53,13 @@ class Item_kategori extends REST_Controller
 
                     $cpt = count($_FILES['gambar']['name']);
                     if (!empty($_FILES['gambar']['name'][0])) {
-                        $dir = realpath(APPPATH . '../assets/uploads/item_kategori');
+                        $dir = realpath(APPPATH . '../assets/uploads');
+                        $filename = $dir . '\\item_kategori\\';
+
+                        if (!file_exists($filename)) {
+                            mkdir($filename, 0775, true);
+                        }
+
                         for ($i = 0; $i < $cpt; $i++) {
                             $_FILES['gambar']['name'] = $files['gambar']['name'][$i];
                             $_FILES['gambar']['type'] = $files['gambar']['type'][$i];
@@ -61,7 +67,7 @@ class Item_kategori extends REST_Controller
                             $_FILES['gambar']['error'] = $files['gambar']['error'][$i];
                             $_FILES['gambar']['size'] = $files['gambar']['size'][$i];
 
-                            $config['upload_path']          = $dir;
+                            $config['upload_path']          = $filename;
                             $config['allowed_types']        = 'gif|jpg|jpeg|png';
                             $config['max_size']             = 1024 * 10;
 
@@ -157,7 +163,12 @@ class Item_kategori extends REST_Controller
 
                     $files = $_FILES;
                     $cpt = count($_FILES['gambar']['name']);
-                    $dir = realpath(APPPATH . '../assets/uploads/item_kategori');
+                    $dir = realpath(APPPATH . '../assets/uploads');
+                    $filename = $dir . '\\item_kategori\\';
+
+                    if (!file_exists($filename)) {
+                        mkdir($filename, 0775, true);
+                    }
                     $filenames = [];
 
                     if (!empty($_FILES['gambar']['name'][0])) {
@@ -168,7 +179,7 @@ class Item_kategori extends REST_Controller
                             $_FILES['gambar']['error'] = $files['gambar']['error'][$i];
                             $_FILES['gambar']['size'] = $files['gambar']['size'][$i];
 
-                            $config['upload_path']          = $dir;
+                            $config['upload_path']          = $filename;
                             $config['allowed_types']        = 'gif|jpg|jpeg|png';
                             $config['max_size']             = 1024 * 10;
 
@@ -217,6 +228,30 @@ class Item_kategori extends REST_Controller
                     'message' => 'Data Harus Diisi',
                 ], REST_Controller::HTTP_BAD_REQUEST);
             }
+        }
+    }
+
+    public function index_delete()
+    {
+        $id = $this->delete("id");
+
+        if ($this->item_kategori_model->delete_imgs_item_kategori($id)) {
+            if ($this->item_kategori_model->delete_item_kategori($id)) {
+                $this->response([
+                    'status' => "Success",
+                    'message' => 'Data Berhasil Dihapus',
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => "Gagal",
+                    'message' => 'Data Gagal Dihapus',
+                ], REST_Controller::HTTP_OK);
+            }
+        } else {
+            $this->response([
+                'status' => "Gagal",
+                'message' => 'Data Gagal Dihapus',
+            ], REST_Controller::HTTP_OK);
         }
     }
 
