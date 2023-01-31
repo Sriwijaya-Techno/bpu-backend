@@ -185,21 +185,18 @@ class Kerjasama extends REST_Controller
     {
         $id_item_kategori = $this->post("id_item_kategori");
         $user_id = $this->post("user_id");
-        $nomor = $this->post("nomor");
         $this->form_validation->set_rules("id_item_kategori", "Id_item_kategori", "required");
         $this->form_validation->set_rules("user_id", "User_id", "required");
-        $this->form_validation->set_rules("nomor", "Nomor", "required");
         if ($this->form_validation->run() === FALSE) {
             $this->response([
                 'status' => "Error",
                 'message' => 'Data Gagal Divalidasi',
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            if (!empty($id_item_kategori) && !empty($user_id) && !empty($nomor)) {
+            if (!empty($id_item_kategori) && !empty($user_id)) {
                 $kerjasama = array(
                     "id_item_kategori" => $id_item_kategori,
                     "user_id" => $user_id,
-                    "nomor" => $nomor,
                 );
 
                 if ($this->kerjasama_model->insert_kerjasama($kerjasama)) {
