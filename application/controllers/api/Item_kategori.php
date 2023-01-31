@@ -276,8 +276,20 @@ class Item_kategori extends REST_Controller
 
     public function index_get()
     {
+        $slug_kategori = $this->security->xss_clean($this->get("slug_kategori"));
         $id_kategori = $this->security->xss_clean($this->get("id_kategori"));
-        $items_kategori = $this->item_kategori_model->get_items_kategori($id_kategori);
+        $slug_layanan = $this->security->xss_clean($this->get("slug_layanan"));
+        $id_layanan = $this->security->xss_clean($this->get("id_layanan"));
+        $id_item_kategori = $this->security->xss_clean($this->get("id_item_kategori"));
+
+        $data = [
+            'slug_kategori' => $slug_kategori ?? '',
+            'id_kategori' => $id_kategori ?? '',
+            'slug_layanan' => $slug_layanan ?? '',
+            'id_layanan' => $id_layanan ?? '',
+            'id_item_kategori' => $id_item_kategori ?? '',
+        ];
+        $items_kategori = $this->item_kategori_model->get_items_kategori($data);
         $dir_item_kategori =  realpath(APPPATH . '../assets/uploads/item_kategori');
 
         for ($i = 0; $i < count($items_kategori); $i++) {

@@ -17,12 +17,33 @@ class Item_kategori_model extends CI_Model
 
         return $query->result();
     }
-    public function get_items_kategori($id_kategori = '')
+    public function get_items_kategori($data)
     {
-        $this->db->select("*");
+        $this->db->select("
+        item_kategori.*,
+        kategori.id_layanan,
+        kategori.nama as nama_kategori,
+        kategori.slug as slug_kategori,
+        layanan.slug as slug_layanan,
+        layanan.nama as nama_layanan
+        ");
         $this->db->from("item_kategori");
-        if (!empty($id_kategori)) {
-            $this->db->where("id_kategori", $id_kategori);
+        $this->db->join('kategori', 'kategori.id = item_kategori.id_kategori');
+        $this->db->join('layanan', 'layanan.id = kategori.id_layanan');
+        if (!empty($data['id_kategori'])) {
+            $this->db->where("item_kategori.id_kategori", $data['id_kategori']);
+        }
+        if (!empty($data['id_layanan'])) {
+            $this->db->where("kategori.id_layanan", $data['id_layanan']);
+        }
+        if (!empty($data['slug_kategori'])) {
+            $this->db->where("kategori.slug", $data['slug_kategori']);
+        }
+        if (!empty($data['slug_layanan'])) {
+            $this->db->where("layanan.slug", $data['slug_layanan']);
+        }
+        if (!empty($data['id_item_kategori'])) {
+            $this->db->where("item_kategori.id", $data['id_item_kategori']);
         }
         $query = $this->db->get();
 
