@@ -1168,44 +1168,53 @@ class Kerjasama extends REST_Controller
                 if ($this->kerjasama_model->update_status_kerjasama($id_kerjasama, $kerjasama)) {
                     $detail = $this->kerjasama_model->get_detail_kerjasama($id_kerjasama);
                     if ($kerjasama['status'] == 'disetujui') {
-                        if ($detail[0]->metode_pembayaran == 'sekaligus') {
-                            $pembayaran = array(
-                                "id_kerjasama" => $id_kerjasama,
-                            );
-
-                            if ($this->kerjasama_model->insert_pembayaran_kerjasama($pembayaran)) {
-                                $this->response([
-                                    'status' => "Sukses",
-                                    'message' => 'Data Berhasil Diupdate',
-                                ], REST_Controller::HTTP_OK);
-                            } else {
-                                $this->response([
-                                    'status' => "Gagal",
-                                    'message' => 'Data Gagal Diupdate',
-                                ], REST_Controller::HTTP_OK);
-                            }
+                        if ($this->kerjasama_model->cek_pembayaran_kerjasama($id_kerjasama)) {
+                            $this->response([
+                                'status' => "Gagal",
+                                'message' => 'Kerjasama sudah disetujui dan dibayar',
+                            ], REST_Controller::HTTP_OK);
                         } else {
-                            $termin = 0;
-                            for ($i = 0; $i < $detail[0]->jumlah_termin; $i++) {
+                            $this->kerjasama_model->hapus_pembayaran($id_kerjasama);
+
+                            if ($detail[0]->metode_pembayaran == 'sekaligus') {
                                 $pembayaran = array(
                                     "id_kerjasama" => $id_kerjasama,
                                 );
 
                                 if ($this->kerjasama_model->insert_pembayaran_kerjasama($pembayaran)) {
-                                    $termin++;
+                                    $this->response([
+                                        'status' => "Sukses",
+                                        'message' => 'Data Berhasil Diupdate',
+                                    ], REST_Controller::HTTP_OK);
+                                } else {
+                                    $this->response([
+                                        'status' => "Gagal",
+                                        'message' => 'Data Gagal Diupdate',
+                                    ], REST_Controller::HTTP_OK);
                                 }
-                            }
-
-                            if ($termin == $detail[0]->jumlah_termin) {
-                                $this->response([
-                                    'status' => "Sukses",
-                                    'message' => 'Data Berhasil Diupdate',
-                                ], REST_Controller::HTTP_OK);
                             } else {
-                                $this->response([
-                                    'status' => "Gagal",
-                                    'message' => 'Data Gagal Diupdate',
-                                ], REST_Controller::HTTP_OK);
+                                $termin = 0;
+                                for ($i = 0; $i < $detail[0]->jumlah_termin; $i++) {
+                                    $pembayaran = array(
+                                        "id_kerjasama" => $id_kerjasama,
+                                    );
+
+                                    if ($this->kerjasama_model->insert_pembayaran_kerjasama($pembayaran)) {
+                                        $termin++;
+                                    }
+                                }
+
+                                if ($termin == $detail[0]->jumlah_termin) {
+                                    $this->response([
+                                        'status' => "Sukses",
+                                        'message' => 'Data Berhasil Diupdate',
+                                    ], REST_Controller::HTTP_OK);
+                                } else {
+                                    $this->response([
+                                        'status' => "Gagal",
+                                        'message' => 'Data Gagal Diupdate',
+                                    ], REST_Controller::HTTP_OK);
+                                }
                             }
                         }
                     } else {
