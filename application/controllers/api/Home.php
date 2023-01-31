@@ -491,6 +491,37 @@ class Home extends REST_Controller
         }
     }
 
+    public function menu_get()
+    {
+        $layanans = $this->home_model->get_layanan();
+
+        for ($i = 0; $i < count($layanans); $i++) {
+            $kategoris = $this->home_model->get_kategori($layanans[$i]->id);
+            $layanans[$i]->kategori = $kategoris;
+
+            for ($j = 0; $j < count($kategoris); $j++) {
+                $item_kategoris = $this->home_model->get_item_kategori($kategoris[$j]->id);
+                $kategoris[$j]->item_kategori = $item_kategoris;
+
+                for ($k = 0; $k < count($item_kategoris); $k++) {
+                    $img_item_kategoris = $this->home_model->get_img_item_kategori($item_kategoris[$k]->id);
+                    $img = '';
+                    for ($l = 0; $l < count($img_item_kategoris); $l++) {
+                        $img = base_url() . 'assets/uploads/item_kategori/' . $img_item_kategoris[$l]->gambar;
+                    }
+
+                    $item_kategoris[$k]->img = $img;
+                }
+            }
+        }
+
+        $this->response([
+            'status' => "Success",
+            'message' => 'Data Berhasil Dimuat',
+            'data' => $layanans,
+        ], REST_Controller::HTTP_OK);
+    }
+
     public function header_get()
     {
         $header_home = $this->home_model->get_header_home();

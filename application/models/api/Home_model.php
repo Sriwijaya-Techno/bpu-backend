@@ -9,6 +9,47 @@ class Home_model extends CI_Model
         $this->load->database();
     }
 
+    public function get_layanan()
+    {
+        $this->db->select("*");
+        $this->db->from("layanan");
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
+    public function get_kategori($id_layanan)
+    {
+        $this->db->select("*");
+        $this->db->where("id_layanan", $id_layanan);
+        $this->db->from("kategori");
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
+    public function get_item_kategori($id_kategori)
+    {
+        $this->db->select("*");
+        $this->db->from("item_kategori");
+        $this->db->where("id_kategori", $id_kategori);
+        $this->db->limit(4);
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
+    public function get_img_item_kategori($id_item_kategori)
+    {
+        $this->db->select("*");
+        $this->db->from("img_item_kategori");
+        $this->db->where("id_item_kategori", $id_item_kategori);
+        $this->db->limit(1);
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
     public function get_header_home()
     {
         $this->db->select("*");

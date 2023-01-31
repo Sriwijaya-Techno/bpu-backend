@@ -86,6 +86,20 @@ class Kerjasama_model extends CI_Model
         return $query->result();
     }
 
+    public function cek_pembayaran_kerjasama($id_kerjasama)
+    {
+        $this->db->select("count(nominal) as total_bayar");
+        $this->db->from("pembayaran");
+        $this->db->where("id_kerjasama", $id_kerjasama);
+        $query = $this->db->get();
+
+        if ($query->row()->total_bayar > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function get_status_detail_kerjasama($id_kerjasama)
     {
         $this->db->select("status");
