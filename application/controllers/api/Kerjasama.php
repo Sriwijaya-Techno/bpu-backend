@@ -430,7 +430,12 @@ class Kerjasama extends REST_Controller
             $draft_file = '';
             if (!empty($_FILES['draft_file']['name'])) {
                 $files = $_FILES;
-                $dir = realpath(APPPATH . '../assets/uploads/draft');
+                $dir = realpath(APPPATH . '../assets/uploads');
+                $filename = $dir . '\\draft\\';
+
+                if (!file_exists($filename)) {
+                    mkdir($filename, 0775, true);
+                }
 
                 $_FILES['draft_file']['name'] = $files['draft_file']['name'];
                 $_FILES['draft_file']['type'] = $files['draft_file']['type'];
@@ -438,7 +443,7 @@ class Kerjasama extends REST_Controller
                 $_FILES['draft_file']['error'] = $files['draft_file']['error'];
                 $_FILES['draft_file']['size'] = $files['draft_file']['size'];
 
-                $config['upload_path']          = $dir;
+                $config['upload_path']          = $filename;
                 $config['allowed_types']        = 'pdf';
                 $config['max_size']             = 1024 * 10;
 
@@ -918,7 +923,12 @@ class Kerjasama extends REST_Controller
             if (!empty($id_pembayaran) && !empty($nominal) && !empty($tujuan_rekening) && !empty($tanggal)) {
                 if (!empty($_FILES['bukti_pembayaran']['name'])) {
                     $files = $_FILES;
-                    $dir = realpath(APPPATH . '../assets/uploads/bukti_pembayaran');
+                    $dir = realpath(APPPATH . '../assets/uploads');
+                    $filename = $dir . '\\bukti_pembayaran\\';
+
+                    if (!file_exists($filename)) {
+                        mkdir($filename, 0775, true);
+                    }
 
                     $_FILES['bukti_pembayaran']['name'] = $files['bukti_pembayaran']['name'];
                     $_FILES['bukti_pembayaran']['type'] = $files['bukti_pembayaran']['type'];
@@ -926,7 +936,7 @@ class Kerjasama extends REST_Controller
                     $_FILES['bukti_pembayaran']['error'] = $files['bukti_pembayaran']['error'];
                     $_FILES['bukti_pembayaran']['size'] = $files['bukti_pembayaran']['size'];
 
-                    $config['upload_path']          = $dir;
+                    $config['upload_path']          = $filename;
                     $config['allowed_types']        = 'jpg|jpeg|png|pdf';
                     $config['max_size']             = 1024 * 10;
 
