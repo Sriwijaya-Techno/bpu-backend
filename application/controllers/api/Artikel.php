@@ -27,7 +27,12 @@ class Artikel extends REST_Controller
         if (!empty($user_id) && !empty($judul) && !empty($isi) && !empty($slug) && !empty($jenis) && !empty($tanggal)) {
             if (!empty($_FILES['cover']['name'])) {
                 $files = $_FILES;
-                $dir = realpath(APPPATH . '../assets/uploads/artikel');
+                $dir = realpath(APPPATH . '../assets/uploads');
+                $filename = $dir . '\\artikel\\';
+
+                if (!file_exists($filename)) {
+                    mkdir($filename, 0775, true);
+                }
 
                 $_FILES['cover']['name'] = $files['cover']['name'];
                 $_FILES['cover']['type'] = $files['cover']['type'];
@@ -35,7 +40,7 @@ class Artikel extends REST_Controller
                 $_FILES['cover']['error'] = $files['cover']['error'];
                 $_FILES['cover']['size'] = $files['cover']['size'];
 
-                $config['upload_path']          = $dir;
+                $config['upload_path']          = $filename;
                 $config['allowed_types']        = 'gif|jpg|jpeg|png';
                 $config['max_size']             = 1024 * 10;
 
@@ -99,7 +104,12 @@ class Artikel extends REST_Controller
         if (!empty($user_id) && !empty($artikel_id) && !empty($judul) && !empty($isi) && !empty($slug) && !empty($jenis) && !empty($tanggal)) {
             if (!empty($_FILES['cover']['name'])) {
                 $files = $_FILES;
-                $dir = realpath(APPPATH . '../assets/uploads/artikel');
+                $dir = realpath(APPPATH . '../assets/uploads');
+                $filename = $dir . '\\artikel\\';
+
+                if (!file_exists($filename)) {
+                    mkdir($filename, 0775, true);
+                }
 
                 $_FILES['cover']['name'] = $files['cover']['name'];
                 $_FILES['cover']['type'] = $files['cover']['type'];
@@ -107,7 +117,7 @@ class Artikel extends REST_Controller
                 $_FILES['cover']['error'] = $files['cover']['error'];
                 $_FILES['cover']['size'] = $files['cover']['size'];
 
-                $config['upload_path']          = $dir;
+                $config['upload_path']          = $filename;
                 $config['allowed_types']        = 'gif|jpg|jpeg|png';
                 $config['max_size']             = 1024 * 10;
 
@@ -135,12 +145,12 @@ class Artikel extends REST_Controller
                     if ($this->artikel_model->update_artikel($artikel_id, $artikel)) {
                         return $this->response([
                             'status' => "Sukses",
-                            'message' => 'Data Berhasil Ditambah',
+                            'message' => 'Data Berhasil Diupdate',
                         ], REST_Controller::HTTP_OK);
                     } else {
                         return $this->response([
                             'status' => "Error",
-                            'message' => 'Data Gagal Ditambah',
+                            'message' => 'Data Gagal Diupdate',
                         ], REST_Controller::HTTP_OK);
                     }
                 }
@@ -157,12 +167,12 @@ class Artikel extends REST_Controller
                 if ($this->artikel_model->update_artikel($artikel_id, $artikel)) {
                     return $this->response([
                         'status' => "Sukses",
-                        'message' => 'Data Berhasil Ditambah',
+                        'message' => 'Data Berhasil Diupdate',
                     ], REST_Controller::HTTP_OK);
                 } else {
                     return $this->response([
                         'status' => "Error",
-                        'message' => 'Data Gagal Ditambah',
+                        'message' => 'Data Gagal Diupdate',
                     ], REST_Controller::HTTP_OK);
                 }
             }
@@ -170,6 +180,23 @@ class Artikel extends REST_Controller
             return $this->response([
                 'status' => "Error",
                 'message' => 'Semua Data Harus Diisi',
+            ], REST_Controller::HTTP_OK);
+        }
+    }
+
+    public function index_delete()
+    {
+        $id = $this->delete("id");
+
+        if ($this->artikel_model->delete_artikel($id)) {
+            $this->response([
+                'status' => "Success",
+                'message' => 'Data Berhasil Dihapus',
+            ], REST_Controller::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => "Gagal",
+                'message' => 'Data Gagal Dihapus',
             ], REST_Controller::HTTP_OK);
         }
     }
