@@ -32,11 +32,21 @@ class Item_kategori extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
             if (!empty($id_kategori) && !empty($judul) && !empty($deskripsi)) {
-                $item_kategori = array(
-                    "id_kategori" => $id_kategori,
-                    "judul" => $judul,
-                    "deskripsi" => $deskripsi,
-                );
+                if ($this->item_kategori_model->cek_slug_item_kategori(slug($judul))) {
+                    $item_kategori = array(
+                        "id_kategori" => $id_kategori,
+                        "judul" => $judul,
+                        "deskripsi" => $deskripsi,
+                        "slug" => slug($judul) . "-" . rand(0, 99),
+                    );
+                } else {
+                    $item_kategori = array(
+                        "id_kategori" => $id_kategori,
+                        "judul" => $judul,
+                        "deskripsi" => $deskripsi,
+                        "slug" => slug($judul),
+                    );
+                }
 
                 if (!empty($fasilitas)) {
                     $item_kategori['fasilitas'] = $fasilitas;
@@ -141,10 +151,19 @@ class Item_kategori extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
             if (!empty($id_item_kategori) && !empty($judul) && !empty($deskripsi)) {
-                $item_kategori = array(
-                    "judul" => $judul,
-                    "deskripsi" => $deskripsi,
-                );
+                if ($this->item_kategori_model->cek_slug_item_kategori(slug($judul))) {
+                    $item_kategori = array(
+                        "judul" => $judul,
+                        "deskripsi" => $deskripsi,
+                        "slug" => slug($judul) . "-" . rand(0, 99),
+                    );
+                } else {
+                    $item_kategori = array(
+                        "judul" => $judul,
+                        "deskripsi" => $deskripsi,
+                        "slug" => slug($judul),
+                    );
+                }
 
                 if (!empty($fasilitas)) {
                     $item_kategori['fasilitas'] = $fasilitas;

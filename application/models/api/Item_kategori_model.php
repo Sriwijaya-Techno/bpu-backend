@@ -29,6 +29,20 @@ class Item_kategori_model extends CI_Model
         return $query->result();
     }
 
+    public function cek_slug_item_kategori($slug)
+    {
+        $this->db->select("count(*) as jumlah");
+        $this->db->from("item_kategori");
+        $this->db->where("slug", $slug);
+        $query = $this->db->get();
+
+        if ($query->row()->jumlah > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function get_imgs_item_kategori($id_item_kategori)
     {
         $this->db->select("*");
