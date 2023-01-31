@@ -27,4 +27,16 @@ class Kategori_model extends CI_Model
             return false;
         }
     }
+
+    public function update_kategori($id, $data = [])
+    {
+        $this->db->where("id", $id);
+        return $this->db->update("kategori", $data);
+    }
+
+    public function delete_kategori($id)
+    {
+        $this->db->where("id", $id);
+        return $this->db->delete("kategori");
+    }
 }

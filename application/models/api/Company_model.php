@@ -29,4 +29,10 @@ class Company_model extends CI_Model
         $this->db->where("id", $id);
         return $this->db->update("company_profile", $data);
     }
+
+    public function delete_company_profile($id)
+    {
+        $this->db->where("id", $id);
+        return $this->db->delete("company_profile");
+    }
 }

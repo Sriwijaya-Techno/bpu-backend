@@ -60,4 +60,10 @@ class Item_kategori_model extends CI_Model
         $this->db->where("id_item_kategori", $id_item_kategori);
         return $this->db->delete("img_item_kategori");
     }
+
+    public function delete_item_kategori($id)
+    {
+        $this->db->where("id", $id);
+        return $this->db->delete("item_kategori");
+    }
 }

@@ -26,4 +26,16 @@ class Layanan_model extends CI_Model
             return false;
         }
     }
+
+    public function update_layanan($id, $data = [])
+    {
+        $this->db->where("id", $id);
+        return $this->db->update("layanan", $data);
+    }
+
+    public function delete_layanan($id)
+    {
+        $this->db->where("id", $id);
+        return $this->db->delete("layanan");
+    }
 }
