@@ -145,12 +145,12 @@ class Artikel extends REST_Controller
                     if ($this->artikel_model->update_artikel($artikel_id, $artikel)) {
                         return $this->response([
                             'status' => "Sukses",
-                            'message' => 'Data Berhasil Ditambah',
+                            'message' => 'Data Berhasil Diupdate',
                         ], REST_Controller::HTTP_OK);
                     } else {
                         return $this->response([
                             'status' => "Error",
-                            'message' => 'Data Gagal Ditambah',
+                            'message' => 'Data Gagal Diupdate',
                         ], REST_Controller::HTTP_OK);
                     }
                 }
@@ -167,12 +167,12 @@ class Artikel extends REST_Controller
                 if ($this->artikel_model->update_artikel($artikel_id, $artikel)) {
                     return $this->response([
                         'status' => "Sukses",
-                        'message' => 'Data Berhasil Ditambah',
+                        'message' => 'Data Berhasil Diupdate',
                     ], REST_Controller::HTTP_OK);
                 } else {
                     return $this->response([
                         'status' => "Error",
-                        'message' => 'Data Gagal Ditambah',
+                        'message' => 'Data Gagal Diupdate',
                     ], REST_Controller::HTTP_OK);
                 }
             }
@@ -180,6 +180,23 @@ class Artikel extends REST_Controller
             return $this->response([
                 'status' => "Error",
                 'message' => 'Semua Data Harus Diisi',
+            ], REST_Controller::HTTP_OK);
+        }
+    }
+
+    public function index_delete()
+    {
+        $id = $this->delete("id");
+
+        if ($this->artikel_model->delete_artikel($id)) {
+            $this->response([
+                'status' => "Success",
+                'message' => 'Data Berhasil Dihapus',
+            ], REST_Controller::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => "Gagal",
+                'message' => 'Data Gagal Dihapus',
             ], REST_Controller::HTTP_OK);
         }
     }
