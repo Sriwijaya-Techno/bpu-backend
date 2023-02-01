@@ -23,10 +23,14 @@ class Kerjasama extends REST_Controller
             $kerjasama = $this->kerjasama_model->get_kerjasamas_by_id($user_id);
 
             for ($i = 0; $i < count($kerjasama); $i++) {
+                $data_pembayaran = $this->kerjasama_model->get_total_bayar_kerjasama($kerjasama[$i]->id_kerjasama);
+                $kerjasama[$i]->sisa_bayar = $kerjasama[$i]->nilai_kontrak - $data_pembayaran->total_bayar;
+
                 if ($kerjasama[$i]->status != 'disetujui') {
                     $kerjasama[$i]->tanggal_mulai = '-';
                     $kerjasama[$i]->tanggal_akhir = '-';
                     $kerjasama[$i]->nilai_kontrak = '-';
+                    $kerjasama[$i]->sisa_bayar = '-';
                 }
             }
 
