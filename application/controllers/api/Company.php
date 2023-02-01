@@ -17,6 +17,7 @@ class Company extends REST_Controller
 
     public function index_post()
     {
+        $company_id = $this->security->xss_clean($this->post("company_id"));
         $user_id = $this->security->xss_clean($this->post("user_id"));
         $cps_id = $this->security->xss_clean($this->post("cps_id"));
         $nama_perusahaan = $this->security->xss_clean($this->post("nama_perusahaan"));
@@ -72,6 +73,58 @@ class Company extends REST_Controller
                     } else {
                         $upload_data = $this->upload->data();
 
+                        if (!empty($company_id)) {
+                            $company = array(
+                                "user_id" => $user_id,
+                                "cps_id" => $cps_id,
+                                "nama_perusahaan" => $nama_perusahaan,
+                                "nama_pimpinan" => $nama_pimpinan,
+                                "alamat_email" => $alamat_email,
+                                "telepon" => $telepon,
+                                "alamat_perusahaan" => $alamat_perusahaan,
+                                "logo" => $upload_data['file_name'],
+                                "visi_misi" => $visi_misi,
+                            );
+
+                            if ($this->company_model->update_company_profile($company_id, $company)) {
+                                return $this->response([
+                                    'status' => "Sukses",
+                                    'message' => 'Data Berhasil Diupdate',
+                                ], REST_Controller::HTTP_OK);
+                            } else {
+                                return $this->response([
+                                    'status' => "Gagal",
+                                    'message' => 'Data Gagal Diupdate',
+                                ], REST_Controller::HTTP_OK);
+                            }
+                        } else {
+                            $company = array(
+                                "user_id" => $user_id,
+                                "cps_id" => $cps_id,
+                                "nama_perusahaan" => $nama_perusahaan,
+                                "nama_pimpinan" => $nama_pimpinan,
+                                "alamat_email" => $alamat_email,
+                                "telepon" => $telepon,
+                                "alamat_perusahaan" => $alamat_perusahaan,
+                                "logo" => $upload_data['file_name'],
+                                "visi_misi" => $visi_misi,
+                            );
+
+                            if ($this->company_model->insert_company_profile($company)) {
+                                return $this->response([
+                                    'status' => "Sukses",
+                                    'message' => 'Data Berhasil Ditambah',
+                                ], REST_Controller::HTTP_OK);
+                            } else {
+                                return $this->response([
+                                    'status' => "Error",
+                                    'message' => 'Data Gagal Ditambah',
+                                ], REST_Controller::HTTP_OK);
+                            }
+                        }
+                    }
+                } else {
+                    if (!empty($company_id)) {
                         $company = array(
                             "user_id" => $user_id,
                             "cps_id" => $cps_id,
@@ -80,7 +133,29 @@ class Company extends REST_Controller
                             "alamat_email" => $alamat_email,
                             "telepon" => $telepon,
                             "alamat_perusahaan" => $alamat_perusahaan,
-                            "logo" => $upload_data['file_name'],
+                            "visi_misi" => $visi_misi,
+                        );
+
+                        if ($this->company_model->update_company_profile($company_id, $company)) {
+                            return $this->response([
+                                'status' => "Sukses",
+                                'message' => 'Data Berhasil Diupdate',
+                            ], REST_Controller::HTTP_OK);
+                        } else {
+                            return $this->response([
+                                'status' => "Gagal",
+                                'message' => 'Data Gagal Diupdate',
+                            ], REST_Controller::HTTP_OK);
+                        }
+                    } else {
+                        $company = array(
+                            "user_id" => $user_id,
+                            "cps_id" => $cps_id,
+                            "nama_perusahaan" => $nama_perusahaan,
+                            "nama_pimpinan" => $nama_pimpinan,
+                            "alamat_email" => $alamat_email,
+                            "telepon" => $telepon,
+                            "alamat_perusahaan" => $alamat_perusahaan,
                             "visi_misi" => $visi_misi,
                         );
 
@@ -95,29 +170,6 @@ class Company extends REST_Controller
                                 'message' => 'Data Gagal Ditambah',
                             ], REST_Controller::HTTP_OK);
                         }
-                    }
-                } else {
-                    $company = array(
-                        "user_id" => $user_id,
-                        "cps_id" => $cps_id,
-                        "nama_perusahaan" => $nama_perusahaan,
-                        "nama_pimpinan" => $nama_pimpinan,
-                        "alamat_email" => $alamat_email,
-                        "telepon" => $telepon,
-                        "alamat_perusahaan" => $alamat_perusahaan,
-                        "visi_misi" => $visi_misi,
-                    );
-
-                    if ($this->company_model->insert_company_profile($company)) {
-                        return $this->response([
-                            'status' => "Sukses",
-                            'message' => 'Data Berhasil Ditambah',
-                        ], REST_Controller::HTTP_OK);
-                    } else {
-                        return $this->response([
-                            'status' => "Gagal",
-                            'message' => 'Data Gagal Ditambah',
-                        ], REST_Controller::HTTP_OK);
                     }
                 }
             } else {
