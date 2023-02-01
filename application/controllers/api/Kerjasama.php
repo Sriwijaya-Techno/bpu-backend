@@ -1060,10 +1060,16 @@ class Kerjasama extends REST_Controller
                 $status_detail = $this->kerjasama_model->get_status_detail_kerjasama($id_kerjasama);
                 $status_rab = $this->kerjasama_model->get_status_rab_kerjasama($id_kerjasama);
 
-                if ($status_detail[0]->status == 'disetujui' && $status_rab[0]->status == 'disetujui') {
-                    $kerjasama = array(
-                        "status" => "draft",
-                    );
+                if ($status_detail[0]->status == 'disetujui' && count($status_rab) > 0) {
+                    if ($status_rab[0]->status == 'disetujui') {
+                        $kerjasama = array(
+                            "status" => "draft",
+                        );
+                    } else {
+                        $kerjasama = array(
+                            "status" => "usul",
+                        );
+                    }
                 } else {
                     $kerjasama = array(
                         "status" => "usul",
@@ -1071,24 +1077,24 @@ class Kerjasama extends REST_Controller
                 }
 
                 if ($this->kerjasama_model->update_status_kerjasama($id_kerjasama, $kerjasama)) {
-                    $this->response([
+                    return $this->response([
                         'status' => "Sukses",
                         'message' => 'Data Berhasil Diupdate',
                     ], REST_Controller::HTTP_OK);
                 } else {
-                    $this->response([
+                    return $this->response([
                         'status' => "Gagal",
                         'message' => 'Data Gagal Diupdate',
                     ], REST_Controller::HTTP_BAD_REQUEST);
                 }
             } else {
-                $this->response([
+                return $this->response([
                     'status' => "Gagal",
                     'message' => 'Data Gagal Diupdate',
                 ], REST_Controller::HTTP_BAD_REQUEST);
             }
         } else {
-            $this->response([
+            return $this->response([
                 'status' => "Error",
                 'message' => 'Data Tidak Boleh Kosong',
             ], REST_Controller::HTTP_BAD_REQUEST);
