@@ -100,6 +100,16 @@ class Kerjasama_model extends CI_Model
         }
     }
 
+    public function get_total_bayar_kerjasama($id_kerjasama)
+    {
+        $this->db->select("sum(nominal) as total_bayar");
+        $this->db->from("pembayaran");
+        $this->db->where("id_kerjasama", $id_kerjasama);
+        $query = $this->db->get();
+
+        return $query->row();
+    }
+
     public function get_status_detail_kerjasama($id_kerjasama)
     {
         $this->db->select("status");
