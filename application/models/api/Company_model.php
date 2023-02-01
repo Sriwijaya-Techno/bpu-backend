@@ -19,6 +19,15 @@ class Company_model extends CI_Model
         return $query->result();
     }
 
+    public function get_company_profile_status()
+    {
+        $this->db->select("*");
+        $this->db->from("company_profile_status");
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
     public function insert_company_profile($data = [])
     {
         return $this->db->insert("company_profile", $data);

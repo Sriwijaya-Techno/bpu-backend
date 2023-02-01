@@ -279,4 +279,14 @@ class Company extends REST_Controller
             ], REST_Controller::HTTP_OK);
         }
     }
+
+    public function cps_get()
+    {
+        $company_profiles_status = $this->company_model->get_company_profile_status();
+        $this->response([
+            'status' => "Success",
+            'message' => 'Data Berhasil Dimuat',
+            'data' => $company_profiles_status,
+        ], REST_Controller::HTTP_OK);
+    }
 }
