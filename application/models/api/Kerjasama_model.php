@@ -105,6 +105,7 @@ class Kerjasama_model extends CI_Model
         $this->db->select("sum(nominal) as total_bayar");
         $this->db->from("pembayaran");
         $this->db->where("id_kerjasama", $id_kerjasama);
+        $this->db->where("status", 'lunas');
         $query = $this->db->get();
 
         return $query->row();

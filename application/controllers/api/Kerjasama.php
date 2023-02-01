@@ -26,11 +26,18 @@ class Kerjasama extends REST_Controller
                 $data_pembayaran = $this->kerjasama_model->get_total_bayar_kerjasama($kerjasama[$i]->id_kerjasama);
                 $kerjasama[$i]->sisa_bayar = $kerjasama[$i]->nilai_kontrak - $data_pembayaran->total_bayar;
 
+                $date1 = strtotime(date('Y-m-d'));
+                $date2 = strtotime($kerjasama[$i]->tanggal_akhir);
+                $days = ($date2 - $date1) / 86400;
+
+                $kerjasama[$i]->sisa_waktu = $days;
+
                 if ($kerjasama[$i]->status != 'disetujui') {
                     $kerjasama[$i]->tanggal_mulai = '-';
                     $kerjasama[$i]->tanggal_akhir = '-';
                     $kerjasama[$i]->nilai_kontrak = '-';
                     $kerjasama[$i]->sisa_bayar = '-';
+                    $kerjasama[$i]->sisa_waktu = '-';
                 }
             }
 
