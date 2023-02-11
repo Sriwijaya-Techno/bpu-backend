@@ -69,6 +69,92 @@ class Kategori extends REST_Controller
         }
     }
 
+    public function tentang_post()
+    {
+        $nama = $this->security->xss_clean($this->post("nama"));
+        $this->form_validation->set_rules("nama", "Nama", "required");
+        if ($this->form_validation->run() === FALSE) {
+            $this->response([
+                'status' => "Error",
+                'message' => 'Data Gagal Divalidasi',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            if (!empty($nama)) {
+                if ($this->kategori_model->cek_slug_kategori_tentang(slug($nama))) {
+                    $kategori = array(
+                        "nama" => $nama,
+                        "slug" => slug($nama),
+                    );
+                } else {
+                    $kategori = array(
+                        "nama" => $nama,
+                        "slug" => slug($nama) . "-" . rand(0, 99),
+                    );
+                }
+
+                if ($this->kategori_model->insert_kategori_tentang($kategori)) {
+                    $this->response([
+                        'status' => "Sukses",
+                        'message' => 'Data Berhasil Ditambah',
+                    ], REST_Controller::HTTP_OK);
+                } else {
+                    $this->response([
+                        'status' => "Gagal",
+                        'message' => 'Data Gagal Ditambah',
+                    ], REST_Controller::HTTP_OK);
+                }
+            } else {
+                $this->response([
+                    'status' => "Error",
+                    'message' => 'Semua Data Param Harus Diisi',
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function artikel_post()
+    {
+        $nama = $this->security->xss_clean($this->post("nama"));
+        $this->form_validation->set_rules("nama", "Nama", "required");
+        if ($this->form_validation->run() === FALSE) {
+            $this->response([
+                'status' => "Error",
+                'message' => 'Data Gagal Divalidasi',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            if (!empty($nama)) {
+                if ($this->kategori_model->cek_slug_kategori_artikel(slug($nama))) {
+                    $kategori = array(
+                        "nama" => $nama,
+                        "slug" => slug($nama),
+                    );
+                } else {
+                    $kategori = array(
+                        "nama" => $nama,
+                        "slug" => slug($nama) . "-" . rand(0, 99),
+                    );
+                }
+
+                if ($this->kategori_model->insert_kategori_artikel($kategori)) {
+                    $this->response([
+                        'status' => "Sukses",
+                        'message' => 'Data Berhasil Ditambah',
+                    ], REST_Controller::HTTP_OK);
+                } else {
+                    $this->response([
+                        'status' => "Gagal",
+                        'message' => 'Data Gagal Ditambah',
+                    ], REST_Controller::HTTP_OK);
+                }
+            } else {
+                $this->response([
+                    'status' => "Error",
+                    'message' => 'Semua Data Param Harus Diisi',
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
     public function index_put()
     {
         $id = $this->security->xss_clean($this->put("id"));
@@ -103,6 +189,80 @@ class Kategori extends REST_Controller
         }
     }
 
+    public function tentang_put()
+    {
+        $id = $this->security->xss_clean($this->put("id"));
+        $nama = $this->security->xss_clean($this->put("nama"));
+
+        if (!empty($id) && !empty($nama)) {
+            if ($this->kategori_model->cek_slug_kategori_tentang(slug($nama))) {
+                $kategori = array(
+                    "nama" => $nama,
+                    "slug" => slug($nama),
+                );
+            } else {
+                $kategori = array(
+                    "nama" => $nama,
+                    "slug" => slug($nama) . "-" . rand(0, 99),
+                );
+            }
+
+            if ($this->kategori_model->update_kategori_tentang($id, $kategori)) {
+                return $this->response([
+                    'status' => "Sukses",
+                    'message' => 'Data Berhasil Diupdate',
+                ], REST_Controller::HTTP_OK);
+            } else {
+                return $this->response([
+                    'status' => "Gagal",
+                    'message' => 'Data Gagal Diupdate',
+                ], REST_Controller::HTTP_OK);
+            }
+        } else {
+            return $this->response([
+                'status' => "Error",
+                'message' => 'Semua Data Param Harus Diisi',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function artikel_put()
+    {
+        $id = $this->security->xss_clean($this->put("id"));
+        $nama = $this->security->xss_clean($this->put("nama"));
+
+        if (!empty($id) && !empty($nama)) {
+            if ($this->kategori_model->cek_slug_kategori_artikel(slug($nama))) {
+                $kategori = array(
+                    "nama" => $nama,
+                    "slug" => slug($nama),
+                );
+            } else {
+                $kategori = array(
+                    "nama" => $nama,
+                    "slug" => slug($nama) . "-" . rand(0, 99),
+                );
+            }
+
+            if ($this->kategori_model->update_kategori_artikel($id, $kategori)) {
+                return $this->response([
+                    'status' => "Sukses",
+                    'message' => 'Data Berhasil Diupdate',
+                ], REST_Controller::HTTP_OK);
+            } else {
+                return $this->response([
+                    'status' => "Gagal",
+                    'message' => 'Data Gagal Diupdate',
+                ], REST_Controller::HTTP_OK);
+            }
+        } else {
+            return $this->response([
+                'status' => "Error",
+                'message' => 'Semua Data Param Harus Diisi',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+
     public function index_delete()
     {
         $id = $this->delete("id");
@@ -120,6 +280,46 @@ class Kategori extends REST_Controller
         }
     }
 
+    public function tentang_delete()
+    {
+        $id = $this->delete("id");
+        $kategori = array(
+            "status" => "dihapus"
+        );
+
+        if ($this->kategori_model->update_kategori_tentang($id, $kategori)) {
+            return $this->response([
+                'status' => "Sukses",
+                'message' => 'Data Berhasil Dihapus',
+            ], REST_Controller::HTTP_OK);
+        } else {
+            return $this->response([
+                'status' => "Gagal",
+                'message' => 'Data Gagal Dihapus',
+            ], REST_Controller::HTTP_OK);
+        }
+    }
+
+    public function artikel_delete()
+    {
+        $id = $this->delete("id");
+        $kategori = array(
+            "status" => "dihapus"
+        );
+
+        if ($this->kategori_model->update_kategori_artikel($id, $kategori)) {
+            return $this->response([
+                'status' => "Sukses",
+                'message' => 'Data Berhasil Dihapus',
+            ], REST_Controller::HTTP_OK);
+        } else {
+            return $this->response([
+                'status' => "Gagal",
+                'message' => 'Data Gagal Dihapus',
+            ], REST_Controller::HTTP_OK);
+        }
+    }
+
     public function index_get()
     {
         $users = $this->kategori_model->get_kategoris();
@@ -128,6 +328,28 @@ class Kategori extends REST_Controller
             'status' => "Success",
             'message' => 'Data Berhasil Dimuat',
             'data' => $users,
-        ], 200);
+        ], REST_Controller::HTTP_OK);
+    }
+
+    public function tentang_get()
+    {
+        $users = $this->kategori_model->get_kategori_tentang();
+
+        $this->response([
+            'status' => "Success",
+            'message' => 'Data Berhasil Dimuat',
+            'data' => $users,
+        ], REST_Controller::HTTP_OK);
+    }
+
+    public function artikel_get()
+    {
+        $users = $this->kategori_model->get_kategori_artikel();
+
+        $this->response([
+            'status' => "Success",
+            'message' => 'Data Berhasil Dimuat',
+            'data' => $users,
+        ], REST_Controller::HTTP_OK);
     }
 }

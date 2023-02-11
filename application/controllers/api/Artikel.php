@@ -21,10 +21,10 @@ class Artikel extends REST_Controller
         $judul = $this->security->xss_clean($this->post("judul"));
         $isi = $this->security->xss_clean($this->post("isi"));
         $slug = $this->security->xss_clean($this->post("slug"));
-        $jenis = $this->security->xss_clean($this->post("jenis"));
+        $id_kategori = $this->security->xss_clean($this->post("id_kategori"));
         $tanggal = $this->security->xss_clean($this->post("tanggal"));
 
-        if (!empty($user_id) && !empty($judul) && !empty($isi) && !empty($slug) && !empty($jenis) && !empty($tanggal)) {
+        if (!empty($user_id) && !empty($judul) && !empty($isi) && !empty($slug) && !empty($id_kategori) && !empty($tanggal)) {
             if (!empty($_FILES['cover']['name'])) {
                 $files = $_FILES;
                 $dir = realpath(APPPATH . '../assets/uploads');
@@ -60,7 +60,7 @@ class Artikel extends REST_Controller
                         "judul" => $judul,
                         "isi" => $isi,
                         "slug" => $slug,
-                        "jenis" => $jenis,
+                        "id_kategori" => $id_kategori,
                         "tanggal" => $tanggal,
                         "cover" => $upload_data['file_name'],
                     );
@@ -98,10 +98,10 @@ class Artikel extends REST_Controller
         $judul = $this->security->xss_clean($this->post("judul"));
         $isi = $this->security->xss_clean($this->post("isi"));
         $slug = $this->security->xss_clean($this->post("slug"));
-        $jenis = $this->security->xss_clean($this->post("jenis"));
+        $id_kategori = $this->security->xss_clean($this->post("id_kategori"));
         $tanggal = $this->security->xss_clean($this->post("tanggal"));
 
-        if (!empty($user_id) && !empty($artikel_id) && !empty($judul) && !empty($isi) && !empty($slug) && !empty($jenis) && !empty($tanggal)) {
+        if (!empty($user_id) && !empty($artikel_id) && !empty($judul) && !empty($isi) && !empty($slug) && !empty($id_kategori) && !empty($tanggal)) {
             if (!empty($_FILES['cover']['name'])) {
                 $files = $_FILES;
                 $dir = realpath(APPPATH . '../assets/uploads');
@@ -137,7 +137,7 @@ class Artikel extends REST_Controller
                         "judul" => $judul,
                         "isi" => $isi,
                         "slug" => $slug,
-                        "jenis" => $jenis,
+                        "id_kategori" => $id_kategori,
                         "tanggal" => $tanggal,
                         "cover" => $upload_data['file_name'],
                     );
@@ -160,7 +160,7 @@ class Artikel extends REST_Controller
                     "judul" => $judul,
                     "isi" => $isi,
                     "slug" => $slug,
-                    "jenis" => $jenis,
+                    "id_kategori" => $id_kategori,
                     "tanggal" => $tanggal,
                 );
 
@@ -187,8 +187,11 @@ class Artikel extends REST_Controller
     public function index_delete()
     {
         $id = $this->delete("id");
+        $artikel = array(
+            "status" => "dihapus"
+        );
 
-        if ($this->artikel_model->delete_artikel($id)) {
+        if ($this->artikel_model->update_artikel($id, $artikel)) {
             $this->response([
                 'status' => "Success",
                 'message' => 'Data Berhasil Dihapus',
@@ -208,11 +211,11 @@ class Artikel extends REST_Controller
         $start = $this->security->xss_clean($this->get("start"));
         $limit = $this->security->xss_clean($this->get("limit"));
         $desc = $this->security->xss_clean($this->get("desc"));
-        $jenis = $this->security->xss_clean($this->get("jenis"));
+        $id_kategori = $this->security->xss_clean($this->get("id_kategori"));
 
         $dir_logo =  base_url() . 'assets/uploads/artikel/';
 
-        $artikels = $this->artikel_model->get_artikel($user_id, $artikel_id, $start, $limit, $desc, $jenis);
+        $artikels = $this->artikel_model->get_artikel($user_id, $artikel_id, $start, $limit, $desc, $id_kategori);
         for ($i = 0; $i < count($artikels); $i++) {
             $artikels[$i]->cover = $dir_logo  . $artikels[$i]->cover;
         }

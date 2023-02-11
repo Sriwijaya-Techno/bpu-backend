@@ -160,23 +160,14 @@ class Home extends REST_Controller
     public function tentang_post()
     {
         $isi = $this->security->xss_clean($this->post("isi"));
-        $visi = $this->security->xss_clean($this->post("visi"));
-        $misi = $this->security->xss_clean($this->post("misi"));
-        $tujuan = $this->security->xss_clean($this->post("tujuan"));
-        $quotes = $this->security->xss_clean($this->post("quotes"));
         $this->form_validation->set_rules("isi", "Isi", "required");
-        $this->form_validation->set_rules("visi", "Visi", "required");
-        $this->form_validation->set_rules("misi", "Misi", "required");
-        $this->form_validation->set_rules("tujuan", "Tujuan", "required");
-        $this->form_validation->set_rules("quotes", "Quotes", "required");
-
         if ($this->form_validation->run() === FALSE) {
             return $this->response([
                 'status' => "Error",
                 'message' => 'Data Gagal Divalidasi',
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            if (!empty($isi) && !empty($visi) && !empty($misi) && !empty($tujuan) && !empty($quotes)) {
+            if (!empty($isi)) {
                 if (!empty($_FILES['gambar_tentang']['name'])) {
                     $files = $_FILES;
                     $dir = realpath(APPPATH . '../assets/uploads');
@@ -211,10 +202,6 @@ class Home extends REST_Controller
                             $get_home = $this->home_model->get_tentang_home();
                             $tentang = array(
                                 "isi" => $isi,
-                                "visi" => $visi,
-                                "misi" => $misi,
-                                "tujuan" => $tujuan,
-                                "quotes" => $quotes,
                                 "gambar" => $upload_data['file_name'],
                             );
 
@@ -232,10 +219,6 @@ class Home extends REST_Controller
                         } else {
                             $tentang = array(
                                 "isi" => $isi,
-                                "visi" => $visi,
-                                "misi" => $misi,
-                                "tujuan" => $tujuan,
-                                "quotes" => $quotes,
                                 "gambar" => $upload_data['file_name'],
                             );
 
@@ -257,10 +240,6 @@ class Home extends REST_Controller
                         $get_home = $this->home_model->get_tentang_home();
                         $tentang = array(
                             "isi" => $isi,
-                            "visi" => $visi,
-                            "misi" => $misi,
-                            "tujuan" => $tujuan,
-                            "quotes" => $quotes
                         );
 
                         if ($this->home_model->update_tentang_home($get_home->id, $tentang)) {
@@ -277,10 +256,6 @@ class Home extends REST_Controller
                     } else {
                         $tentang = array(
                             "isi" => $isi,
-                            "visi" => $visi,
-                            "misi" => $misi,
-                            "tujuan" => $tujuan,
-                            "quotes" => $quotes
                         );
 
                         if ($this->home_model->insert_tentang_home($tentang)) {
