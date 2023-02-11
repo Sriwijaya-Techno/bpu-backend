@@ -32,7 +32,7 @@ class Role extends REST_Controller
 
                 if ($this->role_model->insert_role($role)) {
                     $this->response([
-                        'status' => "Sukses",
+                        'status' => "Success",
                         'message' => 'Data Berhasil Ditambah',
                     ], REST_Controller::HTTP_OK);
                 } else {
@@ -62,7 +62,7 @@ class Role extends REST_Controller
 
             if ($this->role_model->update_role($id, $role)) {
                 return $this->response([
-                    'status' => "Sukses",
+                    'status' => "Success",
                     'message' => 'Data Berhasil Diupdate',
                 ], REST_Controller::HTTP_OK);
             } else {
@@ -88,7 +88,7 @@ class Role extends REST_Controller
 
         if ($this->role_model->update_role($id, $role)) {
             return $this->response([
-                'status' => "Sukses",
+                'status' => "Success",
                 'message' => 'Data Berhasil Dihapus',
             ], REST_Controller::HTTP_OK);
         } else {
