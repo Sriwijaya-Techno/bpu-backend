@@ -70,7 +70,7 @@ class User_access extends REST_Controller
         }
 
         return $this->response([
-            'status' => "Sukses",
+            'status' => "Success",
             'message' => 'Data Berhasil Ditambah',
         ], REST_Controller::HTTP_OK);
     }

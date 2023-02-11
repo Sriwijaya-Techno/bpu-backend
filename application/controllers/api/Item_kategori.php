@@ -116,7 +116,7 @@ class Item_kategori extends REST_Controller
                     }
 
                     $this->response([
-                        'status' => "Sukses",
+                        'status' => "Success",
                         'message' => 'Data Berhasil Ditambah',
                     ], REST_Controller::HTTP_OK);
                 } else {
@@ -232,7 +232,7 @@ class Item_kategori extends REST_Controller
                     }
 
                     return $this->response([
-                        'status' => "Sukses",
+                        'status' => "Success",
                         'message' => 'Data Berhasil Diupdate',
                     ], REST_Controller::HTTP_OK);
                 } else {

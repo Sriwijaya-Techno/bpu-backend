@@ -32,7 +32,7 @@ class Menu_access extends REST_Controller
 
                 if ($this->menu_access_model->insert_menu_Access($menu_access)) {
                     return $this->response([
-                        'status' => "Sukses",
+                        'status' => "Success",
                         'message' => 'Data Berhasil Ditambah',
                     ], REST_Controller::HTTP_OK);
                 } else {
@@ -63,7 +63,7 @@ class Menu_access extends REST_Controller
 
             if ($this->menu_access_model->update_menu_Access($id, $menu_access)) {
                 return $this->response([
-                    'status' => "Sukses",
+                    'status' => "Success",
                     'message' => 'Data Berhasil Diupdate',
                 ], REST_Controller::HTTP_OK);
             } else {
@@ -89,7 +89,7 @@ class Menu_access extends REST_Controller
 
         if ($this->menu_access_model->update_menu_Access($id, $menu_access)) {
             return $this->response([
-                'status' => "Sukses",
+                'status' => "Success",
                 'message' => 'Data Berhasil Dihapus',
             ], REST_Controller::HTTP_OK);
         } else {

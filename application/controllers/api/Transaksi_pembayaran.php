@@ -44,7 +44,7 @@ class Transaksi_pembayaran extends REST_Controller
 
             if ($this->transaksi_pembayaran_model->insert_transaksi_pembayaran($transaksi)) {
                 return $this->response([
-                    'status' => "Sukses",
+                    'status' => "Success",
                     'message' => 'Data Berhasil Ditambah',
                 ], REST_Controller::HTTP_OK);
             } else {

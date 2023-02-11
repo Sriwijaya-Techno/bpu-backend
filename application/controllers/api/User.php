@@ -71,7 +71,7 @@ class User extends REST_Controller
 
                     if ($this->user_model->insert_user($user)) {
                         $this->response([
-                            'status' => "Sukses",
+                            'status' => "Success",
                             'message' => 'Data Berhasil Ditambah',
                         ], REST_Controller::HTTP_OK);
                     } else {
@@ -114,7 +114,7 @@ class User extends REST_Controller
 
                     $data['jwt-token'] = encode_jwt($payload);
                     $this->response([
-                        'status' => "Sukses",
+                        'status' => "Success",
                         'message' => 'Berhasil Login',
                         "data" => $data,
                     ], REST_Controller::HTTP_OK);

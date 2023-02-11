@@ -37,7 +37,7 @@ class Kategori extends REST_Controller
 
                 if ($this->kategori_model->insert_kategori($kategori)) {
                     $this->response([
-                        'status' => "Sukses",
+                        'status' => "Success",
                         'message' => 'Data Berhasil Ditambah',
                     ], REST_Controller::HTTP_OK);
                 } else {
@@ -50,7 +50,7 @@ class Kategori extends REST_Controller
 
                     if ($this->kategori_model->insert_kategori($kategori)) {
                         $this->response([
-                            'status' => "Sukses",
+                            'status' => "Success",
                             'message' => 'Data Berhasil Ditambah',
                         ], REST_Controller::HTTP_OK);
                     } else {
@@ -94,7 +94,7 @@ class Kategori extends REST_Controller
 
                 if ($this->kategori_model->insert_kategori_tentang($kategori)) {
                     $this->response([
-                        'status' => "Sukses",
+                        'status' => "Success",
                         'message' => 'Data Berhasil Ditambah',
                     ], REST_Controller::HTTP_OK);
                 } else {
@@ -137,7 +137,7 @@ class Kategori extends REST_Controller
 
                 if ($this->kategori_model->insert_kategori_artikel($kategori)) {
                     $this->response([
-                        'status' => "Sukses",
+                        'status' => "Success",
                         'message' => 'Data Berhasil Ditambah',
                     ], REST_Controller::HTTP_OK);
                 } else {
@@ -172,7 +172,7 @@ class Kategori extends REST_Controller
 
             if ($this->kategori_model->update_kategori($id, $kategori)) {
                 return $this->response([
-                    'status' => "Sukses",
+                    'status' => "Success",
                     'message' => 'Data Berhasil Diupdate',
                 ], REST_Controller::HTTP_OK);
             } else {
@@ -209,7 +209,7 @@ class Kategori extends REST_Controller
 
             if ($this->kategori_model->update_kategori_tentang($id, $kategori)) {
                 return $this->response([
-                    'status' => "Sukses",
+                    'status' => "Success",
                     'message' => 'Data Berhasil Diupdate',
                 ], REST_Controller::HTTP_OK);
             } else {
@@ -246,7 +246,7 @@ class Kategori extends REST_Controller
 
             if ($this->kategori_model->update_kategori_artikel($id, $kategori)) {
                 return $this->response([
-                    'status' => "Sukses",
+                    'status' => "Success",
                     'message' => 'Data Berhasil Diupdate',
                 ], REST_Controller::HTTP_OK);
             } else {
@@ -289,7 +289,7 @@ class Kategori extends REST_Controller
 
         if ($this->kategori_model->update_kategori_tentang($id, $kategori)) {
             return $this->response([
-                'status' => "Sukses",
+                'status' => "Success",
                 'message' => 'Data Berhasil Dihapus',
             ], REST_Controller::HTTP_OK);
         } else {
@@ -309,7 +309,7 @@ class Kategori extends REST_Controller
 
         if ($this->kategori_model->update_kategori_artikel($id, $kategori)) {
             return $this->response([
-                'status' => "Sukses",
+                'status' => "Success",
                 'message' => 'Data Berhasil Dihapus',
             ], REST_Controller::HTTP_OK);
         } else {

@@ -28,7 +28,7 @@ class Tentang extends REST_Controller
 
             if ($this->tentang_model->insert_tentang($tentang)) {
                 return $this->response([
-                    'status' => "Sukses",
+                    'status' => "Success",
                     'message' => 'Data Berhasil Ditambah',
                 ], REST_Controller::HTTP_OK);
             } else {
@@ -59,7 +59,7 @@ class Tentang extends REST_Controller
 
             if ($this->tentang_model->update_tentang($id, $tentang)) {
                 return $this->response([
-                    'status' => "Sukses",
+                    'status' => "Success",
                     'message' => 'Data Berhasil Diupdate',
                 ], REST_Controller::HTTP_OK);
             } else {
@@ -85,7 +85,7 @@ class Tentang extends REST_Controller
 
         if ($this->tentang_model->update_tentang($id, $tentang)) {
             return $this->response([
-                'status' => "Sukses",
+                'status' => "Success",
                 'message' => 'Data Berhasil Dihapus',
             ], REST_Controller::HTTP_OK);
         } else {

@@ -75,7 +75,7 @@ class Home extends REST_Controller
 
                             if ($this->home_model->update_header_home($get_home->id, $header)) {
                                 return $this->response([
-                                    'status' => "Sukses",
+                                    'status' => "Success",
                                     'message' => 'Data Berhasil Diupdate',
                                 ], REST_Controller::HTTP_OK);
                             } else {
@@ -95,7 +95,7 @@ class Home extends REST_Controller
 
                             if ($this->home_model->insert_header_home($header)) {
                                 return $this->response([
-                                    'status' => "Sukses",
+                                    'status' => "Success",
                                     'message' => 'Data Berhasil Ditambah',
                                 ], REST_Controller::HTTP_OK);
                             } else {
@@ -118,7 +118,7 @@ class Home extends REST_Controller
 
                         if ($this->home_model->update_header_home($get_home->id, $header)) {
                             return $this->response([
-                                'status' => "Sukses",
+                                'status' => "Success",
                                 'message' => 'Data Berhasil Diupdate',
                             ], REST_Controller::HTTP_OK);
                         } else {
@@ -137,7 +137,7 @@ class Home extends REST_Controller
 
                         if ($this->home_model->insert_header_home($header)) {
                             return $this->response([
-                                'status' => "Sukses",
+                                'status' => "Success",
                                 'message' => 'Data Berhasil Ditambah',
                             ], REST_Controller::HTTP_OK);
                         } else {
@@ -207,7 +207,7 @@ class Home extends REST_Controller
 
                             if ($this->home_model->update_tentang_home($get_home->id, $tentang)) {
                                 return $this->response([
-                                    'status' => "Sukses",
+                                    'status' => "Success",
                                     'message' => 'Data Berhasil Diupdate',
                                 ], REST_Controller::HTTP_OK);
                             } else {
@@ -224,7 +224,7 @@ class Home extends REST_Controller
 
                             if ($this->home_model->insert_tentang_home($tentang)) {
                                 return $this->response([
-                                    'status' => "Sukses",
+                                    'status' => "Success",
                                     'message' => 'Data Berhasil Ditambah',
                                 ], REST_Controller::HTTP_OK);
                             } else {
@@ -244,7 +244,7 @@ class Home extends REST_Controller
 
                         if ($this->home_model->update_tentang_home($get_home->id, $tentang)) {
                             return $this->response([
-                                'status' => "Sukses",
+                                'status' => "Success",
                                 'message' => 'Data Berhasil Diupdate',
                             ], REST_Controller::HTTP_OK);
                         } else {
@@ -260,7 +260,7 @@ class Home extends REST_Controller
 
                         if ($this->home_model->insert_tentang_home($tentang)) {
                             return $this->response([
-                                'status' => "Sukses",
+                                'status' => "Success",
                                 'message' => 'Data Berhasil Ditambah',
                             ], REST_Controller::HTTP_OK);
                         } else {
@@ -304,7 +304,7 @@ class Home extends REST_Controller
 
                 if ($this->home_model->insert_testimoni($testimoni)) {
                     return $this->response([
-                        'status' => "Sukses",
+                        'status' => "Success",
                         'message' => 'Data Berhasil Ditambah',
                     ], REST_Controller::HTTP_OK);
                 } else {
@@ -375,7 +375,7 @@ class Home extends REST_Controller
                         if (!empty($id_team)) {
                             if ($this->home_model->update_team($id_team, $team)) {
                                 return $this->response([
-                                    'status' => "Sukses",
+                                    'status' => "Success",
                                     'message' => 'Data Berhasil Diupdate',
                                 ], REST_Controller::HTTP_OK);
                             } else {
@@ -387,7 +387,7 @@ class Home extends REST_Controller
                         } else {
                             if ($this->home_model->insert_team($team)) {
                                 return $this->response([
-                                    'status' => "Sukses",
+                                    'status' => "Success",
                                     'message' => 'Data Berhasil Ditambah',
                                 ], REST_Controller::HTTP_OK);
                             } else {
@@ -407,7 +407,7 @@ class Home extends REST_Controller
                     if (!empty($id_team)) {
                         if ($this->home_model->update_team($id_team, $team)) {
                             return $this->response([
-                                'status' => "Sukses",
+                                'status' => "Success",
                                 'message' => 'Data Berhasil Diupdate',
                             ], REST_Controller::HTTP_OK);
                         } else {
@@ -419,7 +419,7 @@ class Home extends REST_Controller
                     } else {
                         if ($this->home_model->insert_team($team)) {
                             return $this->response([
-                                'status' => "Sukses",
+                                'status' => "Success",
                                 'message' => 'Data Berhasil Ditambah',
                             ], REST_Controller::HTTP_OK);
                         } else {
@@ -455,7 +455,7 @@ class Home extends REST_Controller
 
             if ($this->home_model->update_testimoni($id_testimoni, $testimoni)) {
                 return $this->response([
-                    'status' => "Sukses",
+                    'status' => "Success",
                     'message' => 'Data Berhasil Diupdate',
                 ], REST_Controller::HTTP_OK);
             } else {

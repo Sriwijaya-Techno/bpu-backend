@@ -35,7 +35,7 @@ class Layanan extends REST_Controller
 
                 if ($this->layanan_model->insert_layanan($layanan)) {
                     return $this->response([
-                        'status' => "Sukses",
+                        'status' => "Success",
                         'message' => 'Data Berhasil Ditambah',
                     ], REST_Controller::HTTP_OK);
                 } else {
@@ -47,7 +47,7 @@ class Layanan extends REST_Controller
 
                     if ($this->layanan_model->insert_layanan($layanan)) {
                         return $this->response([
-                            'status' => "Sukses",
+                            'status' => "Success",
                             'message' => 'Data Berhasil Ditambah',
                         ], REST_Controller::HTTP_OK);
                     } else {
@@ -81,7 +81,7 @@ class Layanan extends REST_Controller
 
             if ($this->layanan_model->update_layanan($id, $layanan)) {
                 return $this->response([
-                    'status' => "Sukses",
+                    'status' => "Success",
                     'message' => 'Data Berhasil Diupdate',
                 ], REST_Controller::HTTP_OK);
             } else {

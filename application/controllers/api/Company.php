@@ -88,7 +88,7 @@ class Company extends REST_Controller
 
                             if ($this->company_model->update_company_profile($company_id, $company)) {
                                 return $this->response([
-                                    'status' => "Sukses",
+                                    'status' => "Success",
                                     'message' => 'Data Berhasil Diupdate',
                                 ], REST_Controller::HTTP_OK);
                             } else {
@@ -112,7 +112,7 @@ class Company extends REST_Controller
 
                             if ($this->company_model->insert_company_profile($company)) {
                                 return $this->response([
-                                    'status' => "Sukses",
+                                    'status' => "Success",
                                     'message' => 'Data Berhasil Ditambah',
                                 ], REST_Controller::HTTP_OK);
                             } else {
@@ -138,7 +138,7 @@ class Company extends REST_Controller
 
                         if ($this->company_model->update_company_profile($company_id, $company)) {
                             return $this->response([
-                                'status' => "Sukses",
+                                'status' => "Success",
                                 'message' => 'Data Berhasil Diupdate',
                             ], REST_Controller::HTTP_OK);
                         } else {
@@ -161,7 +161,7 @@ class Company extends REST_Controller
 
                         if ($this->company_model->insert_company_profile($company)) {
                             return $this->response([
-                                'status' => "Sukses",
+                                'status' => "Success",
                                 'message' => 'Data Berhasil Ditambah',
                             ], REST_Controller::HTTP_OK);
                         } else {
@@ -251,7 +251,7 @@ class Company extends REST_Controller
 
                         if ($this->company_model->update_company_profile($company_id, $company)) {
                             return $this->response([
-                                'status' => "Sukses",
+                                'status' => "Success",
                                 'message' => 'Data Berhasil Diupdate',
                             ], REST_Controller::HTTP_OK);
                         } else {
@@ -274,7 +274,7 @@ class Company extends REST_Controller
 
                     if ($this->company_model->update_company_profile($company_id, $company)) {
                         return $this->response([
-                            'status' => "Sukses",
+                            'status' => "Success",
                             'message' => 'Data Berhasil Diupdate',
                         ], REST_Controller::HTTP_OK);
                     } else {

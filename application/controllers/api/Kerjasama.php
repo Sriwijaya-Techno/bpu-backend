@@ -227,7 +227,7 @@ class Kerjasama extends REST_Controller
 
                     if ($this->kerjasama_model->insert_detail_kerjasama($detail)) {
                         $this->response([
-                            'status' => "Sukses",
+                            'status' => "Success",
                             'message' => 'Data Berhasil Ditambah',
                         ], REST_Controller::HTTP_OK);
                     } else {
@@ -287,7 +287,7 @@ class Kerjasama extends REST_Controller
                     );
                     if ($this->kerjasama_model->insert_rab_kerjasama($rab_kerjasama)) {
                         $this->response([
-                            'status' => "Sukses",
+                            'status' => "Success",
                             'message' => 'Data Berhasil Ditambah',
                         ], REST_Controller::HTTP_OK);
                     } else {
@@ -406,7 +406,7 @@ class Kerjasama extends REST_Controller
         }
 
         $this->response([
-            'status' => "Sukses",
+            'status' => "Success",
             'message' => 'Data Berhasil Diupdate',
         ], REST_Controller::HTTP_OK);
     }
@@ -493,7 +493,7 @@ class Kerjasama extends REST_Controller
 
                         if ($this->kerjasama_model->update_draft_kerjasama($id_draft, $draft)) {
                             return $this->response([
-                                'status' => "Sukses",
+                                'status' => "Success",
                                 'message' => 'Data Berhasil Diupdate',
                             ], REST_Controller::HTTP_OK);
                         } else {
@@ -519,7 +519,7 @@ class Kerjasama extends REST_Controller
 
                         if ($this->kerjasama_model->insert_draft_kerjasama($draft)) {
                             return $this->response([
-                                'status' => "Sukses",
+                                'status' => "Success",
                                 'message' => 'Data Berhasil Ditambah',
                             ], REST_Controller::HTTP_OK);
                         } else {
@@ -610,7 +610,7 @@ class Kerjasama extends REST_Controller
 
                         if ($this->kerjasama_model->update_file_draft_kerjasama($draft_company[0]->id, $data_file)) {
                             return $this->response([
-                                'status' => "Sukses",
+                                'status' => "Success",
                                 'message' => 'Data Berhasil Diupdate',
                             ], REST_Controller::HTTP_OK);
                         } else {
@@ -907,7 +907,7 @@ class Kerjasama extends REST_Controller
 
                     if ($this->kerjasama_model->update_file_draft_kerjasama($id_kerjasama, $data_file)) {
                         return $this->response([
-                            'status' => "Sukses",
+                            'status' => "Success",
                             'message' => 'Data Berhasil Ditambah',
                         ], REST_Controller::HTTP_OK);
                     } else {
@@ -987,7 +987,7 @@ class Kerjasama extends REST_Controller
 
                         if ($this->kerjasama_model->update_pembayaran_kerjasama($id_pembayaran, $pembayaran)) {
                             return $this->response([
-                                'status' => "Sukses",
+                                'status' => "Success",
                                 'message' => 'Pembayaran Berhasil',
                             ], REST_Controller::HTTP_OK);
                         } else {
@@ -1049,7 +1049,7 @@ class Kerjasama extends REST_Controller
 
             if ($this->kerjasama_model->update_detail_kerjasama($id_detail, $kerjasama)) {
                 $this->response([
-                    'status' => "Sukses",
+                    'status' => "Success",
                     'message' => 'Data Berhasil Diupdate',
                 ], REST_Controller::HTTP_OK);
             } else {
@@ -1098,7 +1098,7 @@ class Kerjasama extends REST_Controller
 
                 if ($this->kerjasama_model->update_status_kerjasama($id_kerjasama, $kerjasama)) {
                     return $this->response([
-                        'status' => "Sukses",
+                        'status' => "Success",
                         'message' => 'Data Berhasil Diupdate',
                     ], REST_Controller::HTTP_OK);
                 } else {
@@ -1147,7 +1147,7 @@ class Kerjasama extends REST_Controller
 
                 if ($this->kerjasama_model->update_status_kerjasama($id_kerjasama, $kerjasama)) {
                     $this->response([
-                        'status' => "Sukses",
+                        'status' => "Success",
                         'message' => 'Data Berhasil Diupdate',
                     ], REST_Controller::HTTP_OK);
                 } else {
@@ -1211,7 +1211,7 @@ class Kerjasama extends REST_Controller
 
                                 if ($this->kerjasama_model->insert_pembayaran_kerjasama($pembayaran)) {
                                     $this->response([
-                                        'status' => "Sukses",
+                                        'status' => "Success",
                                         'message' => 'Data Berhasil Diupdate',
                                     ], REST_Controller::HTTP_OK);
                                 } else {
@@ -1234,7 +1234,7 @@ class Kerjasama extends REST_Controller
 
                                 if ($termin == $detail[0]->jumlah_termin) {
                                     $this->response([
-                                        'status' => "Sukses",
+                                        'status' => "Success",
                                         'message' => 'Data Berhasil Diupdate',
                                     ], REST_Controller::HTTP_OK);
                                 } else {
@@ -1248,7 +1248,7 @@ class Kerjasama extends REST_Controller
                     } else {
                         if ($this->kerjasama_model->hapus_pembayaran($id_kerjasama)) {
                             $this->response([
-                                'status' => "Sukses",
+                                'status' => "Success",
                                 'message' => 'Data Berhasil Diupdate',
                             ], REST_Controller::HTTP_OK);
                         } else {
@@ -1290,7 +1290,7 @@ class Kerjasama extends REST_Controller
 
             if ($this->kerjasama_model->update_pembayaran_kerjasama($id_pembayaran, $pembayaran)) {
                 $this->response([
-                    'status' => "Sukses",
+                    'status' => "Success",
                     'message' => 'Data Berhasil Diverifikasi',
                 ], REST_Controller::HTTP_OK);
             } else {

@@ -32,7 +32,7 @@ class Company_profile_status extends REST_Controller
 
                 if ($this->company_profile_status_model->insert_company_profile_status($cp_status)) {
                     $this->response([
-                        'status' => "Sukses",
+                        'status' => "Success",
                         'message' => 'Data Berhasil Ditambah',
                     ], REST_Controller::HTTP_OK);
                 } else {

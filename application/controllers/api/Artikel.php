@@ -67,7 +67,7 @@ class Artikel extends REST_Controller
 
                     if ($this->artikel_model->insert_artikel($artikel)) {
                         return $this->response([
-                            'status' => "Sukses",
+                            'status' => "Success",
                             'message' => 'Data Berhasil Ditambah',
                         ], REST_Controller::HTTP_OK);
                     } else {
@@ -144,7 +144,7 @@ class Artikel extends REST_Controller
 
                     if ($this->artikel_model->update_artikel($artikel_id, $artikel)) {
                         return $this->response([
-                            'status' => "Sukses",
+                            'status' => "Success",
                             'message' => 'Data Berhasil Diupdate',
                         ], REST_Controller::HTTP_OK);
                     } else {
@@ -166,7 +166,7 @@ class Artikel extends REST_Controller
 
                 if ($this->artikel_model->update_artikel($artikel_id, $artikel)) {
                     return $this->response([
-                        'status' => "Sukses",
+                        'status' => "Success",
                         'message' => 'Data Berhasil Diupdate',
                     ], REST_Controller::HTTP_OK);
                 } else {
