@@ -17,17 +17,27 @@ class Menu_access extends REST_Controller
 
     public function index_post()
     {
+        $id_role = $this->security->xss_clean($this->post("id_role"));
         $menu = $this->security->xss_clean($this->post("menu"));
+        $icon = $this->security->xss_clean($this->post("icon"));
+        $url = $this->security->xss_clean($this->post("url"));
+        $id_parent = $this->security->xss_clean($this->post("id_parent"));
+        $level = $this->security->xss_clean($this->post("level"));
         $this->form_validation->set_rules("menu", "Menu", "required");
         if ($this->form_validation->run() === FALSE) {
             return $this->response([
                 'status' => "Error",
-                'message' => 'Data Gagal Ditambah',
+                'message' => 'Data Gagal Divalidasi',
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            if (!empty($menu)) {
+            if (!empty($id_role) && !empty($menu) && !empty($icon) && !empty($url)) {
                 $menu_access = array(
-                    "menu" => $menu
+                    "id_role" => $id_role,
+                    "menu" => $menu,
+                    "icon" => $icon,
+                    "url" => $url,
+                    "id_parent" => $id_parent,
+                    "level" => $level,
                 );
 
                 if ($this->menu_access_model->insert_menu_Access($menu_access)) {
@@ -53,12 +63,20 @@ class Menu_access extends REST_Controller
     public function index_put()
     {
         $id = $this->security->xss_clean($this->put("id_menu"));
+        $id_role = $this->security->xss_clean($this->put("id_role"));
         $menu = $this->security->xss_clean($this->put("menu"));
-
-        if (!empty($id) && !empty($menu)) {
+        $icon = $this->security->xss_clean($this->put("icon"));
+        $url = $this->security->xss_clean($this->put("url"));
+        $id_parent = $this->security->xss_clean($this->put("id_parent"));
+        $level = $this->security->xss_clean($this->put("level"));
+        if (!empty($id) && !empty($id_role) && !empty($menu) && !empty($icon) && !empty($url)) {
             $menu_access = array(
-                "id" => $id,
-                "menu" => $menu
+                "id_role" => $id_role,
+                "menu" => $menu,
+                "icon" => $icon,
+                "url" => $url,
+                "id_parent" => $id_parent,
+                "level" => $level,
             );
 
             if ($this->menu_access_model->update_menu_Access($id, $menu_access)) {
@@ -102,12 +120,35 @@ class Menu_access extends REST_Controller
 
     public function index_get()
     {
-        $menu_access = $this->menu_access_model->get_menu_Accesses();
+        $id_role = $this->get("id_role");
+        $menu_access = $this->menu_access_model->get_menu_Accesses_by_roles_level($id_role, 0);
+        $this->buildTreeView($menu_access, 0);
 
         $this->response([
             'status' => "Success",
             'message' => 'Data Berhasil Dimuat',
             'data' => $menu_access,
-        ], 200);
+        ], REST_Controller::HTTP_OK);
+    }
+
+    public function buildTreeView($data_menus, $parent, $level = 0, $prelevel = -1)
+    {
+        for ($i = 0; $i < count($data_menus); $i++) {
+            if ($parent == $data_menus[$i]->id_parent) {
+                $id =  $data_menus[$i]->id;
+
+                if ($level > $prelevel) {
+                    $prelevel = $level;
+                }
+                $level++;
+
+                $new_data = $this->menu_access_model->get_menu_Accesses_by_roles_level_parent(1, $level, $id);
+                if (count($new_data) > 0) {
+                    $data_menus[$i]->child = $new_data;
+                    $this->buildTreeView($data_menus[$i]->child, $id, $level, $prelevel);
+                    $level--;
+                }
+            }
+        }
     }
 }

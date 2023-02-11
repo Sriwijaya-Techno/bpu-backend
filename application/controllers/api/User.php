@@ -10,7 +10,7 @@ class User extends REST_Controller
         parent::__construct();
         //load database
         $this->load->database();
-        $this->load->model(array("api/user_model"));
+        $this->load->model(array("api/user_model", "api/menu_access_model"));
         $this->load->library(array("form_validation"));
         $this->load->helper("security");
     }
@@ -112,7 +112,11 @@ class User extends REST_Controller
                     $payload['tipe_akun'] = $data_user->tipe_akun;
                     // $payload['exp'] = time() + (60 * 60); expire time : 1 jam
 
+                    $menu_access = $this->menu_access_model->get_menu_Accesses_by_roles_level($data_user->id_role, 0);
+                    $this->buildTreeView($menu_access, 0);
+
                     $data['jwt-token'] = encode_jwt($payload);
+                    $data['menu-access'] = $menu_access;
                     $this->response([
                         'status' => "Success",
                         'message' => 'Berhasil Login',
@@ -129,6 +133,27 @@ class User extends REST_Controller
                     'status' => "Error",
                     'message' => 'Data Harus Diisi',
                 ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function buildTreeView($data_menus, $parent, $level = 0, $prelevel = -1)
+    {
+        for ($i = 0; $i < count($data_menus); $i++) {
+            if ($parent == $data_menus[$i]->id_parent) {
+                $id =  $data_menus[$i]->id;
+
+                if ($level > $prelevel) {
+                    $prelevel = $level;
+                }
+                $level++;
+
+                $new_data = $this->menu_access_model->get_menu_Accesses_by_roles_level_parent(1, $level, $id);
+                if (count($new_data) > 0) {
+                    $data_menus[$i]->child = $new_data;
+                    $this->buildTreeView($data_menus[$i]->child, $id, $level, $prelevel);
+                    $level--;
+                }
             }
         }
     }
