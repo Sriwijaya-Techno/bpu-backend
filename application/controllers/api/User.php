@@ -229,6 +229,8 @@ class User extends REST_Controller
                     $data_menus[$i]->child = $new_data;
                     $this->buildTreeView($id_role, $data_menus[$i]->child, $id, $level, $prelevel);
                     $level--;
+                } else {
+                    $level--;
                 }
             }
         }

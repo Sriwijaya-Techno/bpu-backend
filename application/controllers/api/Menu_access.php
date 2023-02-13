@@ -25,7 +25,10 @@ class Menu_access extends REST_Controller
         $level = $this->security->xss_clean($this->post("level"));
         $id_roles = json_decode($id_role);
 
-        if (!empty($menu) && !empty($icon) && !empty($url) && count($id_roles) > 0) {
+        if (!empty($menu) && !empty($url) && count($id_roles) > 0) {
+            if (empty($icon)) {
+                $icon = '';
+            }
             $menu_access = array(
                 "menu" => $menu,
                 "icon" => $icon,
@@ -79,7 +82,10 @@ class Menu_access extends REST_Controller
         $id_parent = $this->security->xss_clean($this->put("id_parent"));
         $level = $this->security->xss_clean($this->put("level"));
         $id_roles = json_decode($id_role);
-        if (!empty($id_menu) && !empty($menu) && !empty($icon) && !empty($url) && count($id_roles) > 0) {
+        if (!empty($id_menu) && !empty($menu) && !empty($url) && count($id_roles) > 0) {
+            if (empty($icon)) {
+                $icon = '';
+            }
             $menu_access = array(
                 "menu" => $menu,
                 "icon" => $icon,
@@ -198,6 +204,8 @@ class Menu_access extends REST_Controller
                 if (count($new_data) > 0) {
                     $data_menus[$i]->child = $new_data;
                     $this->buildTreeView($id_role, $data_menus[$i]->child, $id, $level, $prelevel);
+                    $level--;
+                } else {
                     $level--;
                 }
             }
