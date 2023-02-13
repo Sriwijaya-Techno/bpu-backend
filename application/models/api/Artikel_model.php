@@ -12,7 +12,7 @@ class Artikel_model extends CI_Model
     public function get_artikel($user_id = '', $artikel_id = '', $start = '', $limit = '', $desc = '', $id_kategori = '')
     {
         if (!empty($artikel_id)) {
-            $q = " SELECT a.* FROM artikel a ";
+            $q = " SELECT a.* FROM artikel a INNER JOIN artikel_kategori c ON a.id_kategori = c.id ";
         } else {
             if ($desc == 'true') {
                 $q = " SELECT a.id, a.user_id, b.username, a.judul, a.isi, a.slug, a.cover, c.nama AS kategori, a.tanggal FROM 
