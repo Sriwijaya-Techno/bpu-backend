@@ -103,6 +103,26 @@ class Home_model extends CI_Model
         return $query->result();
     }
 
+    public function get_contact()
+    {
+        $this->db->select("*");
+        $this->db->from("contact");
+        $this->db->where("status", "ditampilkan");
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
+    public function get_mitra()
+    {
+        $this->db->select("*");
+        $this->db->from("mitra");
+        $this->db->where("status", "ditampilkan");
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
     public function get_team()
     {
         $this->db->select("*");
@@ -127,6 +147,16 @@ class Home_model extends CI_Model
         return $this->db->insert("testimoni", $data);
     }
 
+    public function insert_contact($data = [])
+    {
+        return $this->db->insert("contact", $data);
+    }
+
+    public function insert_mitra($data = [])
+    {
+        return $this->db->insert("mitra", $data);
+    }
+
     public function insert_team($data = [])
     {
         return $this->db->insert("team", $data);
@@ -148,6 +178,18 @@ class Home_model extends CI_Model
     {
         $this->db->where("id", $id);
         return $this->db->update("testimoni", $data);
+    }
+
+    public function update_contact($id, $data)
+    {
+        $this->db->where("id", $id);
+        return $this->db->update("contact", $data);
+    }
+
+    public function update_mitra($id, $data)
+    {
+        $this->db->where("id", $id);
+        return $this->db->update("mitra", $data);
     }
 
     public function update_team($id, $data)

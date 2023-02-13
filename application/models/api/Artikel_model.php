@@ -52,6 +52,20 @@ class Artikel_model extends CI_Model
         return $query;
     }
 
+    public function cek_slug_judul_artikel($slug)
+    {
+        $this->db->select("*");
+        $this->db->from("artikel");
+        $this->db->where("slug", $slug);
+        $query = $this->db->get();
+
+        if (count($query->result()) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function insert_artikel($data = [])
     {
         return $this->db->insert("artikel", $data);

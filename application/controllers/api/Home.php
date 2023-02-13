@@ -160,14 +160,22 @@ class Home extends REST_Controller
     public function tentang_post()
     {
         $isi = $this->security->xss_clean($this->post("isi"));
+        $visi = $this->security->xss_clean($this->post("visi"));
+        $misi = $this->security->xss_clean($this->post("misi"));
+        $tujuan = $this->security->xss_clean($this->post("tujuan"));
+        $quotes = $this->security->xss_clean($this->post("quotes"));
         $this->form_validation->set_rules("isi", "Isi", "required");
+        $this->form_validation->set_rules("visi", "Visi", "required");
+        $this->form_validation->set_rules("misi", "Misi", "required");
+        $this->form_validation->set_rules("tujuan", "Tujuan", "required");
+        $this->form_validation->set_rules("quotes", "Quotes", "required");
         if ($this->form_validation->run() === FALSE) {
             return $this->response([
                 'status' => "Error",
                 'message' => 'Data Gagal Divalidasi',
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            if (!empty($isi)) {
+            if (!empty($isi) && !empty($visi) && !empty($misi) && !empty($tujuan) && !empty($quotes)) {
                 if (!empty($_FILES['gambar_tentang']['name'])) {
                     $files = $_FILES;
                     $dir = realpath(APPPATH . '../assets/uploads');
@@ -202,6 +210,10 @@ class Home extends REST_Controller
                             $get_home = $this->home_model->get_tentang_home();
                             $tentang = array(
                                 "isi" => $isi,
+                                "visi" => $visi,
+                                "misi" => $misi,
+                                "tujuan" => $tujuan,
+                                "quotes" => $quotes,
                                 "gambar" => $upload_data['file_name'],
                             );
 
@@ -219,6 +231,10 @@ class Home extends REST_Controller
                         } else {
                             $tentang = array(
                                 "isi" => $isi,
+                                "visi" => $visi,
+                                "misi" => $misi,
+                                "tujuan" => $tujuan,
+                                "quotes" => $quotes,
                                 "gambar" => $upload_data['file_name'],
                             );
 
@@ -240,6 +256,10 @@ class Home extends REST_Controller
                         $get_home = $this->home_model->get_tentang_home();
                         $tentang = array(
                             "isi" => $isi,
+                            "visi" => $visi,
+                            "misi" => $misi,
+                            "tujuan" => $tujuan,
+                            "quotes" => $quotes,
                         );
 
                         if ($this->home_model->update_tentang_home($get_home->id, $tentang)) {
@@ -256,6 +276,10 @@ class Home extends REST_Controller
                     } else {
                         $tentang = array(
                             "isi" => $isi,
+                            "visi" => $visi,
+                            "misi" => $misi,
+                            "tujuan" => $tujuan,
+                            "quotes" => $quotes,
                         );
 
                         if ($this->home_model->insert_tentang_home($tentang)) {
@@ -312,6 +336,171 @@ class Home extends REST_Controller
                         'status' => "Gagal",
                         'message' => 'Data Gagal Ditambah',
                     ], REST_Controller::HTTP_OK);
+                }
+            } else {
+                return $this->response([
+                    'status' => "Error",
+                    'message' => 'Semua Data Harus Diisi',
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function contact_post()
+    {
+        $id_layanan = $this->security->xss_clean($this->post("id_layanan"));
+        $nama = $this->security->xss_clean($this->post("nama"));
+        $no_hp = $this->security->xss_clean($this->post("no_hp"));
+        $email = $this->security->xss_clean($this->post("email"));
+        $pertanyaan = $this->security->xss_clean($this->post("pertanyaan"));
+        $this->form_validation->set_rules("id_layanan", "Id_layanan", "required");
+        $this->form_validation->set_rules("nama", "Nama", "required");
+        $this->form_validation->set_rules("no_hp", "No_hp", "required");
+        $this->form_validation->set_rules("email", "Email", "required");
+        $this->form_validation->set_rules("pertanyaan", "Pertanyaan", "required");
+
+        if ($this->form_validation->run() === FALSE) {
+            return $this->response([
+                'status' => "Error",
+                'message' => 'Data Gagal Divalidasi',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            if (!empty($id_layanan) && !empty($nama) && !empty($no_hp) && !empty($email) && !empty($pertanyaan)) {
+                $contact = array(
+                    "id_layanan" => $id_layanan,
+                    "nama" => $nama,
+                    "no_hp" => $no_hp,
+                    "email" => $email,
+                    "pertanyaan" => $pertanyaan
+                );
+
+                if ($this->home_model->insert_contact($contact)) {
+                    return $this->response([
+                        'status' => "Success",
+                        'message' => 'Data Berhasil Ditambah',
+                    ], REST_Controller::HTTP_OK);
+                } else {
+                    return $this->response([
+                        'status' => "Gagal",
+                        'message' => 'Data Gagal Ditambah',
+                    ], REST_Controller::HTTP_OK);
+                }
+            } else {
+                return $this->response([
+                    'status' => "Error",
+                    'message' => 'Semua Data Harus Diisi',
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function mitra_post()
+    {
+        $id_mitra = $this->security->xss_clean($this->post("id_mitra"));
+        $nama = $this->security->xss_clean($this->post("nama"));
+        $link = $this->security->xss_clean($this->post("link"));
+        $this->form_validation->set_rules("nama", "Nama", "required");
+        $this->form_validation->set_rules("link", "Link", "required");
+
+        if ($this->form_validation->run() === FALSE) {
+            return $this->response([
+                'status' => "Error",
+                'message' => 'Data Gagal Divalidasi',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            if (!empty($nama) && !empty($link)) {
+                if (!empty($_FILES['gambar']['name'])) {
+                    $files = $_FILES;
+                    $dir = realpath(APPPATH . '../assets/uploads');
+                    $filename = $dir . '\\gambar_mitra\\';
+
+                    if (!file_exists($filename)) {
+                        mkdir($filename, 0775, true);
+                    }
+
+                    $_FILES['gambar']['name'] = $files['gambar']['name'];
+                    $_FILES['gambar']['type'] = $files['gambar']['type'];
+                    $_FILES['gambar']['tmp_name'] = $files['gambar']['tmp_name'];
+                    $_FILES['gambar']['error'] = $files['gambar']['error'];
+                    $_FILES['gambar']['size'] = $files['gambar']['size'];
+
+                    $config['upload_path']          = $filename;
+                    $config['allowed_types']        = 'gif|jpg|jpeg|png';
+                    $config['max_size']             = 1024 * 10;
+
+                    $this->load->library('upload', $config);
+                    $this->upload->initialize($config);
+                    if (!$this->upload->do_upload('gambar')) {
+                        $error = array('error' => $this->upload->display_errors());
+                        return $this->response([
+                            'status' => "Error",
+                            'message' => $error,
+                        ], REST_Controller::HTTP_OK);
+                    } else {
+                        $upload_data = $this->upload->data();
+                        $mitra = array(
+                            "nama" => $nama,
+                            "link" => $link,
+                            "gambar" => $upload_data['file_name'],
+                        );
+
+                        if (!empty($id_mitra)) {
+                            if ($this->home_model->update_mitra($id_mitra, $mitra)) {
+                                return $this->response([
+                                    'status' => "Success",
+                                    'message' => 'Data Berhasil Diupdate',
+                                ], REST_Controller::HTTP_OK);
+                            } else {
+                                return $this->response([
+                                    'status' => "Gagal",
+                                    'message' => 'Data Gagal Diupdate',
+                                ], REST_Controller::HTTP_OK);
+                            }
+                        } else {
+                            if ($this->home_model->insert_mitra($mitra)) {
+                                return $this->response([
+                                    'status' => "Success",
+                                    'message' => 'Data Berhasil Ditambah',
+                                ], REST_Controller::HTTP_OK);
+                            } else {
+                                return $this->response([
+                                    'status' => "Gagal",
+                                    'message' => 'Data Gagal Ditambah',
+                                ], REST_Controller::HTTP_OK);
+                            }
+                        }
+                    }
+                } else {
+                    $mitra = array(
+                        "nama" => $nama,
+                        "link" => $link,
+                    );
+
+                    if (!empty($id_mitra)) {
+                        if ($this->home_model->update_mitra($id_mitra, $mitra)) {
+                            return $this->response([
+                                'status' => "Success",
+                                'message' => 'Data Berhasil Diupdate',
+                            ], REST_Controller::HTTP_OK);
+                        } else {
+                            return  $this->response([
+                                'status' => "Gagal",
+                                'message' => 'Data Gagal Diupdate',
+                            ], REST_Controller::HTTP_OK);
+                        }
+                    } else {
+                        if ($this->home_model->insert_mitra($mitra)) {
+                            return $this->response([
+                                'status' => "Success",
+                                'message' => 'Data Berhasil Ditambah',
+                            ], REST_Controller::HTTP_OK);
+                        } else {
+                            return  $this->response([
+                                'status' => "Gagal",
+                                'message' => 'Data Gagal Ditambah',
+                            ], REST_Controller::HTTP_OK);
+                        }
+                    }
                 }
             } else {
                 return $this->response([
@@ -472,6 +661,43 @@ class Home extends REST_Controller
         }
     }
 
+    public function contact_put()
+    {
+        $id_contact = $this->security->xss_clean($this->put("id_contact"));
+        $id_layanan = $this->security->xss_clean($this->put("id_layanan"));
+        $nama = $this->security->xss_clean($this->put("nama"));
+        $no_hp = $this->security->xss_clean($this->put("no_hp"));
+        $email = $this->security->xss_clean($this->put("email"));
+        $pertanyaan = $this->security->xss_clean($this->put("pertanyaan"));
+
+        if (!empty($id_contact) && !empty($id_layanan) && !empty($nama) && !empty($no_hp) && !empty($email) && !empty($pertanyaan)) {
+            $contact = array(
+                "id_layanan" => $id_layanan,
+                "nama" => $nama,
+                "no_hp" => $no_hp,
+                "email" => $email,
+                "pertanyaan" => $pertanyaan
+            );
+
+            if ($this->home_model->update_contact($id_contact, $contact)) {
+                return $this->response([
+                    'status' => "Success",
+                    'message' => 'Data Berhasil Diupdate',
+                ], REST_Controller::HTTP_OK);
+            } else {
+                return $this->response([
+                    'status' => "Gagal",
+                    'message' => 'Data Gagal Diupdate',
+                ], REST_Controller::HTTP_OK);
+            }
+        } else {
+            return $this->response([
+                'status' => "Error",
+                'message' => 'Semua Data Harus Diisi',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+
     public function menu_get()
     {
         $layanans = $this->home_model->get_layanan();
@@ -553,6 +779,32 @@ class Home extends REST_Controller
         ], REST_Controller::HTTP_OK);
     }
 
+    public function contact_get()
+    {
+        $contact_home = $this->home_model->get_contact();
+
+        $this->response([
+            'status' => "Success",
+            'message' => 'Data Berhasil Dimuat',
+            'data' => $contact_home,
+        ], REST_Controller::HTTP_OK);
+    }
+
+    public function mitra_get()
+    {
+        $mitra_home = $this->home_model->get_mitra();
+
+        for ($i = 0; $i < count($mitra_home); $i++) {
+            $mitra_home[$i]->gambar = base_url() . 'assets/uploads/gambar_mitra/' . $mitra_home[$i]->gambar;
+        }
+
+        $this->response([
+            'status' => "Success",
+            'message' => 'Data Berhasil Dimuat',
+            'data' => $mitra_home,
+        ], REST_Controller::HTTP_OK);
+    }
+
     public function team_get()
     {
         $team_home = $this->home_model->get_team();
@@ -610,6 +862,44 @@ class Home extends REST_Controller
             ], REST_Controller::HTTP_OK);
         } else {
             $this->response([
+                'status' => "Gagal",
+                'message' => 'Data Gagal Dihapus',
+            ], REST_Controller::HTTP_OK);
+        }
+    }
+
+    public function mitra_delete()
+    {
+        $id = $this->delete("id");
+        $mitra = array(
+            'status' => 'dihapus'
+        );
+        if ($this->home_model->update_mitra($id, $mitra)) {
+            return $this->response([
+                'status' => "Success",
+                'message' => 'Data Berhasil Dihapus',
+            ], REST_Controller::HTTP_OK);
+        } else {
+            return $this->response([
+                'status' => "Gagal",
+                'message' => 'Data Gagal Dihapus',
+            ], REST_Controller::HTTP_OK);
+        }
+    }
+
+    public function contact_delete()
+    {
+        $id = $this->delete("id");
+        $contact = array(
+            'status' => 'dihapus'
+        );
+        if ($this->home_model->update_contact($id, $contact)) {
+            return $this->response([
+                'status' => "Success",
+                'message' => 'Data Berhasil Dihapus',
+            ], REST_Controller::HTTP_OK);
+        } else {
+            return $this->response([
                 'status' => "Gagal",
                 'message' => 'Data Gagal Dihapus',
             ], REST_Controller::HTTP_OK);

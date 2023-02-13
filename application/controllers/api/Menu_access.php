@@ -23,40 +23,33 @@ class Menu_access extends REST_Controller
         $url = $this->security->xss_clean($this->post("url"));
         $id_parent = $this->security->xss_clean($this->post("id_parent"));
         $level = $this->security->xss_clean($this->post("level"));
-        $this->form_validation->set_rules("menu", "Menu", "required");
-        if ($this->form_validation->run() === FALSE) {
-            return $this->response([
-                'status' => "Error",
-                'message' => 'Data Gagal Divalidasi',
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        } else {
-            if (!empty($id_role) && !empty($menu) && !empty($icon) && !empty($url)) {
-                $menu_access = array(
-                    "id_role" => $id_role,
-                    "menu" => $menu,
-                    "icon" => $icon,
-                    "url" => $url,
-                    "id_parent" => $id_parent,
-                    "level" => $level,
-                );
 
-                if ($this->menu_access_model->insert_menu_Access($menu_access)) {
-                    return $this->response([
-                        'status' => "Success",
-                        'message' => 'Data Berhasil Ditambah',
-                    ], REST_Controller::HTTP_OK);
-                } else {
-                    return $this->response([
-                        'status' => "Error",
-                        'message' => 'Data Gagal Ditambah',
-                    ], REST_Controller::HTTP_OK);
-                }
+        if (!empty($id_role) && !empty($menu) && !empty($icon) && !empty($url)) {
+            $menu_access = array(
+                "id_role" => $id_role,
+                "menu" => $menu,
+                "icon" => $icon,
+                "url" => $url,
+                "id_parent" => $id_parent,
+                "level" => $level,
+            );
+
+            if ($this->menu_access_model->insert_menu_Access($menu_access)) {
+                return $this->response([
+                    'status' => "Success",
+                    'message' => 'Data Berhasil Ditambah',
+                ], REST_Controller::HTTP_OK);
             } else {
                 return $this->response([
                     'status' => "Error",
-                    'message' => 'Semua Data Harus Diisi',
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                    'message' => 'Data Gagal Ditambah',
+                ], REST_Controller::HTTP_OK);
             }
+        } else {
+            return $this->response([
+                'status' => "Error",
+                'message' => 'Semua Data Harus Diisi',
+            ], REST_Controller::HTTP_BAD_REQUEST);
         }
     }
 

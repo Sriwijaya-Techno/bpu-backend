@@ -44,17 +44,19 @@ class User extends REST_Controller
         $email = $this->security->xss_clean($this->post("email"));
         $password = $this->security->xss_clean($this->post("password"));
         $tipe_akun = $this->security->xss_clean($this->post("tipe_akun"));
+        $id_role = $this->security->xss_clean($this->post("id_role"));
         $this->form_validation->set_rules("username", "Username", "required");
         $this->form_validation->set_rules("email", "Email", "required|valid_email");
         $this->form_validation->set_rules("password", "Password", "required");
         $this->form_validation->set_rules("tipe_akun", "Tipe_akun", "required");
+        $this->form_validation->set_rules("id_role", "Id_role", "required");
         if ($this->form_validation->run() === FALSE) {
             $this->response([
                 'status' => "Error",
                 'message' => 'Data Gagal Ditambah',
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            if (!empty($username) && !empty($email) && !empty($password) && !empty($tipe_akun)) {
+            if (!empty($username) && !empty($email) && !empty($password) && !empty($tipe_akun) && !empty($id_role)) {
                 $user_email = $this->user_model->get_user_by_email($email);
                 if (count($user_email) > 0) {
                     $this->response([
@@ -67,6 +69,7 @@ class User extends REST_Controller
                         "email" => $email,
                         "password" => md5($password),
                         "tipe_akun" => $tipe_akun,
+                        "id_role" => $id_role
                     );
 
                     if ($this->user_model->insert_user($user)) {
@@ -87,6 +90,76 @@ class User extends REST_Controller
                     'message' => 'Data Gagal Ditambah',
                 ], REST_Controller::HTTP_BAD_REQUEST);
             }
+        }
+    }
+
+    public function index_put()
+    {
+        $id = $this->security->xss_clean($this->put("id"));
+        $username = $this->security->xss_clean($this->put("username"));
+        $email = $this->security->xss_clean($this->put("email"));
+        $password = $this->security->xss_clean($this->put("password"));
+        $tipe_akun = $this->security->xss_clean($this->put("tipe_akun"));
+        $id_role = $this->security->xss_clean($this->put("id_role"));
+
+        if (!empty($username) && !empty($email) && !empty($password) && !empty($tipe_akun) && !empty($id_role)) {
+            $user_id = $this->user_model->get_user_by_id($id);
+            $user_email = $this->user_model->get_user_by_email($email);
+            if (count($user_email) > 0 && $user_id[0]->email != $user_email[0]->email) {
+                return $this->response([
+                    'status' => "Gagal",
+                    'message' => 'Data Email Sudah Teregistrasi',
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $user = array(
+                    "username" => $username,
+                    "email" => $email,
+                    "password" => md5($password),
+                    "tipe_akun" => $tipe_akun,
+                    "id_role" => $id_role
+                );
+
+                if ($this->user_model->update_user_information($id, $user)) {
+                    return $this->response([
+                        'status' => "Success",
+                        'message' => 'Data Berhasil Diupdate',
+                    ], REST_Controller::HTTP_OK);
+                } else {
+                    return $this->response([
+                        'status' => "Gagal",
+                        'message' => 'Data Gagal Diupdate',
+                    ], REST_Controller::HTTP_OK);
+                }
+            }
+        } else {
+            return $this->response([
+                'status' => "Error",
+                'message' => 'Data Gagal Diupdate',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function index_delete()
+    {
+        $id = $this->security->xss_clean($this->delete("id"));
+
+        if (!empty($id)) {
+            if ($this->user_model->delete_user($id)) {
+                return $this->response([
+                    'status' => "Success",
+                    'message' => 'Data Berhasil Dihapus',
+                ], REST_Controller::HTTP_OK);
+            } else {
+                return $this->response([
+                    'status' => "Gagal",
+                    'message' => 'Data Gagal Dihapus',
+                ], REST_Controller::HTTP_OK);
+            }
+        } else {
+            return $this->response([
+                'status' => "Error",
+                'message' => 'Semua Data Param Harus Diisi',
+            ], REST_Controller::HTTP_BAD_REQUEST);
         }
     }
 

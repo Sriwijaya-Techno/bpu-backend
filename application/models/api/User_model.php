@@ -30,6 +30,17 @@ class User_model extends CI_Model
         return $query->result();
     }
 
+    public function get_user_by_id($id)
+    {
+
+        $this->db->select("*");
+        $this->db->from("user");
+        $this->db->where("id", $id);
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
     public function get_user_by_username($username)
     {
 
@@ -63,7 +74,6 @@ class User_model extends CI_Model
 
     public function insert_user($data = array())
     {
-
         return $this->db->insert("user", $data);
     }
 

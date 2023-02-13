@@ -20,11 +20,15 @@ class Artikel extends REST_Controller
         $user_id = $this->security->xss_clean($this->post("user_id"));
         $judul = $this->security->xss_clean($this->post("judul"));
         $isi = $this->security->xss_clean($this->post("isi"));
-        $slug = $this->security->xss_clean($this->post("slug"));
         $id_kategori = $this->security->xss_clean($this->post("id_kategori"));
-        $tanggal = $this->security->xss_clean($this->post("tanggal"));
 
-        if (!empty($user_id) && !empty($judul) && !empty($isi) && !empty($slug) && !empty($id_kategori) && !empty($tanggal)) {
+        if (!empty($user_id) && !empty($judul) && !empty($isi) && !empty($id_kategori)) {
+            if ($this->artikel_model->cek_slug_judul_artikel(slug($judul))) {
+                $slug = slug($judul) . "-" . rand(0, 99);
+            } else {
+                $slug = slug($judul);
+            }
+
             if (!empty($_FILES['cover']['name'])) {
                 $files = $_FILES;
                 $dir = realpath(APPPATH . '../assets/uploads');
@@ -61,7 +65,7 @@ class Artikel extends REST_Controller
                         "isi" => $isi,
                         "slug" => $slug,
                         "id_kategori" => $id_kategori,
-                        "tanggal" => $tanggal,
+                        "tanggal" => date('Y-m-d'),
                         "cover" => $upload_data['file_name'],
                     );
 
@@ -97,11 +101,15 @@ class Artikel extends REST_Controller
         $user_id = $this->security->xss_clean($this->post("user_id"));
         $judul = $this->security->xss_clean($this->post("judul"));
         $isi = $this->security->xss_clean($this->post("isi"));
-        $slug = $this->security->xss_clean($this->post("slug"));
         $id_kategori = $this->security->xss_clean($this->post("id_kategori"));
-        $tanggal = $this->security->xss_clean($this->post("tanggal"));
 
-        if (!empty($user_id) && !empty($artikel_id) && !empty($judul) && !empty($isi) && !empty($slug) && !empty($id_kategori) && !empty($tanggal)) {
+        if (!empty($user_id) && !empty($artikel_id) && !empty($judul) && !empty($isi) && !empty($id_kategori)) {
+            if ($this->artikel_model->cek_slug_judul_artikel(slug($judul))) {
+                $slug = slug($judul) . "-" . rand(0, 99);
+            } else {
+                $slug = slug($judul);
+            }
+
             if (!empty($_FILES['cover']['name'])) {
                 $files = $_FILES;
                 $dir = realpath(APPPATH . '../assets/uploads');
@@ -138,7 +146,6 @@ class Artikel extends REST_Controller
                         "isi" => $isi,
                         "slug" => $slug,
                         "id_kategori" => $id_kategori,
-                        "tanggal" => $tanggal,
                         "cover" => $upload_data['file_name'],
                     );
 
@@ -161,7 +168,6 @@ class Artikel extends REST_Controller
                     "isi" => $isi,
                     "slug" => $slug,
                     "id_kategori" => $id_kategori,
-                    "tanggal" => $tanggal,
                 );
 
                 if ($this->artikel_model->update_artikel($artikel_id, $artikel)) {
