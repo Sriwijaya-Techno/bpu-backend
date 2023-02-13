@@ -20,6 +20,18 @@ class Role_model extends CI_Model
         return $query->result();
     }
 
+    public function get_role_by_id($id)
+    {
+
+        $this->db->select("*");
+        $this->db->from("role");
+        $this->db->where("status", "ditampilkan");
+        $this->db->where("id", $id);
+        $query = $this->db->get();
+
+        return $query->row();
+    }
+
     public function insert_role($data = array())
     {
         return $this->db->insert("role", $data);

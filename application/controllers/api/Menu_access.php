@@ -10,7 +10,7 @@ class Menu_access extends REST_Controller
         parent::__construct();
         //load database
         $this->load->database();
-        $this->load->model(array("api/menu_access_model", "api/menu_role_access_model"));
+        $this->load->model(array("api/menu_access_model", "api/menu_role_access_model", "api/role_model"));
         $this->load->library(array("form_validation"));
         $this->load->helper("security");
     }
@@ -179,14 +179,46 @@ class Menu_access extends REST_Controller
     public function index_get()
     {
         $id_role = $this->get("id_role");
-        $menu_access = $this->menu_access_model->get_menu_Accesses_by_roles_level($id_role, 0);
-        $this->buildTreeView($id_role, $menu_access, 0);
+        $menu_access_list = [];
+        if (empty($id_role)) {
+            $id_roles = $this->role_model->get_roles();
+            for ($i = 0; $i < count($id_roles); $i++) {
+                $role = $this->role_model->get_role_by_id($id_roles[$i]->id);
+                $menu_access = $this->menu_access_model->get_menu_Accesses_by_roles_level($id_roles[$i]->id, 0);
+                $this->buildTreeView($id_roles[$i]->id, $menu_access, 0);
 
-        $this->response([
-            'status' => "Success",
-            'message' => 'Data Berhasil Dimuat',
-            'data' => $menu_access,
-        ], REST_Controller::HTTP_OK);
+                $data_menu_access = array(
+                    'id_roles' => $id_roles[$i]->id,
+                    'role' => $role->nama,
+                    'menu_access' => $menu_access
+                );
+
+                array_push($menu_access_list, $data_menu_access);
+            }
+
+            $this->response([
+                'status' => "Success",
+                'message' => 'Data Berhasil Dimuat',
+                'data' => $menu_access_list,
+            ], REST_Controller::HTTP_OK);
+        } else {
+            $role = $this->role_model->get_role_by_id($id_role);
+            $menu_access = $this->menu_access_model->get_menu_Accesses_by_roles_level($id_role, 0);
+            $this->buildTreeView($id_role, $menu_access, 0);
+
+            $data_menu_access = array(
+                'id_roles' => $id_role,
+                'role' => $role->nama,
+                'menu_access' => $menu_access
+            );
+            array_push($menu_access_list, $data_menu_access);
+
+            $this->response([
+                'status' => "Success",
+                'message' => 'Data Berhasil Dimuat',
+                'data' => $menu_access_list,
+            ], REST_Controller::HTTP_OK);
+        }
     }
 
     public function buildTreeView($id_role, $data_menus, $parent, $level = 0, $prelevel = -1)
