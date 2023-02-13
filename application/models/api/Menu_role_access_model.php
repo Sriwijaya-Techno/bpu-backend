@@ -11,8 +11,9 @@ class Menu_role_access_model extends CI_Model
 
     public function get_menu_role_accesses_by_id_menu($id_menu)
     {
-        $this->db->select("*");
+        $this->db->select("menu_role_access.*, role.nama");
         $this->db->from("menu_role_access");
+        $this->db->join("role", "role.id = menu_role_access.id_role");
         $this->db->where("id_menu", $id_menu);
         $query = $this->db->get();
 

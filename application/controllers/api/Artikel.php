@@ -82,10 +82,26 @@ class Artikel extends REST_Controller
                     }
                 }
             } else {
-                return $this->response([
-                    'status' => "Error",
-                    'message' => 'Data Gambar Cover Harus Diisi',
-                ], REST_Controller::HTTP_OK);
+                $artikel = array(
+                    "user_id" => $user_id,
+                    "judul" => $judul,
+                    "isi" => $isi,
+                    "slug" => $slug,
+                    "id_kategori" => $id_kategori,
+                    "tanggal" => date('Y-m-d'),
+                );
+
+                if ($this->artikel_model->insert_artikel($artikel)) {
+                    return $this->response([
+                        'status' => "Success",
+                        'message' => 'Data Berhasil Ditambah',
+                    ], REST_Controller::HTTP_OK);
+                } else {
+                    return $this->response([
+                        'status' => "Error",
+                        'message' => 'Data Gagal Ditambah',
+                    ], REST_Controller::HTTP_OK);
+                }
             }
         } else {
             return $this->response([
