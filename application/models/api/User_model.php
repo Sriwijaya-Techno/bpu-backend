@@ -14,6 +14,7 @@ class User_model extends CI_Model
 
         $this->db->select("*");
         $this->db->from("user");
+        $this->db->where("status_data", "ditampilkan");
         $query = $this->db->get();
 
         return $query->result();
@@ -25,6 +26,7 @@ class User_model extends CI_Model
         $this->db->select("*");
         $this->db->from("user");
         $this->db->where("email", $email);
+        $this->db->where("status_data", "ditampilkan");
         $query = $this->db->get();
 
         return $query->result();
@@ -36,6 +38,7 @@ class User_model extends CI_Model
         $this->db->select("*");
         $this->db->from("user");
         $this->db->where("id", $id);
+        $this->db->where("status_data", "ditampilkan");
         $query = $this->db->get();
 
         return $query->result();
@@ -47,6 +50,7 @@ class User_model extends CI_Model
         $this->db->select("*");
         $this->db->from("user");
         $this->db->where("username", $username);
+        $this->db->where("status_data", "ditampilkan");
         $query = $this->db->get();
 
         return $query->result();
@@ -56,6 +60,7 @@ class User_model extends CI_Model
     {
         $this->db->where("email", $email);
         $this->db->where("password", $password);
+        $this->db->where("status_data", "ditampilkan");
         $data = $this->db->get("user");
         return $data->row();
     }
@@ -67,6 +72,7 @@ class User_model extends CI_Model
         $this->db->from("user");
         $this->db->where("email", $email);
         $this->db->where("password", $password);
+        $this->db->where("status_data", "ditampilkan");
         $query = $this->db->get();
 
         return $query->result();

@@ -144,7 +144,10 @@ class User extends REST_Controller
         $id = $this->security->xss_clean($this->delete("id"));
 
         if (!empty($id)) {
-            if ($this->user_model->delete_user($id)) {
+            $user = array(
+                "status_data" => 'dihapus'
+            );
+            if ($this->user_model->update_user_information($id, $user)) {
                 return $this->response([
                     'status' => "Success",
                     'message' => 'Data Berhasil Dihapus',
