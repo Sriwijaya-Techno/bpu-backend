@@ -10,7 +10,7 @@ class Menu_access extends REST_Controller
         parent::__construct();
         //load database
         $this->load->database();
-        $this->load->model(array("api/menu_access_model"));
+        $this->load->model(array("api/menu_access_model", "api/menu_role_access_model"));
         $this->load->library(array("form_validation"));
         $this->load->helper("security");
     }
@@ -23,10 +23,10 @@ class Menu_access extends REST_Controller
         $url = $this->security->xss_clean($this->post("url"));
         $id_parent = $this->security->xss_clean($this->post("id_parent"));
         $level = $this->security->xss_clean($this->post("level"));
+        $id_roles = json_decode($id_role);
 
-        if (!empty($id_role) && !empty($menu) && !empty($icon) && !empty($url)) {
+        if (!empty($menu) && !empty($icon) && !empty($url) && count($id_roles) > 0) {
             $menu_access = array(
-                "id_role" => $id_role,
                 "menu" => $menu,
                 "icon" => $icon,
                 "url" => $url,
@@ -34,7 +34,23 @@ class Menu_access extends REST_Controller
                 "level" => $level,
             );
 
-            if ($this->menu_access_model->insert_menu_Access($menu_access)) {
+            if ($this->menu_access_model->insert_menu_access($menu_access)) {
+                $id_menu = $this->db->insert_id();
+
+                for ($i = 0; $i < count($id_roles); $i++) {
+                    $menu_role_access = array(
+                        "id_menu" => $id_menu,
+                        "id_role" => $id_roles[$i],
+                    );
+
+                    if (!$this->menu_role_access_model->insert_menu_role_access($menu_role_access)) {
+                        return $this->response([
+                            'status' => "Error",
+                            'message' => 'Data Gagal Ditambah',
+                        ], REST_Controller::HTTP_OK);
+                    }
+                }
+
                 return $this->response([
                     'status' => "Success",
                     'message' => 'Data Berhasil Ditambah',
@@ -55,16 +71,16 @@ class Menu_access extends REST_Controller
 
     public function index_put()
     {
-        $id = $this->security->xss_clean($this->put("id_menu"));
+        $id_menu = $this->security->xss_clean($this->put("id_menu"));
         $id_role = $this->security->xss_clean($this->put("id_role"));
         $menu = $this->security->xss_clean($this->put("menu"));
         $icon = $this->security->xss_clean($this->put("icon"));
         $url = $this->security->xss_clean($this->put("url"));
         $id_parent = $this->security->xss_clean($this->put("id_parent"));
         $level = $this->security->xss_clean($this->put("level"));
-        if (!empty($id) && !empty($id_role) && !empty($menu) && !empty($icon) && !empty($url)) {
+        $id_roles = json_decode($id_role);
+        if (!empty($id_menu) && !empty($menu) && !empty($icon) && !empty($url) && count($id_roles) > 0) {
             $menu_access = array(
-                "id_role" => $id_role,
                 "menu" => $menu,
                 "icon" => $icon,
                 "url" => $url,
@@ -72,14 +88,57 @@ class Menu_access extends REST_Controller
                 "level" => $level,
             );
 
-            if ($this->menu_access_model->update_menu_Access($id, $menu_access)) {
+            if ($this->menu_access_model->update_menu_access($id_menu, $menu_access)) {
+                $menu_roles = $this->menu_role_access_model->get_menu_role_accesses_by_id_menu($id_menu);
+
+                for ($i = 0; $i < count($id_roles); $i++) {
+                    $is_role_menu_exist = false;
+                    for ($j = 0; $j < count($menu_roles); $j++) {
+                        if ($id_roles[$i] == $menu_roles[$j]->id_role) {
+                            $is_role_menu_exist = true;
+                        }
+                    }
+
+                    if (!$is_role_menu_exist) {
+                        $menu_role_access = array(
+                            "id_menu" => $id_menu,
+                            "id_role" => $id_roles[$i],
+                        );
+
+                        if (!$this->menu_role_access_model->insert_menu_role_access($menu_role_access)) {
+                            return $this->response([
+                                'status' => "Error",
+                                'message' => 'Data Gagal Diupdate',
+                            ], REST_Controller::HTTP_OK);
+                        }
+                    }
+                }
+
+                for ($i = 0; $i < count($menu_roles); $i++) {
+                    $is_role_menu_exist = false;
+                    for ($j = 0; $j < count($id_roles); $j++) {
+                        if ($menu_roles[$i]->id_role == $id_roles[$j]) {
+                            $is_role_menu_exist = true;
+                        }
+                    }
+
+                    if (!$is_role_menu_exist) {
+                        if (!$this->menu_role_access_model->delete_menu_role_access($id_menu, $menu_roles[$i]->id_role)) {
+                            return $this->response([
+                                'status' => "Error",
+                                'message' => 'Data Gagal Diupdate',
+                            ], REST_Controller::HTTP_OK);
+                        }
+                    }
+                }
+
                 return $this->response([
                     'status' => "Success",
                     'message' => 'Data Berhasil Diupdate',
                 ], REST_Controller::HTTP_OK);
             } else {
                 return $this->response([
-                    'status' => "Gagal",
+                    'status' => "Error",
                     'message' => 'Data Gagal Diupdate',
                 ], REST_Controller::HTTP_OK);
             }
@@ -98,7 +157,7 @@ class Menu_access extends REST_Controller
             "status" => 'dihapus'
         );
 
-        if ($this->menu_access_model->update_menu_Access($id, $menu_access)) {
+        if ($this->menu_access_model->update_menu_access($id, $menu_access)) {
             return $this->response([
                 'status' => "Success",
                 'message' => 'Data Berhasil Dihapus',
@@ -115,7 +174,7 @@ class Menu_access extends REST_Controller
     {
         $id_role = $this->get("id_role");
         $menu_access = $this->menu_access_model->get_menu_Accesses_by_roles_level($id_role, 0);
-        $this->buildTreeView($menu_access, 0);
+        $this->buildTreeView($id_role, $menu_access, 0);
 
         $this->response([
             'status' => "Success",
@@ -124,7 +183,7 @@ class Menu_access extends REST_Controller
         ], REST_Controller::HTTP_OK);
     }
 
-    public function buildTreeView($data_menus, $parent, $level = 0, $prelevel = -1)
+    public function buildTreeView($id_role, $data_menus, $parent, $level = 0, $prelevel = -1)
     {
         for ($i = 0; $i < count($data_menus); $i++) {
             if ($parent == $data_menus[$i]->id_parent) {
@@ -135,10 +194,10 @@ class Menu_access extends REST_Controller
                 }
                 $level++;
 
-                $new_data = $this->menu_access_model->get_menu_Accesses_by_roles_level_parent(1, $level, $id);
+                $new_data = $this->menu_access_model->get_menu_Accesses_by_roles_level_parent($id_role, $level, $id);
                 if (count($new_data) > 0) {
                     $data_menus[$i]->child = $new_data;
-                    $this->buildTreeView($data_menus[$i]->child, $id, $level, $prelevel);
+                    $this->buildTreeView($id_role, $data_menus[$i]->child, $id, $level, $prelevel);
                     $level--;
                 }
             }

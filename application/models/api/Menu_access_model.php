@@ -21,11 +21,12 @@ class Menu_access_model extends CI_Model
 
     public function get_menu_Accesses_by_roles_level($id_role, $level)
     {
-        $this->db->select("id, id_parent, menu, icon, url");
-        $this->db->from("menu_Access");
-        $this->db->where("status", "ditampilkan");
-        $this->db->where("id_role", $id_role);
-        $this->db->where("level", $level);
+        $this->db->select("menu_access.id, menu_access.id_parent, menu_access.menu, menu_access.icon, menu_access.url");
+        $this->db->from("menu_access");
+        $this->db->join("menu_role_access", "menu_role_access.id_menu = menu_access.id");
+        $this->db->where("menu_access.status", "ditampilkan");
+        $this->db->where("menu_role_access.id_role", $id_role);
+        $this->db->where("menu_access.level", $level);
         $query = $this->db->get();
 
         return $query->result();
@@ -33,25 +34,26 @@ class Menu_access_model extends CI_Model
 
     public function get_menu_Accesses_by_roles_level_parent($id_role, $level, $parent)
     {
-        $this->db->select("id, id_parent, menu, icon, url");
-        $this->db->from("menu_Access");
-        $this->db->where("status", "ditampilkan");
-        $this->db->where("id_role", $id_role);
-        $this->db->where("id_parent", $parent);
-        $this->db->where("level", $level);
+        $this->db->select("menu_access.id, menu_access.id_parent, menu_access.menu, menu_access.icon, menu_access.url");
+        $this->db->from("menu_access");
+        $this->db->join("menu_role_access", "menu_role_access.id_menu = menu_access.id");
+        $this->db->where("menu_access.status", "ditampilkan");
+        $this->db->where("menu_role_access.id_role", $id_role);
+        $this->db->where("menu_access.id_parent", $parent);
+        $this->db->where("menu_access.level", $level);
         $query = $this->db->get();
 
         return $query->result();
     }
 
-    public function insert_menu_Access($data = [])
+    public function insert_menu_access($data = [])
     {
-        return $this->db->insert("menu_Access", $data);
+        return $this->db->insert("menu_access", $data);
     }
 
-    public function update_menu_Access($id_menu_Access, $data = [])
+    public function update_menu_access($id_menu_Access, $data = [])
     {
         $this->db->where("id", $id_menu_Access);
-        return $this->db->update("menu_Access", $data);
+        return $this->db->update("menu_access", $data);
     }
 }
