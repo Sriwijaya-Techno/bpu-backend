@@ -22,6 +22,7 @@ class Item_kategori extends REST_Controller
         $deskripsi = $this->security->xss_clean($this->post("deskripsi"));
         $fasilitas = $this->security->xss_clean($this->post("fasilitas"));
         $ketentuan = $this->security->xss_clean($this->post("ketentuan"));
+        $harga = $this->security->xss_clean($this->post("harga"));
         $this->form_validation->set_rules("id_kategori", "Id_kategori", "required");
         $this->form_validation->set_rules("judul", "Judul", "required");
         $this->form_validation->set_rules("deskripsi", "Deskripsi", "required");
@@ -54,6 +55,10 @@ class Item_kategori extends REST_Controller
 
                 if (!empty($ketentuan)) {
                     $item_kategori['ketentuan'] = $ketentuan;
+                }
+
+                if (!empty($harga)) {
+                    $item_kategori['harga_item'] = $harga;
                 }
 
                 if ($this->item_kategori_model->insert_item_kategori($item_kategori)) {
@@ -141,6 +146,7 @@ class Item_kategori extends REST_Controller
         $deskripsi = $this->security->xss_clean($this->post("deskripsi"));
         $fasilitas = $this->security->xss_clean($this->post("fasilitas"));
         $ketentuan = $this->security->xss_clean($this->post("ketentuan"));
+        $harga = $this->security->xss_clean($this->post("harga"));
         $this->form_validation->set_rules("id_item_kategori", "Id_item_kategori", "required");
         $this->form_validation->set_rules("judul", "Judul", "required");
         $this->form_validation->set_rules("deskripsi", "Deskripsi", "required");
@@ -171,6 +177,10 @@ class Item_kategori extends REST_Controller
 
                 if (!empty($ketentuan)) {
                     $item_kategori['ketentuan'] = $ketentuan;
+                }
+
+                if (!empty($harga)) {
+                    $item_kategori['harga_item'] = $harga;
                 }
 
                 if ($this->item_kategori_model->update_item_kategori($id_item_kategori, $item_kategori)) {
