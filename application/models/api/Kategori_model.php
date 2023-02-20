@@ -9,13 +9,13 @@ class Kategori_model extends CI_Model
         $this->load->database();
     }
 
-    public function get_kategoris($slug_kategori = '')
+    public function get_kategoris($slug_layanan = '')
     {
         $this->db->select("kategori.id_layanan, kategori.id AS id_kategori, layanan.nama AS nama_layanan, kategori.nama AS nama_kategori, kategori.slug, kategori.icon");
         $this->db->from("kategori");
         $this->db->join("layanan", "layanan.id = kategori.id_layanan");
-        if (!empty($slug_kategori)) {
-            $this->db->where("layanan.slug", $slug_kategori);
+        if (!empty($slug_layanan)) {
+            $this->db->where("layanan.slug", $slug_layanan);
         }
         $query = $this->db->get();
 
