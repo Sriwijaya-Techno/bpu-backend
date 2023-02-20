@@ -322,7 +322,8 @@ class Kategori extends REST_Controller
 
     public function index_get()
     {
-        $users = $this->kategori_model->get_kategoris();
+        $slug_kategori = $this->security->xss_clean($this->get("slug_kategori"));
+        $users = $this->kategori_model->get_kategoris($slug_kategori);
 
         $this->response([
             'status' => "Success",
