@@ -9,7 +9,7 @@ class Artikel_model extends CI_Model
         $this->load->database();
     }
 
-    public function get_artikel($user_id = '', $artikel_id = '', $start = '', $limit = '', $desc = '', $id_kategori = '')
+    public function get_artikel($user_id = '', $artikel_id = '', $slug_artikel = '', $slug_kategori = '', $start = '', $limit = '', $desc = '', $id_kategori = '')
     {
         if (!empty($artikel_id)) {
             $q = " SELECT a.* FROM artikel a INNER JOIN artikel_kategori c ON a.id_kategori = c.id ";
@@ -41,6 +41,12 @@ class Artikel_model extends CI_Model
 
         if (!empty($id_kategori))
             $q .= " AND a.id_kategori = '$id_kategori' ";
+
+        if (!empty($slug_artikel))
+            $q .= " AND a.slug = '$slug_artikel' ";
+
+        if (!empty($slug_kategori))
+            $q .= " AND c.slug = '$slug_kategori' ";
 
         if (!empty($limit) && !empty($start))
             $q .= " limit $start,$limit ";

@@ -230,6 +230,9 @@ class Artikel extends REST_Controller
     {
         $user_id = $this->security->xss_clean($this->get("user_id"));
         $artikel_id = $this->security->xss_clean($this->get("artikel_id"));
+        $slug_artikel = $this->security->xss_clean($this->get("slug_artikel"));
+        $slug_kategori = $this->security->xss_clean($this->get("slug_kategori"));
+        $artikel_id = $this->security->xss_clean($this->get("artikel_id"));
         $start = $this->security->xss_clean($this->get("start"));
         $limit = $this->security->xss_clean($this->get("limit"));
         $desc = $this->security->xss_clean($this->get("desc"));
@@ -237,7 +240,7 @@ class Artikel extends REST_Controller
 
         $dir_logo =  base_url() . 'assets/uploads/artikel/';
 
-        $artikels = $this->artikel_model->get_artikel($user_id, $artikel_id, $start, $limit, $desc, $id_kategori);
+        $artikels = $this->artikel_model->get_artikel($user_id, $artikel_id, $slug_artikel, $slug_kategori, $start, $limit, $desc, $id_kategori);
         for ($i = 0; $i < count($artikels); $i++) {
             $artikels[$i]->cover = $dir_logo  . $artikels[$i]->cover;
         }
