@@ -10,7 +10,7 @@ class Home extends REST_Controller
         parent::__construct();
         //load database
         $this->load->database();
-        $this->load->model(array("api/home_model"));
+        $this->load->model(array("api/home_model", "api/kategori_model", "api/layanan_model", "api/item_kategori_model"));
         $this->load->library(array("form_validation"));
         $this->load->helper("security");
     }
@@ -817,6 +817,49 @@ class Home extends REST_Controller
             'status' => "Success",
             'message' => 'Data Berhasil Dimuat',
             'data' => $team_home,
+        ], REST_Controller::HTTP_OK);
+    }
+
+    public function layanan_get()
+    {
+        $layanan_home = $this->layanan_model->get_layanans();
+
+        for ($i = 0; $i < count($layanan_home); $i++) {
+            $kategoris = $this->kategori_model->get_kategoris($layanan_home[$i]->slug);
+            if (count($kategoris) > 0) {
+                $data = [
+                    'slug_kategori' => $kategoris[0]->slug,
+                    'id_kategori' => '',
+                    'slug_layanan' => $layanan_home[$i]->slug,
+                    'id_layanan' => '',
+                    'id_item_kategori' => '',
+                ];
+
+                $items_kategori = $this->item_kategori_model->get_items_kategori($data);
+                $layanan_home[$i]->image = '';
+                for ($j = 0; $j < count($items_kategori); $j++) {
+                    $img_item = $this->item_kategori_model->get_imgs_item_kategori($items_kategori[$j]->id);
+
+                    if (count($img_item) > 0 && ($layanan_home[$i]->image == '')) {
+                        $layanan_home[$i]->image = base_url() . 'assets/uploads/item_kategori/' . $img_item[0]->gambar;
+                        break;
+                    }
+                }
+
+                if ($layanan_home[$i]->image == '') {
+                    $layanan_home[$i]->image = base_url() . 'assets/uploads/no_image.png';
+                }
+            } else {
+                $layanan_home[$i]->image = base_url() . 'assets/uploads/no_image.png';
+            }
+
+            $layanan_home[$i]->deskripsi = "Layanan " . $layanan_home[$i]->nama;
+        }
+
+        $this->response([
+            'status' => "Success",
+            'message' => 'Data Berhasil Dimuat',
+            'data' => $layanan_home,
         ], REST_Controller::HTTP_OK);
     }
 
