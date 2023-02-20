@@ -9,14 +9,16 @@ class Tentang_model extends CI_Model
         $this->load->database();
     }
 
-    public function get_tentangs()
+    public function get_tentangs($slug_kategori = '')
     {
-
         $this->db->select("tentang.*, tentang_kategori.nama AS kategori");
         $this->db->from("tentang");
         $this->db->join("tentang_kategori", "tentang_kategori.id = tentang.id_kategori");
         $this->db->where("tentang.status", "ditampilkan");
         $this->db->where("tentang_kategori.status", "ditampilkan");
+        if (!empty($slug_kategori)) {
+            $this->db->where("tentang_kategori.slug", $slug_kategori);
+        }
         $query = $this->db->get();
 
         return $query->result();

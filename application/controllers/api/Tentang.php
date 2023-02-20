@@ -98,7 +98,8 @@ class Tentang extends REST_Controller
 
     public function index_get()
     {
-        $tentang = $this->tentang_model->get_tentangs();
+        $slug_kategori = $this->security->xss_clean($this->get("slug_kategori"));
+        $tentang = $this->tentang_model->get_tentangs($slug_kategori);
 
         $this->response([
             'status' => "Success",
