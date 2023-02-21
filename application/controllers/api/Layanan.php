@@ -103,12 +103,12 @@ class Layanan extends REST_Controller
         $id = $this->delete("id");
 
         if ($this->layanan_model->delete_layanan($id)) {
-            $this->response([
+            return $this->response([
                 'status' => "Success",
                 'message' => 'Data Berhasil Dihapus',
             ], REST_Controller::HTTP_OK);
         } else {
-            $this->response([
+            return $this->response([
                 'status' => "Gagal",
                 'message' => 'Data Gagal Dihapus',
             ], REST_Controller::HTTP_OK);

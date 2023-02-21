@@ -22,7 +22,7 @@ class Kategori extends REST_Controller
         $icon = $this->security->xss_clean($this->post("icon"));
         $this->form_validation->set_rules("nama", "Nama", "required");
         if ($this->form_validation->run() === FALSE) {
-            $this->response([
+            return $this->response([
                 'status' => "Error",
                 'message' => 'Data Gagal Ditambah',
             ], REST_Controller::HTTP_BAD_REQUEST);
@@ -31,12 +31,15 @@ class Kategori extends REST_Controller
                 $kategori = array(
                     "id_layanan" => $id,
                     "nama" => $nama,
-                    "icon" => $icon,
                     "slug" => slug($nama),
                 );
 
+                if (!empty($icon)) {
+                    $kategori['icon'] = $icon;
+                }
+
                 if ($this->kategori_model->insert_kategori($kategori)) {
-                    $this->response([
+                    return $this->response([
                         'status' => "Success",
                         'message' => 'Data Berhasil Ditambah',
                     ], REST_Controller::HTTP_OK);
@@ -49,19 +52,19 @@ class Kategori extends REST_Controller
                     );
 
                     if ($this->kategori_model->insert_kategori($kategori)) {
-                        $this->response([
+                        return $this->response([
                             'status' => "Success",
                             'message' => 'Data Berhasil Ditambah',
                         ], REST_Controller::HTTP_OK);
                     } else {
-                        $this->response([
+                        return $this->response([
                             'status' => "Error",
                             'message' => 'Data Gagal Ditambah',
                         ], REST_Controller::HTTP_OK);
                     }
                 }
             } else {
-                $this->response([
+                return $this->response([
                     'status' => "Error",
                     'message' => 'Data Gagal Ditambah',
                 ], REST_Controller::HTTP_BAD_REQUEST);
@@ -162,13 +165,16 @@ class Kategori extends REST_Controller
         $nama = $this->security->xss_clean($this->put("nama"));
         $icon = $this->security->xss_clean($this->put("icon"));
 
-        if (!empty($id_layanan) && !empty($nama) && !empty($icon)) {
+        if (!empty($id_layanan) && !empty($nama)) {
             $kategori = array(
                 "id_layanan" => $id_layanan,
                 "nama" => $nama,
-                "icon" => $icon,
                 "slug" => slug($nama),
             );
+
+            if (!empty($icon)) {
+                $kategori['icon'] = $icon;
+            }
 
             if ($this->kategori_model->update_kategori($id, $kategori)) {
                 return $this->response([
