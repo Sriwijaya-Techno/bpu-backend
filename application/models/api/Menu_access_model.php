@@ -12,7 +12,7 @@ class Menu_access_model extends CI_Model
     public function get_menu_Accesses()
     {
         $this->db->select("*");
-        $this->db->from("menu_Access");
+        $this->db->from("menu_access");
         $this->db->where("status", "ditampilkan");
         $query = $this->db->get();
 
