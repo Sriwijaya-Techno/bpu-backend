@@ -56,7 +56,7 @@ class User extends REST_Controller
                 'message' => 'Data Gagal Ditambah',
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            if (!empty($username) && !empty($email) && !empty($password) && !empty($tipe_akun) && !empty($id_role)) {
+            if (!empty($username) && !empty($email) && !empty($password) && !empty($tipe_akun)) {
                 $user_email = $this->user_model->get_user_by_email($email);
                 if (count($user_email) > 0) {
                     $this->response([
@@ -68,9 +68,12 @@ class User extends REST_Controller
                         "username" => $username,
                         "email" => $email,
                         "password" => md5($password),
-                        "tipe_akun" => $tipe_akun,
-                        "id_role" => $id_role
+                        "tipe_akun" => $tipe_akun
                     );
+
+                    if (!empty($id_role)) {
+                        $user["id_role"] = $id_role;
+                    }
 
                     if ($this->user_model->insert_user($user)) {
                         $this->response([
@@ -102,7 +105,7 @@ class User extends REST_Controller
         $tipe_akun = $this->security->xss_clean($this->put("tipe_akun"));
         $id_role = $this->security->xss_clean($this->put("id_role"));
 
-        if (!empty($username) && !empty($email) && !empty($password) && !empty($tipe_akun) && !empty($id_role)) {
+        if (!empty($username) && !empty($email) && !empty($password) && !empty($tipe_akun)) {
             $user_id = $this->user_model->get_user_by_id($id);
             $user_email = $this->user_model->get_user_by_email($email);
             if (count($user_email) > 0 && $user_id[0]->email != $user_email[0]->email) {
@@ -115,9 +118,12 @@ class User extends REST_Controller
                     "username" => $username,
                     "email" => $email,
                     "password" => md5($password),
-                    "tipe_akun" => $tipe_akun,
-                    "id_role" => $id_role
+                    "tipe_akun" => $tipe_akun
                 );
+
+                if (!empty($id_role)) {
+                    $user["id_role"] = $id_role;
+                }
 
                 if ($this->user_model->update_user_information($id, $user)) {
                     return $this->response([
