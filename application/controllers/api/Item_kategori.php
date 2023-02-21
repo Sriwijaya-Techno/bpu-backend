@@ -69,7 +69,7 @@ class Item_kategori extends REST_Controller
                     $cpt = count($_FILES['gambar']['name']);
                     if (!empty($_FILES['gambar']['name'][0])) {
                         $dir = realpath(APPPATH . '../assets/uploads');
-                        $filename = $dir . '\\item_kategori\\';
+                        $filename = $dir . '/item_kategori/';
 
                         if (!file_exists($filename)) {
                             mkdir($filename, 0775, true);
@@ -193,7 +193,7 @@ class Item_kategori extends REST_Controller
                     $files = $_FILES;
                     $cpt = count($_FILES['gambar']['name']);
                     $dir = realpath(APPPATH . '../assets/uploads');
-                    $filename = $dir . '\\item_kategori\\';
+                    $filename = $dir . '/item_kategori/';
 
                     if (!file_exists($filename)) {
                         mkdir($filename, 0775, true);

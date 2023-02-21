@@ -449,7 +449,7 @@ class Kerjasama extends REST_Controller
             if (!empty($_FILES['draft_file']['name'])) {
                 $files = $_FILES;
                 $dir = realpath(APPPATH . '../assets/uploads');
-                $filename = $dir . '\\draft\\';
+                $filename = $dir . '/draft/';
 
                 if (!file_exists($filename)) {
                     mkdir($filename, 0775, true);
@@ -946,7 +946,7 @@ class Kerjasama extends REST_Controller
                 if (!empty($_FILES['bukti_pembayaran']['name'])) {
                     $files = $_FILES;
                     $dir = realpath(APPPATH . '../assets/uploads');
-                    $filename = $dir . '\\bukti_pembayaran\\';
+                    $filename = $dir . '/bukti_pembayaran/';
 
                     if (!file_exists($filename)) {
                         mkdir($filename, 0775, true);

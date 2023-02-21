@@ -46,7 +46,7 @@ class Company extends REST_Controller
                 if (!empty($_FILES['logo']['name'])) {
                     $files = $_FILES;
                     $dir = realpath(APPPATH . '../assets/uploads');
-                    $filename = $dir . '\\logo\\';
+                    $filename = $dir . '/logo/';
 
                     if (!file_exists($filename)) {
                         mkdir($filename, 0775, true);
@@ -211,7 +211,7 @@ class Company extends REST_Controller
                 if (!empty($_FILES['logo']['name'])) {
                     $files = $_FILES;
                     $dir = realpath(APPPATH . '../assets/uploads');
-                    $filename = $dir . '\\logo\\';
+                    $filename = $dir . '/logo/';
 
                     if (!file_exists($filename)) {
                         mkdir($filename, 0775, true);

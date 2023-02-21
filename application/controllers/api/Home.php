@@ -179,7 +179,7 @@ class Home extends REST_Controller
                 if (!empty($_FILES['gambar_tentang']['name'])) {
                     $files = $_FILES;
                     $dir = realpath(APPPATH . '../assets/uploads');
-                    $filename = $dir . '\\gambar_tentang\\';
+                    $filename = $dir . '/gambar_tentang/';
 
                     if (!file_exists($filename)) {
                         mkdir($filename, 0775, true);
@@ -412,7 +412,7 @@ class Home extends REST_Controller
                 if (!empty($_FILES['gambar']['name'])) {
                     $files = $_FILES;
                     $dir = realpath(APPPATH . '../assets/uploads');
-                    $filename = $dir . '\\gambar_mitra\\';
+                    $filename = $dir . '/gambar_mitra/';
 
                     if (!file_exists($filename)) {
                         mkdir($filename, 0775, true);
@@ -529,7 +529,7 @@ class Home extends REST_Controller
                 if (!empty($_FILES['foto_team']['name'])) {
                     $files = $_FILES;
                     $dir = realpath(APPPATH . '../assets/uploads');
-                    $filename = $dir . '\\foto_team\\';
+                    $filename = $dir . '/foto_team/';
 
                     if (!file_exists($filename)) {
                         mkdir($filename, 0775, true);

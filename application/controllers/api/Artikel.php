@@ -32,7 +32,7 @@ class Artikel extends REST_Controller
             if (!empty($_FILES['cover']['name'])) {
                 $files = $_FILES;
                 $dir = realpath(APPPATH . '../assets/uploads');
-                $filename = $dir . '\\artikel\\';
+                $filename = $dir . '/artikel/';
 
                 if (!file_exists($filename)) {
                     mkdir($filename, 0775, true);
@@ -129,7 +129,7 @@ class Artikel extends REST_Controller
             if (!empty($_FILES['cover']['name'])) {
                 $files = $_FILES;
                 $dir = realpath(APPPATH . '../assets/uploads');
-                $filename = $dir . '\\artikel\\';
+                $filename = $dir . '/artikel/';
 
                 if (!file_exists($filename)) {
                     mkdir($filename, 0775, true);
