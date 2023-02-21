@@ -36,7 +36,7 @@ class Home extends REST_Controller
                 if (!empty($_FILES['logo_header_home']['name'])) {
                     $files = $_FILES;
                     $dir = realpath(APPPATH . '../assets/uploads');
-                    $filename = $dir . '\\logo_header_home\\';
+                    $filename = $dir . '/logo_header_home/';
 
                     if (!file_exists($filename)) {
                         mkdir($filename, 0775, true);
