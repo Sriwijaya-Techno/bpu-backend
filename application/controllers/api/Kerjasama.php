@@ -10,7 +10,7 @@ class Kerjasama extends REST_Controller
         parent::__construct();
         //load database
         $this->load->database();
-        $this->load->model(array("api/kerjasama_model", "api/rab_model", "api/pasal_model", "api/base_setting_model", "api/company_profile_status_model"));
+        $this->load->model(array("api/kerjasama_model", "api/rab_model", "api/pasal_model", "api/base_setting_model", "api/base_setting_status_model", "api/company_profile_status_model"));
         $this->load->library(array("form_validation"));
         $this->load->helper("security");
     }
@@ -112,10 +112,14 @@ class Kerjasama extends REST_Controller
             if (count($base_setting) == 0) {
                 $base_setting = $this->base_setting_model->get_old_base_settings();
                 for ($i = 0; $i < count($base_setting); $i++) {
+                    $base_setting[$i]->bss_id = '';
+                    $base_setting[$i]->bs_jabatan = '';
                     $base_setting[$i]->bs_logo_url = base_url() . 'assets/uploads/base_setting/' . $base_setting[$i]->bs_logo;
                     $base_setting[$i]->bs_logo = $dir_bs_logo . '\\' . $base_setting[$i]->bs_logo;
                 }
             }
+
+            $base_setting_status = $this->base_setting_status_model->get_base_setting_statuses();
 
             $company_profile = $this->kerjasama_model->get_company_profile_by_id_kerjasama($id_kerjasama);
             for ($i = 0; $i < count($company_profile); $i++) {
@@ -136,6 +140,7 @@ class Kerjasama extends REST_Controller
 
             $data = array(
                 "base_setting" => $base_setting,
+                "base_setting_jabatan" => $base_setting_status,
                 "draft" => $draft,
                 "pasal" => $pasal,
                 "company_profile" => $company_profile,
