@@ -100,6 +100,20 @@ class Kerjasama_model extends CI_Model
         }
     }
 
+    public function cek_base_setting_kerjasama($id_kerjasama)
+    {
+        $this->db->select("*");
+        $this->db->from("base_setting_kerjasama");
+        $this->db->where("id_kerjasama", $id_kerjasama);
+        $query = $this->db->get();
+
+        if (count($query->result()) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function get_total_bayar_kerjasama($id_kerjasama)
     {
         $this->db->select("sum(nominal) as total_bayar");
@@ -154,9 +168,10 @@ class Kerjasama_model extends CI_Model
 
     public function get_company_profile_by_id_kerjasama($id_kerjasama)
     {
-        $this->db->select("company_profile.*");
+        $this->db->select("company_profile.*, company_profile_status.cps_nama AS jabatan");
         $this->db->from("kerjasama");
         $this->db->join("company_profile", "company_profile.user_id = kerjasama.user_id");
+        $this->db->join("company_profile_status", "company_profile_status.cps_id = company_profile.cps_id");
         $this->db->where("kerjasama.id", $id_kerjasama);
         $query = $this->db->get();
 
@@ -212,10 +227,21 @@ class Kerjasama_model extends CI_Model
         return $this->db->insert("draft_kerjasama", $data);
     }
 
+    public function insert_base_setting_kerjasama($data = [])
+    {
+        return $this->db->insert("base_setting_kerjasama", $data);
+    }
+
     public function update_draft_kerjasama($id, $data)
     {
         $this->db->where("id", $id);
         return $this->db->update("draft_kerjasama", $data);
+    }
+
+    public function update_base_setting_kerjasama($id, $data)
+    {
+        $this->db->where("id_kerjasama", $id);
+        return $this->db->update("base_setting_kerjasama", $data);
     }
 
     public function insert_pembayaran_kerjasama($data = [])

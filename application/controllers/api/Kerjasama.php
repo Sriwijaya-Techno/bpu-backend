@@ -109,6 +109,14 @@ class Kerjasama extends REST_Controller
                 $base_setting[$i]->bs_logo = $dir_bs_logo . '\\' . $base_setting[$i]->bs_logo;
             }
 
+            if (count($base_setting) == 0) {
+                $base_setting = $this->base_setting_model->get_old_base_settings();
+                for ($i = 0; $i < count($base_setting); $i++) {
+                    $base_setting[$i]->bs_logo_url = base_url() . 'assets/uploads/base_setting/' . $base_setting[$i]->bs_logo;
+                    $base_setting[$i]->bs_logo = $dir_bs_logo . '\\' . $base_setting[$i]->bs_logo;
+                }
+            }
+
             $company_profile = $this->kerjasama_model->get_company_profile_by_id_kerjasama($id_kerjasama);
             for ($i = 0; $i < count($company_profile); $i++) {
                 $company_profile[$i]->logo_url = base_url() . 'assets/uploads/logo/' . $company_profile[$i]->logo;
@@ -416,6 +424,8 @@ class Kerjasama extends REST_Controller
         $id_kerjasama = $this->post("id_kerjasama");
         $id_draft = $this->post("id_draft");
         $id_cp = $this->post("id_cp");
+        $id_bss = $this->post("id_bss");
+        $nama_pj_univ = $this->post("nama_pj_univ");
         $draft_nomorp1 = $this->post("draft_nomorp1");
         $draft_nomorp2 = $this->post("draft_nomorp2");
         $draft_tanggal_mulai = $this->post("draft_tanggal_mulai");
@@ -423,6 +433,7 @@ class Kerjasama extends REST_Controller
         $draft_info = $this->post("draft_info");
         $draft_lokasi = $this->post("draft_lokasi");
         $draft_keterangan = $this->post("draft_keterangan");
+        $ketua_tim = $this->post("ketua_tim");
         $draft_status = $this->post("draft_status");
         $pasal_1 = $this->post('pasal_1');
         $pasal_2 = $this->post('pasal_2');
@@ -441,8 +452,8 @@ class Kerjasama extends REST_Controller
         }
 
         if (
-            !empty($draft_nomorp1) && !empty($id_cp) && !empty($draft_nomorp2) && !empty($draft_tanggal_mulai) && !empty($draft_tanggal_akhir) &&
-            !empty($draft_info) && !empty($draft_lokasi) && !empty($draft_keterangan) && !empty($draft_status) &&
+            !empty($draft_nomorp1) && !empty($id_cp) && !empty($id_bss) && !empty($nama_pj_univ) && !empty($draft_nomorp2) && !empty($draft_tanggal_mulai) && !empty($draft_tanggal_akhir) &&
+            !empty($draft_info) && !empty($draft_lokasi) && !empty($draft_keterangan) && !empty($ketua_tim) && !empty($draft_status) &&
             !empty($id_kerjasama)
         ) {
             $draft_file = '';
@@ -487,15 +498,28 @@ class Kerjasama extends REST_Controller
                             "draft_info" => $draft_info,
                             "draft_lokasi" => $draft_lokasi,
                             "draft_keterangan" => $draft_keterangan,
+                            "ketua_tim" => $ketua_tim,
                             "draft_file" => $draft_file,
                             "draft_status" => $draft_status,
                         );
 
                         if ($this->kerjasama_model->update_draft_kerjasama($id_draft, $draft)) {
-                            return $this->response([
-                                'status' => "Success",
-                                'message' => 'Data Berhasil Diupdate',
-                            ], REST_Controller::HTTP_OK);
+                            $bs_kerjasama = array(
+                                "id_bss" => $id_bss,
+                                "nama_pj_univ" => $nama_pj_univ,
+                            );
+
+                            if (!$this->kerjasama_model->update_base_setting_kerjasama($id_kerjasama, $bs_kerjasama)) {
+                                return $this->response([
+                                    'status' => "Gagal",
+                                    'message' => 'Data Gagal Diupdate',
+                                ], REST_Controller::HTTP_OK);
+                            } else {
+                                return $this->response([
+                                    'status' => "Success",
+                                    'message' => 'Data Berhasil Diupdate',
+                                ], REST_Controller::HTTP_OK);
+                            }
                         } else {
                             return $this->response([
                                 'status' => "Gagal",
@@ -513,15 +537,30 @@ class Kerjasama extends REST_Controller
                             "draft_info" => $draft_info,
                             "draft_lokasi" => $draft_lokasi,
                             "draft_keterangan" => $draft_keterangan,
+                            "ketua_tim" => $ketua_tim,
                             "draft_file" => $draft_file,
                             "draft_status" => $draft_status,
                         );
 
                         if ($this->kerjasama_model->insert_draft_kerjasama($draft)) {
-                            return $this->response([
-                                'status' => "Success",
-                                'message' => 'Data Berhasil Ditambah',
-                            ], REST_Controller::HTTP_OK);
+                            $bs_kerjasama = array(
+                                "id_kerjasama" => $id_kerjasama,
+                                "id_base_setting" => 1,
+                                "id_bss" => $id_bss,
+                                "nama_pj_univ" => $nama_pj_univ,
+                            );
+
+                            if ($this->kerjasama_model->insert_base_setting_kerjasama($bs_kerjasama)) {
+                                return $this->response([
+                                    'status' => "Success",
+                                    'message' => 'Data Berhasil Ditambah',
+                                ], REST_Controller::HTTP_OK);
+                            } else {
+                                return $this->response([
+                                    'status' => "Gagal",
+                                    'message' => 'Data Gagal Ditambah',
+                                ], REST_Controller::HTTP_OK);
+                            }
                         } else {
                             return $this->response([
                                 'status' => "Gagal",
@@ -543,6 +582,7 @@ class Kerjasama extends REST_Controller
                         "draft_info" => $draft_info,
                         "draft_lokasi" => $draft_lokasi,
                         "draft_keterangan" => $draft_keterangan,
+                        "ketua_tim" => $ketua_tim,
                         "draft_file" => $draft_file,
                         "draft_status" => $draft_status,
                     );
@@ -565,6 +605,18 @@ class Kerjasama extends REST_Controller
                                 'pasal_isi'   =>    $arrpsl[$i],
                             ];
                             $this->pasal_model->update_pasal($id_draft, $pasal_kode, $dat);
+                        }
+
+                        $bs_kerjasama = array(
+                            "id_bss" => $id_bss,
+                            "nama_pj_univ" => $nama_pj_univ,
+                        );
+
+                        if (!$this->kerjasama_model->update_base_setting_kerjasama($id_kerjasama, $bs_kerjasama)) {
+                            return $this->response([
+                                'status' => "Gagal",
+                                'message' => 'Data Gagal Diupdate',
+                            ], REST_Controller::HTTP_OK);
                         }
 
                         $title = "draft_kerjsama";
@@ -837,12 +889,27 @@ class Kerjasama extends REST_Controller
                         "draft_info" => $draft_info,
                         "draft_lokasi" => $draft_lokasi,
                         "draft_keterangan" => $draft_keterangan,
+                        "ketua_tim" => $ketua_tim,
                         "draft_file" => $draft_file,
                         "draft_status" => $draft_status,
                     );
 
                     $this->kerjasama_model->insert_draft_kerjasama($draft);
                     $id_draft = $this->db->insert_id();
+
+                    $bs_kerjasama = array(
+                        "id_kerjasama" => $id_kerjasama,
+                        "id_base_setting" => 1,
+                        "id_bss" => $id_bss,
+                        "nama_pj_univ" => $nama_pj_univ,
+                    );
+
+                    if (!$this->kerjasama_model->insert_base_setting_kerjasama($bs_kerjasama)) {
+                        return $this->response([
+                            'status' => "Gagal",
+                            'message' => 'Data Gagal Ditambah',
+                        ], REST_Controller::HTTP_OK);
+                    }
 
                     $arrpsl = [
                         '0' => $pasal_1,
@@ -893,6 +960,13 @@ class Kerjasama extends REST_Controller
                         'default_font_size' => 11,
                         'default_font' => 'Arial'
                     ]);
+
+                    $dir = realpath(APPPATH . '../assets/uploads');
+                    $filename = $dir . '/draft/';
+
+                    if (!file_exists($filename)) {
+                        mkdir($filename, 0775, true);
+                    }
 
                     $filename = 'Draft_kerjasama_' . $data['draft_company'][0]->nama_perusahaan . '_' . $data['draft_company'][0]->draft_lokasi . '.pdf';
                     $path = 'assets/uploads/draft/' . $filename;
