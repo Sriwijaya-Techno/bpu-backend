@@ -49,7 +49,6 @@ class User extends REST_Controller
         $this->form_validation->set_rules("email", "Email", "required|valid_email");
         $this->form_validation->set_rules("password", "Password", "required");
         $this->form_validation->set_rules("tipe_akun", "Tipe_akun", "required");
-        $this->form_validation->set_rules("id_role", "Id_role", "required");
         if ($this->form_validation->run() === FALSE) {
             $this->response([
                 'status' => "Error",
