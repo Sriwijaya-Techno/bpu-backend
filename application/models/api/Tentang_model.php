@@ -19,6 +19,7 @@ class Tentang_model extends CI_Model
         if (!empty($slug_kategori)) {
             $this->db->where("tentang_kategori.slug", $slug_kategori);
         }
+        $this->db->order_by('created_date', 'DESC');
         $query = $this->db->get();
 
         return $query->result();

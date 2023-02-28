@@ -48,6 +48,8 @@ class Artikel_model extends CI_Model
         if (!empty($slug_kategori))
             $q .= " AND c.slug = '$slug_kategori' ";
 
+        $q .= " order by a.tanggal DESC ";
+
         if (!empty($limit) && !empty($start))
             $q .= " limit $start,$limit ";
 

@@ -17,6 +17,7 @@ class Kategori_model extends CI_Model
         if (!empty($slug_layanan)) {
             $this->db->where("layanan.slug", $slug_layanan);
         }
+        $this->db->order_by('kategori.created_date', 'DESC');
         $query = $this->db->get();
 
         return $query->result();
@@ -27,6 +28,7 @@ class Kategori_model extends CI_Model
         $this->db->select("*");
         $this->db->from("tentang_kategori");
         $this->db->where("status", "ditampilkan");
+        $this->db->order_by('created_date', 'DESC');
         $query = $this->db->get();
 
         return $query->result();
@@ -37,6 +39,7 @@ class Kategori_model extends CI_Model
         $this->db->select("*");
         $this->db->from("artikel_kategori");
         $this->db->where("status", "ditampilkan");
+        $this->db->order_by('created_date', 'DESC');
         $query = $this->db->get();
 
         return $query->result();

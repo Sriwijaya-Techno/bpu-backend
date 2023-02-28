@@ -12,9 +12,11 @@ class User_model extends CI_Model
     public function get_users()
     {
 
-        $this->db->select("*");
+        $this->db->select("user.*, role.nama AS role");
         $this->db->from("user");
+        $this->db->join("role", "role.id = user.id_role", "left");
         $this->db->where("status_data", "ditampilkan");
+        $this->db->order_by('created_date', 'DESC');
         $query = $this->db->get();
 
         return $query->result();

@@ -795,6 +795,7 @@ class Home extends REST_Controller
         $mitra_home = $this->home_model->get_mitra();
 
         for ($i = 0; $i < count($mitra_home); $i++) {
+            $mitra_home[$i]->filename = $mitra_home[$i]->gambar;
             $mitra_home[$i]->gambar = base_url() . 'assets/uploads/gambar_mitra/' . $mitra_home[$i]->gambar;
         }
 

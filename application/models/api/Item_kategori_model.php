@@ -45,6 +45,9 @@ class Item_kategori_model extends CI_Model
         if (!empty($data['id_item_kategori'])) {
             $this->db->where("item_kategori.id", $data['id_item_kategori']);
         }
+
+        $this->db->order_by('item_kategori.created_date', 'DESC');
+
         $query = $this->db->get();
 
         return $query->result();

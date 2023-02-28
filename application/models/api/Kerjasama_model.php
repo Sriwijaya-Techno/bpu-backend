@@ -17,6 +17,7 @@ class Kerjasama_model extends CI_Model
         $this->db->join("company_profile", "kerjasama.user_id = company_profile.user_id");
         $this->db->join("item_kategori", "item_kategori.id = kerjasama.id_item_kategori");
         $this->db->join("detail_kerjasama", "detail_kerjasama.id_kerjasama = kerjasama.id");
+        $this->db->order_by('kerjasama.created_date', 'DESC');
         $query = $this->db->get();
 
         return $query->result();
@@ -40,6 +41,7 @@ class Kerjasama_model extends CI_Model
         $this->db->join("item_kategori", "item_kategori.id = kerjasama.id_item_kategori");
         $this->db->join("detail_kerjasama", "detail_kerjasama.id_kerjasama = kerjasama.id");
         $this->db->where("user_id", $user_id);
+        $this->db->order_by('kerjasama.created_date', 'DESC');
         $query = $this->db->get();
 
         return $query->result();

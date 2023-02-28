@@ -98,6 +98,7 @@ class Home_model extends CI_Model
     {
         $this->db->select("*");
         $this->db->from("testimoni");
+        $this->db->order_by('id', 'DESC');
         $query = $this->db->get();
 
         return $query->result();
@@ -118,6 +119,7 @@ class Home_model extends CI_Model
         $this->db->select("*");
         $this->db->from("mitra");
         $this->db->where("status", "ditampilkan");
+        $this->db->order_by('created_date', 'DESC');
         $query = $this->db->get();
 
         return $query->result();
@@ -127,6 +129,7 @@ class Home_model extends CI_Model
     {
         $this->db->select("*");
         $this->db->from("team");
+        $this->db->order_by('id', 'DESC');
         $query = $this->db->get();
 
         return $query->result();

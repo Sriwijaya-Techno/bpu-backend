@@ -14,6 +14,7 @@ class Menu_access_model extends CI_Model
         $this->db->select("*");
         $this->db->from("menu_access");
         $this->db->where("status", "ditampilkan");
+        $this->db->order_by('created_date', 'DESC');
         $query = $this->db->get();
 
         return $query->result();

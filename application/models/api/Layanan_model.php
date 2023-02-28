@@ -13,6 +13,7 @@ class Layanan_model extends CI_Model
     {
         $this->db->select("*");
         $this->db->from("layanan");
+        $this->db->order_by('created_date', 'DESC');
         $query = $this->db->get();
 
         return $query->result();
