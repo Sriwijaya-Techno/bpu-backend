@@ -94,6 +94,30 @@ class Kerjasama extends REST_Controller
         }
     }
 
+    public function rab_surat_get()
+    {
+        $id_kerjasama = $this->get("id_kerjasama");
+
+        if (!empty($id_kerjasama)) {
+            $rab_surat_kerjasama = $this->kerjasama_model->get_rab_surat_kerjasama($id_kerjasama);
+
+            for ($i = 0; $i < count($rab_surat_kerjasama); $i++) {
+                $rab_surat_kerjasama[$i]->surat_url = base_url() . 'assets/uploads/surat/' . $rab_surat_kerjasama[$i]->nama;
+            }
+
+            $this->response([
+                'status' => "Success",
+                'message' => 'Data Berhasil Dimuat',
+                'data' => $rab_surat_kerjasama,
+            ], 200);
+        } else {
+            $this->response([
+                'status' => "Error",
+                'message' => 'Data Tidak Boleh Kosong',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+
     public function draft_get()
     {
         $id_kerjasama = $this->get("id_kerjasama");
@@ -422,6 +446,110 @@ class Kerjasama extends REST_Controller
             'status' => "Success",
             'message' => 'Data Berhasil Diupdate',
         ], REST_Controller::HTTP_OK);
+    }
+
+    public function rab_surat_post()
+    {
+        $id_kerjasama = $this->post("id_kerjasama");
+        $no_surat = $this->post("no_surat");
+        $tanggal_surat = $this->post("tanggal_surat");
+        $jenis_surat = $this->post("jenis_surat");
+        $this->form_validation->set_rules("id_kerjasama", "Id_kerjasama", "required");
+        $this->form_validation->set_rules("no_surat", "No_surat", "required");
+        $this->form_validation->set_rules("tanggal_surat", "Tanggal_surat", "required");
+        $this->form_validation->set_rules("jenis_surat", "Jenis_surat", "required");
+        if ($this->form_validation->run() === FALSE) {
+            return $this->response([
+                'status' => "Error",
+                'message' => 'Data Gagal Divalidasi',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            if (!empty($id_kerjasama) && !empty($no_surat) && !empty($tanggal_surat) && !empty($jenis_surat)) {
+                if ($this->kerjasama_model->cek_rab_surat_kerjasama($id_kerjasama)) {
+                    if ($this->kerjasama_model->cek_pengajuan_rab_surat_kerjasama($id_kerjasama)) {
+                        return $this->response([
+                            'status' => "Gagal",
+                            'message' => 'Surat yang diajukan harus dibalas terlebih dahulu',
+                        ], REST_Controller::HTTP_OK);
+                    }
+
+                    if ($this->kerjasama_model->cek_penerimaan_rab_surat_kerjasama($id_kerjasama)) {
+                        return $this->response([
+                            'status' => "Gagal",
+                            'message' => 'Tidak bisa mengajukan surat karena surat kerjasama sudah diterima',
+                        ], REST_Controller::HTTP_OK);
+                    }
+                }
+
+                if (!empty($_FILES['surat_file']['name'])) {
+                    $surat_file = '';
+                    $files = $_FILES;
+                    $dir = realpath(APPPATH . '../assets/uploads');
+                    $filename = $dir . '/surat/';
+
+                    if (!file_exists($filename)) {
+                        mkdir($filename, 0775, true);
+                    }
+
+                    $_FILES['surat_file']['name'] = $files['surat_file']['name'];
+                    $_FILES['surat_file']['type'] = $files['surat_file']['type'];
+                    $_FILES['surat_file']['tmp_name'] = $files['surat_file']['tmp_name'];
+                    $_FILES['surat_file']['error'] = $files['surat_file']['error'];
+                    $_FILES['surat_file']['size'] = $files['surat_file']['size'];
+
+                    $config['upload_path']          = $filename;
+                    $config['allowed_types']        = 'jpg|jpeg|png|pdf';
+                    $config['max_size']             = 1024 * 10;
+
+                    $this->load->library('upload', $config);
+                    $this->upload->initialize($config);
+                    if (!$this->upload->do_upload('surat_file')) {
+                        $error = array('error' => $this->upload->display_errors());
+
+                        return $this->response([
+                            "status"    => "Gagal",
+                            "message"     => $error,
+                        ], REST_Controller::HTTP_OK);
+                    } else {
+                        $upload_data = $this->upload->data();
+                        $surat_file = $upload_data['file_name'];
+                    }
+
+                    $surat_rab = array(
+                        "id_kerjasama" => $id_kerjasama,
+                        "no_surat" => $no_surat,
+                        "tanggal_surat" => $tanggal_surat,
+                        "jenis_surat" => $jenis_surat,
+                    );
+
+                    if ($surat_file != '') {
+                        $surat_rab['nama'] = $surat_file;
+                    }
+
+                    if ($this->rab_model->insert_surat_rab($surat_rab)) {
+                        return $this->response([
+                            'status' => "Success",
+                            'message' => 'Data Berhasil Ditambah',
+                        ], REST_Controller::HTTP_OK);
+                    } else {
+                        return $this->response([
+                            'status' => "Gagal",
+                            'message' => 'Data Gagal Ditambah',
+                        ], REST_Controller::HTTP_OK);
+                    }
+                } else {
+                    return $this->response([
+                        'status' => "Gagal",
+                        'message' => 'Surat Harus Diisi Terlebih Dahulu',
+                    ], REST_Controller::HTTP_OK);
+                }
+            } else {
+                return $this->response([
+                    'status' => "Error",
+                    'message' => 'Data Tidak Boleh Kosong',
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
     }
 
     public function update_draft_post()
@@ -1243,6 +1371,35 @@ class Kerjasama extends REST_Controller
             }
         } else {
             $this->response([
+                'status' => "Error",
+                'message' => 'Data Tidak Boleh Kosong',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function update_status_rab_surat_put()
+    {
+        $id_surat = $this->put("id_surat");
+        $status = $this->put("status");
+
+        if (!empty($status)) {
+            $kerjasama = array(
+                "status_surat" => $status,
+            );
+
+            if ($this->kerjasama_model->update_status_rab_surat_kerjasama($id_surat, $kerjasama)) {
+                return $this->response([
+                    'status' => "Success",
+                    'message' => 'Data Berhasil Diupdate',
+                ], REST_Controller::HTTP_OK);
+            } else {
+                return $this->response([
+                    'status' => "Gagal",
+                    'message' => 'Data Gagal Diupdate',
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        } else {
+            return $this->response([
                 'status' => "Error",
                 'message' => 'Data Tidak Boleh Kosong',
             ], REST_Controller::HTTP_BAD_REQUEST);

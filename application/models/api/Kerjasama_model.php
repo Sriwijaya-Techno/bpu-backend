@@ -58,6 +58,62 @@ class Kerjasama_model extends CI_Model
         return $query->result();
     }
 
+    public function get_rab_surat_kerjasama($id_kerjasama)
+    {
+        $this->db->select("*");
+        $this->db->from("rab_surat_kerjasama");
+        $this->db->where("id_kerjasama", $id_kerjasama);
+        $this->db->where("status_surat", "diajukan");
+        $this->db->or_where("status_surat", "diterima");
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
+    public function cek_rab_surat_kerjasama($id_kerjasama)
+    {
+        $this->db->select("count(id_kerjasama) as jumlah_data");
+        $this->db->from("rab_surat_kerjasama");
+        $this->db->where("id_kerjasama", $id_kerjasama);
+        $query = $this->db->get();
+
+        if ($query->row()->jumlah_data > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function cek_pengajuan_rab_surat_kerjasama($id_kerjasama)
+    {
+        $this->db->select("count(id_kerjasama) as jumlah_data");
+        $this->db->from("rab_surat_kerjasama");
+        $this->db->where("id_kerjasama", $id_kerjasama);
+        $this->db->where("status_surat", "diajukan");
+        $query = $this->db->get();
+
+        if ($query->row()->jumlah_data > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function cek_penerimaan_rab_surat_kerjasama($id_kerjasama)
+    {
+        $this->db->select("count(id_kerjasama) as jumlah_data");
+        $this->db->from("rab_surat_kerjasama");
+        $this->db->where("id_kerjasama", $id_kerjasama);
+        $this->db->where("status_surat", "diterima");
+        $query = $this->db->get();
+
+        if ($query->row()->jumlah_data > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function get_draft_kerjasama($id_kerjasama)
     {
         $this->db->select("*");
@@ -273,6 +329,12 @@ class Kerjasama_model extends CI_Model
     {
         $this->db->where("id_kerjasama", $id);
         return $this->db->update("rab_kerjasama", $data);
+    }
+
+    public function update_status_rab_surat_kerjasama($id, $data)
+    {
+        $this->db->where("id", $id);
+        return $this->db->update("rab_surat_kerjasama", $data);
     }
 
     public function update_status_kerjasama($id, $data)

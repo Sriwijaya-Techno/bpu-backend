@@ -23,6 +23,11 @@ class Rab_model extends CI_Model
         return $this->db->insert("rab", $data);
     }
 
+    public function insert_surat_rab($data = [])
+    {
+        return $this->db->insert("rab_surat_kerjasama", $data);
+    }
+
     public function update_rab($id_rab, $data = [])
     {
         $this->db->where("id", $id_rab);
