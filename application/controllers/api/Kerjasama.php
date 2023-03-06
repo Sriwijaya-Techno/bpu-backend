@@ -585,9 +585,7 @@ class Kerjasama extends REST_Controller
         }
 
         if (
-            !empty($draft_nomorp1) && !empty($id_cp) && !empty($id_bss) && !empty($nama_pj_univ) && !empty($draft_nomorp2) && !empty($draft_tanggal_mulai) && !empty($draft_tanggal_akhir) &&
-            !empty($draft_info) && !empty($draft_lokasi) && !empty($draft_keterangan) && !empty($ketua_tim) && !empty($draft_status) &&
-            !empty($id_kerjasama)
+            !empty($draft_nomorp1) 
         ) {
             $draft_file = '';
             if (!empty($_FILES['draft_file']['name'])) {
