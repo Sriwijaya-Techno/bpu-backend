@@ -94,12 +94,56 @@ class Kerjasama extends REST_Controller
         }
     }
 
+    public function rab_history_get()
+    {
+        $id_kerjasama = $this->get("id_kerjasama");
+
+        if (!empty($id_kerjasama)) {
+            $kerjasama = $this->kerjasama_model->get_rab_history_kerjasama($id_kerjasama);
+
+            $this->response([
+                'status' => "Success",
+                'message' => 'Data Berhasil Dimuat',
+                'data' => $kerjasama,
+            ], 200);
+        } else {
+            $this->response([
+                'status' => "Error",
+                'message' => 'Data Tidak Boleh Kosong',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+
     public function rab_surat_get()
     {
         $id_kerjasama = $this->get("id_kerjasama");
 
         if (!empty($id_kerjasama)) {
             $rab_surat_kerjasama = $this->kerjasama_model->get_rab_surat_kerjasama($id_kerjasama);
+
+            for ($i = 0; $i < count($rab_surat_kerjasama); $i++) {
+                $rab_surat_kerjasama[$i]->surat_url = base_url() . 'assets/uploads/surat/' . $rab_surat_kerjasama[$i]->nama;
+            }
+
+            $this->response([
+                'status' => "Success",
+                'message' => 'Data Berhasil Dimuat',
+                'data' => $rab_surat_kerjasama,
+            ], 200);
+        } else {
+            $this->response([
+                'status' => "Error",
+                'message' => 'Data Tidak Boleh Kosong',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function rab_surat_penawaran_history_get()
+    {
+        $id_kerjasama = $this->get("id_kerjasama");
+
+        if (!empty($id_kerjasama)) {
+            $rab_surat_kerjasama = $this->kerjasama_model->get_rab_surat_penawaran_kerjasama($id_kerjasama);
 
             for ($i = 0; $i < count($rab_surat_kerjasama); $i++) {
                 $rab_surat_kerjasama[$i]->surat_url = base_url() . 'assets/uploads/surat/' . $rab_surat_kerjasama[$i]->nama;
@@ -127,7 +171,7 @@ class Kerjasama extends REST_Controller
             $dir_logo =  realpath(APPPATH . '../assets/uploads/logo');
             $dir_bs_logo =  realpath(APPPATH . '../assets/uploads/base_setting');
 
-            $base_setting = $this->base_setting_model->get_base_settings();
+            $base_setting = $this->base_setting_model->get_base_settings($id_kerjasama);
             for ($i = 0; $i < count($base_setting); $i++) {
                 $base_setting[$i]->bs_logo_url = base_url() . 'assets/uploads/base_setting/' . $base_setting[$i]->bs_logo;
                 $base_setting[$i]->bs_logo = $dir_bs_logo . '\\' . $base_setting[$i]->bs_logo;
@@ -136,14 +180,11 @@ class Kerjasama extends REST_Controller
             if (count($base_setting) == 0) {
                 $base_setting = $this->base_setting_model->get_old_base_settings();
                 for ($i = 0; $i < count($base_setting); $i++) {
-                    $base_setting[$i]->bss_id = '';
-                    $base_setting[$i]->bs_jabatan = '';
+                    $base_setting[$i]->bs_jabatan = 'Rektor';
                     $base_setting[$i]->bs_logo_url = base_url() . 'assets/uploads/base_setting/' . $base_setting[$i]->bs_logo;
                     $base_setting[$i]->bs_logo = $dir_bs_logo . '\\' . $base_setting[$i]->bs_logo;
                 }
             }
-
-            $base_setting_status = $this->base_setting_status_model->get_base_setting_statuses();
 
             $company_profile = $this->kerjasama_model->get_company_profile_by_id_kerjasama($id_kerjasama);
             for ($i = 0; $i < count($company_profile); $i++) {
@@ -164,7 +205,6 @@ class Kerjasama extends REST_Controller
 
             $data = array(
                 "base_setting" => $base_setting,
-                "base_setting_jabatan" => $base_setting_status,
                 "draft" => $draft,
                 "pasal" => $pasal,
                 "company_profile" => $company_profile,
@@ -296,6 +336,7 @@ class Kerjasama extends REST_Controller
         $volume = $this->post("volume");
         $harga = $this->post("harga");
         $total = $this->post("total");
+        $keterangan = $this->post("keterangan");
         $this->form_validation->set_rules("nama", "Nama", "required");
         $this->form_validation->set_rules("satuan", "Satuan", "required");
         $this->form_validation->set_rules("volume", "Volume", "required");
@@ -309,30 +350,20 @@ class Kerjasama extends REST_Controller
         } else {
             if (!empty($nama) && !empty($satuan) && !empty($volume) && !empty($harga) && !empty($total)) {
                 $rab = array(
+                    "id_kerjasama" => $id_kerjasama,
                     "nama" => $nama,
                     "satuan" => $satuan,
                     "volume" => $volume,
                     "harga" => $harga,
                     "total" => $total,
+                    "keterangan" => $keterangan
                 );
 
                 if ($this->rab_model->insert_rab($rab)) {
-                    $id_rab = $this->db->insert_id();
-                    $rab_kerjasama = array(
-                        "id_kerjasama" => $id_kerjasama,
-                        "id_rab" => $id_rab,
-                    );
-                    if ($this->kerjasama_model->insert_rab_kerjasama($rab_kerjasama)) {
-                        $this->response([
-                            'status' => "Success",
-                            'message' => 'Data Berhasil Ditambah',
-                        ], REST_Controller::HTTP_OK);
-                    } else {
-                        $this->response([
-                            'status' => "Gagal",
-                            'message' => 'Data Gagal Ditambah',
-                        ], REST_Controller::HTTP_OK);
-                    }
+                    $this->response([
+                        'status' => "Success",
+                        'message' => 'Data Berhasil Ditambah',
+                    ], REST_Controller::HTTP_OK);
                 } else {
                     $this->response([
                         'status' => "Gagal",
@@ -358,25 +389,41 @@ class Kerjasama extends REST_Controller
         for ($i = 0; $i < count($data_rabs); $i++) {
             if ($data_rabs[$i]->id_rab != 0) {
                 $rab = array(
+                    "id_kerjasama" => $id_kerjasama,
                     "nama" => $data_rabs[$i]->nama,
                     "satuan" => $data_rabs[$i]->satuan,
                     "volume" => $data_rabs[$i]->volume,
                     "harga" => $data_rabs[$i]->harga,
                     "total" => $data_rabs[$i]->total,
+                    "keterangan" => $data_rabs[$i]->keterangan,
                 );
 
-                if ($this->rab_model->update_rab($data_rabs[$i]->id_rab, $rab)) {
-                    $rab_kerjasama = array(
-                        "status" => "usul",
-                    );
-                    if (!$this->kerjasama_model->update_rab_kerjasama($id_kerjasama, $data_rabs[$i]->id_rab, $rab_kerjasama)) {
-                        $this->response([
-                            'status' => "Gagal",
-                            'message' => 'Gagal Mengolah Data',
-                        ], REST_Controller::HTTP_OK);
+                $data_rab = $this->kerjasama_model->get_rab_kerjasama_by_id_rab($data_rabs[$i]->id_rab);
+                if ($data_rab->volume != $data_rabs[$i]->volume || $data_rab->harga != $data_rabs[$i]->harga) {
+                    $rab['status'] = "nego";
+
+                    if ($data_rab->status == "nego") {
+                        $rab_history = array(
+                            "id_kerjasama" => $id_kerjasama,
+                            "id_rab" => $data_rabs[$i]->id_rab,
+                            "volume" => $data_rab->volume,
+                            "harga" => $data_rab->harga,
+                            "total" => $data_rab->total,
+                        );
+
+                        if (!$this->kerjasama_model->insert_rab_history($rab_history)) {
+                            return $this->response([
+                                'status' => "Gagal",
+                                'message' => 'Gagal Mengupdate History',
+                            ], REST_Controller::HTTP_OK);
+                        }
                     }
                 } else {
-                    $this->response([
+                    $rab['status'] = "usul";
+                }
+
+                if (!$this->rab_model->update_rab($data_rabs[$i]->id_rab, $rab)) {
+                    return $this->response([
                         'status' => "Gagal",
                         'message' => 'Gagal Mengolah Data',
                     ], REST_Controller::HTTP_OK);
@@ -388,21 +435,14 @@ class Kerjasama extends REST_Controller
         for ($i = 0; $i < count($rab_kerjasama); $i++) {
             $id_data_exist = false;
             for ($j = 0; $j < count($data_rabs); $j++) {
-                if ($rab_kerjasama[$i]->id_rab == $data_rabs[$j]->id_rab) {
+                if ($rab_kerjasama[$i]->id == $data_rabs[$j]->id_rab) {
                     $id_data_exist = true;
                 }
             }
 
             if (!$id_data_exist) {
-                if (!$this->kerjasama_model->delete_rab_kerjasama($rab_kerjasama[$i]->id_kerjasama, $rab_kerjasama[$i]->id_rab)) {
-                    $this->response([
-                        'status' => "Gagal",
-                        'message' => 'Gagal Mengolah Data',
-                    ], REST_Controller::HTTP_OK);
-                }
-
                 if (!$this->rab_model->delete_rab($rab_kerjasama[$i]->id_rab)) {
-                    $this->response([
+                    return $this->response([
                         'status' => "Gagal",
                         'message' => 'Gagal Mengolah Data',
                     ], REST_Controller::HTTP_OK);
@@ -413,36 +453,41 @@ class Kerjasama extends REST_Controller
         for ($i = 0; $i < count($data_rabs); $i++) {
             if ($data_rabs[$i]->id_rab == 0) {
                 $rab = array(
+                    "id_kerjasama" => $id_kerjasama,
                     "nama" => $data_rabs[$i]->nama,
                     "satuan" => $data_rabs[$i]->satuan,
                     "volume" => $data_rabs[$i]->volume,
                     "harga" => $data_rabs[$i]->harga,
                     "total" => $data_rabs[$i]->total,
+                    "keterangan" => $data_rabs[$i]->keterangan,
                 );
 
-                if ($this->rab_model->insert_rab($rab)) {
-                    $id_rab = $this->db->insert_id();
-                    $rab_kerjasama = array(
-                        "id_kerjasama" => $id_kerjasama,
-                        "id_rab" => $id_rab,
-                    );
-
-                    if (!$this->kerjasama_model->insert_rab_kerjasama($rab_kerjasama)) {
-                        $this->response([
-                            'status' => "Gagal",
-                            'message' => 'Gagal Mengolah Data',
-                        ], REST_Controller::HTTP_OK);
-                    }
-                } else {
-                    $this->response([
+                if (!$this->rab_model->insert_rab($rab)) {
+                    return $this->response([
                         'status' => "Gagal",
                         'message' => 'Gagal Mengolah Data',
+                    ], REST_Controller::HTTP_OK);
+                }
+
+                $id_rab = $this->db->insert_id();
+                $rab_history = array(
+                    "id_kerjasama" => $id_kerjasama,
+                    "id_rab" => $id_rab,
+                    "volume" =>  $data_rabs[$i]->volume,
+                    "harga" =>  $data_rabs[$i]->harga,
+                    "total" =>  $data_rabs[$i]->total,
+                );
+
+                if (!$this->kerjasama_model->insert_rab_history($rab_history)) {
+                    return $this->response([
+                        'status' => "Gagal",
+                        'message' => 'Gagal Mengupdate History',
                     ], REST_Controller::HTTP_OK);
                 }
             }
         }
 
-        $this->response([
+        return $this->response([
             'status' => "Success",
             'message' => 'Data Berhasil Diupdate',
         ], REST_Controller::HTTP_OK);
@@ -557,7 +602,7 @@ class Kerjasama extends REST_Controller
         $id_kerjasama = $this->post("id_kerjasama");
         $id_draft = $this->post("id_draft");
         $id_cp = $this->post("id_cp");
-        $id_bss = $this->post("id_bss");
+        $jabatan = $this->post("jabatan");
         $nama_pj_univ = $this->post("nama_pj_univ");
         $draft_nomorp1 = $this->post("draft_nomorp1");
         $draft_nomorp2 = $this->post("draft_nomorp2");
@@ -585,7 +630,7 @@ class Kerjasama extends REST_Controller
         }
 
         if (
-            !empty($draft_nomorp1) 
+            !empty($draft_nomorp1)
         ) {
             $draft_file = '';
             if (!empty($_FILES['draft_file']['name'])) {
@@ -636,7 +681,7 @@ class Kerjasama extends REST_Controller
 
                         if ($this->kerjasama_model->update_draft_kerjasama($id_draft, $draft)) {
                             $bs_kerjasama = array(
-                                "id_bss" => $id_bss,
+                                "jabatan" => $jabatan,
                                 "nama_pj_univ" => $nama_pj_univ,
                             );
 
@@ -677,7 +722,7 @@ class Kerjasama extends REST_Controller
                             $bs_kerjasama = array(
                                 "id_kerjasama" => $id_kerjasama,
                                 "id_base_setting" => 1,
-                                "id_bss" => $id_bss,
+                                "jabatan" => $jabatan,
                                 "nama_pj_univ" => $nama_pj_univ,
                             );
 
@@ -739,7 +784,7 @@ class Kerjasama extends REST_Controller
                         }
 
                         $bs_kerjasama = array(
-                            "id_bss" => $id_bss,
+                            "jabatan" => $jabatan,
                             "nama_pj_univ" => $nama_pj_univ,
                         );
 
@@ -751,7 +796,7 @@ class Kerjasama extends REST_Controller
                         }
 
                         $title = "draft_kerjsama";
-                        $base_setting = $this->base_setting_model->get_base_settings();
+                        $base_setting = $this->base_setting_model->get_base_settings($id_kerjasama);
                         $cps_grab = $this->company_profile_status_model->get_company_profile_statuses();
                         $pasal = $this->pasal_model->get_pasals_by_id($id_draft);
                         $draft_company = $this->kerjasama_model->get_draft_cp_kerjasama($id_draft);
@@ -1031,7 +1076,7 @@ class Kerjasama extends REST_Controller
                     $bs_kerjasama = array(
                         "id_kerjasama" => $id_kerjasama,
                         "id_base_setting" => 1,
-                        "id_bss" => $id_bss,
+                        "jabatan" => $jabatan,
                         "nama_pj_univ" => $nama_pj_univ,
                     );
 
@@ -1063,7 +1108,7 @@ class Kerjasama extends REST_Controller
                     }
 
                     $title = "draft_kerjsama";
-                    $base_setting = $this->base_setting_model->get_base_settings();
+                    $base_setting = $this->base_setting_model->get_base_settings($id_kerjasama);
                     $cps_grab = $this->company_profile_status_model->get_company_profile_statuses();
                     $pasal = $this->pasal_model->get_pasals_by_id($id_draft);
                     $draft_company = $this->kerjasama_model->get_draft_cp_kerjasama($id_draft);

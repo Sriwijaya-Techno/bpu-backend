@@ -50,12 +50,31 @@ class Kerjasama_model extends CI_Model
     public function get_rab_kerjasama($id_kerjasama)
     {
         $this->db->select("*");
-        $this->db->from("rab_kerjasama");
-        $this->db->join("rab", "rab.id = rab_kerjasama.id_rab");
-        $this->db->where("rab_kerjasama.id_kerjasama", $id_kerjasama);
+        $this->db->from("rab");
+        $this->db->where("id_kerjasama", $id_kerjasama);
         $query = $this->db->get();
 
         return $query->result();
+    }
+
+    public function get_rab_history_kerjasama($id_kerjasama)
+    {
+        $this->db->select("*");
+        $this->db->from("rab_history");
+        $this->db->where("id_kerjasama", $id_kerjasama);
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
+    public function get_rab_kerjasama_by_id_rab($id_rab)
+    {
+        $this->db->select("*");
+        $this->db->from("rab");
+        $this->db->where("id", $id_rab);
+        $query = $this->db->get();
+
+        return $query->row();
     }
 
     public function get_rab_surat_kerjasama($id_kerjasama)
@@ -65,6 +84,18 @@ class Kerjasama_model extends CI_Model
         $this->db->where("id_kerjasama", $id_kerjasama);
         $this->db->where("status_surat", "diajukan");
         $this->db->or_where("status_surat", "diterima");
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
+    public function get_rab_surat_penawaran_kerjasama($id_kerjasama)
+    {
+        $this->db->select("*");
+        $this->db->from("rab_surat_kerjasama");
+        $this->db->where("id_kerjasama", $id_kerjasama);
+        $this->db->where("jenis_surat", "penawaran");
+        $this->db->where("status_surat <> ", "diajukan");
         $query = $this->db->get();
 
         return $query->result();
@@ -196,8 +227,8 @@ class Kerjasama_model extends CI_Model
     public function get_status_rab_kerjasama($id_kerjasama)
     {
         $this->db->select("status");
-        $this->db->from("rab_kerjasama");
-        $this->db->where("rab_kerjasama.id_kerjasama", $id_kerjasama);
+        $this->db->from("rab");
+        $this->db->where("id_kerjasama", $id_kerjasama);
         $query = $this->db->get();
 
         return $query->result();
@@ -261,16 +292,9 @@ class Kerjasama_model extends CI_Model
         return $this->db->insert("detail_kerjasama", $data);
     }
 
-    public function insert_rab_kerjasama($data = [])
+    public function insert_rab_history($data = [])
     {
-        return $this->db->insert("rab_kerjasama", $data);
-    }
-
-    public function update_rab_kerjasama($id_kerjasama, $id_rab, $data = [])
-    {
-        $this->db->where("id_kerjasama", $id_kerjasama);
-        $this->db->where("id_rab", $id_rab);
-        return $this->db->update("rab_kerjasama", $data);
+        return $this->db->insert("rab_history", $data);
     }
 
     public function delete_rab_kerjasama($id_kerjasama, $id_rab)
