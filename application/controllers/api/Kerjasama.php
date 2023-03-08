@@ -1433,7 +1433,12 @@ class Kerjasama extends REST_Controller
                 }
             }
 
-            $tanggal_akhir = date('Y-m-d', strtotime($tanggal_mulai . ' + ' . $lama_pekerjaan . ' days'));
+            if ($satuan == 'bulan') {
+                $tanggal_akhir = date('Y-m-d', strtotime($tanggal_mulai . ' + ' . $lama_pekerjaan . ' month'));
+            } else {
+                $tanggal_akhir = date('Y-m-d', strtotime($tanggal_mulai . ' + ' . $lama_pekerjaan . ' days'));
+            }
+
             $kerjasama = array(
                 "judul_kegiatan" => $judul_kegiatan,
                 "project_hunter" => $project_hunter,
