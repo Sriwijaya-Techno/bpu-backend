@@ -1381,13 +1381,14 @@ class Kerjasama extends REST_Controller
         $ruang_lingkup = $this->post("ruang_lingkup");
         $deskripsi = $this->post("deskripsi");
         $lama_pekerjaan = $this->post("lama_pekerjaan");
+        $satuan = $this->post("satuan");
         $tanggal_kontrak = $this->post("tanggal_kontrak");
         $tanggal_mulai = $this->post("tanggal_mulai");
         $metode_pembayaran = $this->post("metode_pembayaran");
         $jumlah_termin = $this->post("jumlah_termin");
         $nilai_kontrak = $this->post("nilai_kontrak");
 
-        if (!empty($id_detail) && !empty($judul_kegiatan) && !empty($project_hunter) && !empty($ruang_lingkup) && !empty($deskripsi) && !empty($lama_pekerjaan) && !empty($tanggal_kontrak) && !empty($tanggal_mulai) && !empty($metode_pembayaran) && !empty($nilai_kontrak)) {
+        if (!empty($id_detail) && !empty($judul_kegiatan) && !empty($project_hunter) && !empty($ruang_lingkup) && !empty($deskripsi) && !empty($lama_pekerjaan) && !empty($satuan) && !empty($tanggal_kontrak) && !empty($tanggal_mulai) && !empty($metode_pembayaran) && !empty($nilai_kontrak)) {
             $surat_file = '';
             if (!empty($_FILES['surat_file']['name'])) {
                 $files = $_FILES;
@@ -1438,6 +1439,7 @@ class Kerjasama extends REST_Controller
                 "ruang_lingkup" => $ruang_lingkup,
                 "deskripsi" => $deskripsi,
                 "lama_pekerjaan" => $lama_pekerjaan,
+                "satuan" => $satuan,
                 "tanggal_kontrak" => $tanggal_kontrak,
                 "tanggal_mulai" => $tanggal_mulai,
                 "tanggal_akhir" => $tanggal_akhir,
