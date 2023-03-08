@@ -425,7 +425,7 @@ class Kerjasama extends REST_Controller
                         "volume" => $data_rab->volume,
                         "harga" => $data_rab->harga,
                         "total" => $data_rab->total,
-                        "status" => "tidak menyetujui",
+                        "status" => "tidak disetujui",
                     );
 
                     if (!$this->kerjasama_model->insert_rab_history($rab_history)) {
@@ -539,6 +539,39 @@ class Kerjasama extends REST_Controller
                     ], REST_Controller::HTTP_OK);
                 }
             }
+        }
+
+        $status_detail = $this->kerjasama_model->get_status_detail_kerjasama($id_kerjasama);
+        $status_rab = $this->kerjasama_model->get_status_rab_kerjasama($id_kerjasama);
+
+        if ($status_detail[0]->status == 'disetujui') {
+            $status_rab_kerjasama = true;
+            for ($i = 0; $i < count($status_rab); $i++) {
+                if ($status_rab[$i]->status != 'disetujui') {
+                    $status_rab_kerjasama = false;
+                }
+            }
+
+            if (!$status_rab_kerjasama) {
+                $kerjasama = array(
+                    "status" => "usul",
+                );
+            } else {
+                $kerjasama = array(
+                    "status" => "draft",
+                );
+            }
+        } else {
+            $kerjasama = array(
+                "status" => "usul",
+            );
+        }
+
+        if (!$this->kerjasama_model->update_status_kerjasama($id_kerjasama, $kerjasama)) {
+            return $this->response([
+                'status' => "Gagal",
+                'message' => 'Data Gagal Diupdate',
+            ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
         return $this->response([
