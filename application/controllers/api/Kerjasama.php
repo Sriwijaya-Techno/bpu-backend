@@ -10,7 +10,7 @@ class Kerjasama extends REST_Controller
         parent::__construct();
         //load database
         $this->load->database();
-        $this->load->model(array("api/kerjasama_model", "api/rab_model", "api/pasal_model", "api/base_setting_model", "api/base_setting_status_model", "api/company_profile_status_model"));
+        $this->load->model(array("api/kerjasama_model", "api/rab_model", "api/pasal_model", "api/base_setting_model", "api/base_setting_status_model", "api/company_profile_status_model", "api/user_model"));
         $this->load->library(array("form_validation"));
         $this->load->helper("security");
     }
@@ -383,6 +383,7 @@ class Kerjasama extends REST_Controller
     {
         $body = file_get_contents('php://input');
         $data = json_decode($body);
+        $id_user = $data->id_user;
         $id_kerjasama = $data->id_kerjasama;
         $data_rabs = $data->rab;
 
@@ -400,15 +401,58 @@ class Kerjasama extends REST_Controller
 
                 $data_rab = $this->kerjasama_model->get_rab_kerjasama_by_id_rab($data_rabs[$i]->id_rab);
                 if ($data_rab->volume != $data_rabs[$i]->volume || $data_rab->harga != $data_rabs[$i]->harga) {
-                    $rab['status'] = "nego";
+                    $user = $this->user_model->get_user_by_id($id_user);
+                    if ($user[0]->tipe_akun == 'Institusi/Pemerintahan' || $user[0]->id_role == '4') {
+                        $rab['status'] = "nego user";
+                    } else {
+                        $rab['status'] = "nego admin";
+                    }
 
-                    if ($data_rab->status == "nego") {
+                    $rab_history = array(
+                        "id_user" => $id_user,
+                        "id_kerjasama" => $id_kerjasama,
+                        "id_rab" => $data_rabs[$i]->id_rab,
+                        "volume" => $data_rab->volume,
+                        "harga" => $data_rab->harga,
+                        "total" => $data_rab->total,
+                        "status" => "tidak menyetujui",
+                    );
+
+                    if (!$this->kerjasama_model->insert_rab_history($rab_history)) {
+                        return $this->response([
+                            'status' => "Gagal",
+                            'message' => 'Gagal Mengupdate History',
+                        ], REST_Controller::HTTP_OK);
+                    }
+
+                    $rab_history = array(
+                        "id_user" => $id_user,
+                        "id_kerjasama" => $id_kerjasama,
+                        "id_rab" => $data_rabs[$i]->id_rab,
+                        "volume" => $data_rabs[$i]->volume,
+                        "harga" => $data_rabs[$i]->harga,
+                        "total" => $data_rabs[$i]->total,
+                        "status" => "nego",
+                    );
+
+                    if (!$this->kerjasama_model->insert_rab_history($rab_history)) {
+                        return $this->response([
+                            'status' => "Gagal",
+                            'message' => 'Gagal Mengupdate History',
+                        ], REST_Controller::HTTP_OK);
+                    }
+                } else {
+                    $rab['status'] = "disetujui";
+
+                    if ($data_rab->status != "disetujui") {
                         $rab_history = array(
+                            "id_user" => $id_user,
                             "id_kerjasama" => $id_kerjasama,
                             "id_rab" => $data_rabs[$i]->id_rab,
-                            "volume" => $data_rab->volume,
-                            "harga" => $data_rab->harga,
-                            "total" => $data_rab->total,
+                            "volume" => $data_rabs[$i]->volume,
+                            "harga" => $data_rabs[$i]->harga,
+                            "total" => $data_rabs[$i]->total,
+                            "status" => "disetujui",
                         );
 
                         if (!$this->kerjasama_model->insert_rab_history($rab_history)) {
@@ -418,8 +462,6 @@ class Kerjasama extends REST_Controller
                             ], REST_Controller::HTTP_OK);
                         }
                     }
-                } else {
-                    $rab['status'] = "usul";
                 }
 
                 if (!$this->rab_model->update_rab($data_rabs[$i]->id_rab, $rab)) {
@@ -471,11 +513,13 @@ class Kerjasama extends REST_Controller
 
                 $id_rab = $this->db->insert_id();
                 $rab_history = array(
+                    "id_user" => $id_user,
                     "id_kerjasama" => $id_kerjasama,
                     "id_rab" => $id_rab,
                     "volume" =>  $data_rabs[$i]->volume,
                     "harga" =>  $data_rabs[$i]->harga,
                     "total" =>  $data_rabs[$i]->total,
+                    "status" =>  "usul",
                 );
 
                 if (!$this->kerjasama_model->insert_rab_history($rab_history)) {

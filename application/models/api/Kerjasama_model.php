@@ -59,9 +59,14 @@ class Kerjasama_model extends CI_Model
 
     public function get_rab_history_kerjasama($id_kerjasama)
     {
-        $this->db->select("*");
+        $this->db->select("rab_history.id, rab_history.id_user, user.username, rab_history.id_kerjasama, 
+                        rab_history.id_rab, rab.nama, rab_history.volume, rab_history.harga, rab_history.total, 
+                        rab_history.status, rab_history.created_date");
         $this->db->from("rab_history");
-        $this->db->where("id_kerjasama", $id_kerjasama);
+        $this->db->join("user", "user.id = rab_history.id_user");
+        $this->db->join("rab", "rab.id = rab_history.id_rab");
+        $this->db->where("rab_history.id_kerjasama", $id_kerjasama);
+        $this->db->order_by("rab_history.created_date, rab_history.id", "DESC");
         $query = $this->db->get();
 
         return $query->result();
