@@ -23,6 +23,7 @@ class Company_model extends CI_Model
     {
         $this->db->select("*");
         $this->db->from("company_profile_status");
+        $this->db->where("status", "ditampilkan");
         $query = $this->db->get();
 
         return $query->result();

@@ -25,7 +25,7 @@ class Kerjasama_model extends CI_Model
 
     public function get_detail_kerjasama($id_kerjasama)
     {
-        $this->db->select("id AS id_detail, id_kerjasama, judul_kegiatan, ruang_lingkup, deskripsi, detail_kerjasama.tanggal_mulai, detail_kerjasama.tanggal_akhir, lama_pekerjaan, metode_pembayaran, jumlah_termin, nilai_kontrak, status");
+        $this->db->select("id AS id_detail, id_kerjasama, judul_kegiatan, project_hunter, ruang_lingkup, deskripsi, tanggal_kontrak, tanggal_mulai, tanggal_akhir, lama_pekerjaan, satuan, metode_pembayaran, jumlah_termin, nilai_kontrak, surat_penawaran, no_surat, status");
         $this->db->from("detail_kerjasama");
         $this->db->where("id_kerjasama", $id_kerjasama);
         $query = $this->db->get();
@@ -80,6 +80,21 @@ class Kerjasama_model extends CI_Model
         $this->db->join("rab", "rab.id = rab_history.id_rab");
         $this->db->where("rab_history.id_kerjasama", $id_kerjasama);
         $this->db->where("rab_history.id_rab", $id_rab);
+        $this->db->order_by("rab_history.created_date, rab_history.id", "DESC");
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
+    public function get_rab_history_kerjasama_by_rab_usul($id_kerjasama, $id_rab)
+    {
+        $this->db->select("rab_history.id_rab as id, rab_history.id_kerjasama, rab.nama, rab.satuan, rab_history.volume, rab_history.harga, rab_history.total, '' as keterangan, rab_history.status");
+        $this->db->from("rab_history");
+        $this->db->join("user", "user.id = rab_history.id_user");
+        $this->db->join("rab", "rab.id = rab_history.id_rab");
+        $this->db->where("rab_history.id_kerjasama", $id_kerjasama);
+        $this->db->where("rab_history.id_rab", $id_rab);
+        $this->db->where("rab_history.status", "usul");
         $this->db->order_by("rab_history.created_date, rab_history.id", "DESC");
         $query = $this->db->get();
 

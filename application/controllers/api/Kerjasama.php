@@ -64,7 +64,11 @@ class Kerjasama extends REST_Controller
 
         if (!empty($id_kerjasama)) {
             $kerjasama = $this->kerjasama_model->get_detail_kerjasama($id_kerjasama);
-
+            if (count($kerjasama) > 0) {
+                if (!empty($kerjasama[0]->surat_penawaran)) {
+                    $kerjasama[0]->surat_penawaran = base_url() . 'assets/uploads/surat/' . $kerjasama[0]->surat_penawaran;
+                }
+            }
             $this->response([
                 'status' => "Success",
                 'message' => 'Data Berhasil Dimuat',
@@ -476,7 +480,17 @@ class Kerjasama extends REST_Controller
                         ], REST_Controller::HTTP_OK);
                     }
                 } else {
-                    $rab['status'] = "disetujui";
+                    // if ($data_rab->status == 'usul') {
+                    //     $user = $this->user_model->get_user_by_id($id_user);
+                    //     $this->kerjasama_model->get_rab_history_kerjasama_by_rab_usul($id_kerjasama, $data_rabs[$i]->id_rab)
+
+                    //     // if (condition) {
+                    //     //     # code...
+                    //     // }
+                    //     $rab['status'] = "disetujui";
+                    // } else {
+                    //     $rab['status'] = "disetujui";
+                    // }
 
                     if ($data_rab->status != "disetujui") {
                         $rab_history = array(
@@ -1452,10 +1466,13 @@ class Kerjasama extends REST_Controller
                 "metode_pembayaran" => $metode_pembayaran,
                 "jumlah_termin" => $jumlah_termin,
                 "nilai_kontrak" => $nilai_kontrak,
-                "surat_penawaran" => $surat_file,
                 "no_surat" => $no_surat,
                 "status" => "usul",
             );
+
+            if (!empty($surat_file)) {
+                $kerjasama["surat_penawaran"] = $surat_file;
+            }
 
             if ($this->kerjasama_model->update_detail_kerjasama($id_detail, $kerjasama)) {
                 $this->response([
