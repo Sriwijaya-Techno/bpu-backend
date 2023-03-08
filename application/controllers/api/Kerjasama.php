@@ -1387,6 +1387,7 @@ class Kerjasama extends REST_Controller
         $metode_pembayaran = $this->post("metode_pembayaran");
         $jumlah_termin = $this->post("jumlah_termin");
         $nilai_kontrak = $this->post("nilai_kontrak");
+        $no_surat = $this->post("no_surat");
 
         if (!empty($id_detail) && !empty($judul_kegiatan) && !empty($project_hunter) && !empty($ruang_lingkup) && !empty($deskripsi) && !empty($lama_pekerjaan) && !empty($satuan) && !empty($tanggal_kontrak) && !empty($tanggal_mulai) && !empty($metode_pembayaran) && !empty($nilai_kontrak)) {
             $surat_file = '';
@@ -1447,6 +1448,7 @@ class Kerjasama extends REST_Controller
                 "jumlah_termin" => $jumlah_termin,
                 "nilai_kontrak" => $nilai_kontrak,
                 "surat_penawaran" => $surat_file,
+                "no_surat" => $no_surat,
                 "status" => "usul",
             );
 
