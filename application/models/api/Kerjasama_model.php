@@ -88,7 +88,7 @@ class Kerjasama_model extends CI_Model
 
     public function get_rab_history_kerjasama_by_rab_usul($id_kerjasama, $id_rab)
     {
-        $this->db->select("rab_history.id_rab as id, rab_history.id_kerjasama, rab.nama, rab.satuan, rab_history.volume, rab_history.harga, rab_history.total, '' as keterangan, rab_history.status");
+        $this->db->select("rab_history.id_user, rab_history.id_rab as id, rab_history.id_kerjasama, rab.nama, rab.satuan, rab_history.volume, rab_history.harga, rab_history.total, '' as keterangan, rab_history.status");
         $this->db->from("rab_history");
         $this->db->join("user", "user.id = rab_history.id_user");
         $this->db->join("rab", "rab.id = rab_history.id_rab");

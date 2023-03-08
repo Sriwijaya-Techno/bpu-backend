@@ -480,34 +480,51 @@ class Kerjasama extends REST_Controller
                         ], REST_Controller::HTTP_OK);
                     }
                 } else {
-                    // if ($data_rab->status == 'usul') {
-                    //     $user = $this->user_model->get_user_by_id($id_user);
-                    //     $this->kerjasama_model->get_rab_history_kerjasama_by_rab_usul($id_kerjasama, $data_rabs[$i]->id_rab)
+                    if ($data_rab->status == 'usul') {
+                        $data_rab_usul = $this->kerjasama_model->get_rab_history_kerjasama_by_rab_usul($id_kerjasama, $data_rabs[$i]->id_rab);
 
-                    //     // if (condition) {
-                    //     //     # code...
-                    //     // }
-                    //     $rab['status'] = "disetujui";
-                    // } else {
-                    //     $rab['status'] = "disetujui";
-                    // }
+                        if ($data_rab_usul[0]->id_user != $id_user) {
+                            $rab['status'] = "disetujui";
+                            if ($data_rab->status != "disetujui") {
+                                $rab_history = array(
+                                    "id_user" => $id_user,
+                                    "id_kerjasama" => $id_kerjasama,
+                                    "id_rab" => $data_rabs[$i]->id_rab,
+                                    "volume" => $data_rabs[$i]->volume,
+                                    "harga" => $data_rabs[$i]->harga,
+                                    "total" => $data_rabs[$i]->total,
+                                    "status" => "disetujui",
+                                );
 
-                    if ($data_rab->status != "disetujui") {
-                        $rab_history = array(
-                            "id_user" => $id_user,
-                            "id_kerjasama" => $id_kerjasama,
-                            "id_rab" => $data_rabs[$i]->id_rab,
-                            "volume" => $data_rabs[$i]->volume,
-                            "harga" => $data_rabs[$i]->harga,
-                            "total" => $data_rabs[$i]->total,
-                            "status" => "disetujui",
-                        );
+                                if (!$this->kerjasama_model->insert_rab_history($rab_history)) {
+                                    return $this->response([
+                                        'status' => "Gagal",
+                                        'message' => 'Gagal Mengupdate History',
+                                    ], REST_Controller::HTTP_OK);
+                                }
+                            }
+                        } else {
+                            $rab['status'] = "usul";
+                        }
+                    } else {
+                        $rab['status'] = "disetujui";
+                        if ($data_rab->status != "disetujui") {
+                            $rab_history = array(
+                                "id_user" => $id_user,
+                                "id_kerjasama" => $id_kerjasama,
+                                "id_rab" => $data_rabs[$i]->id_rab,
+                                "volume" => $data_rabs[$i]->volume,
+                                "harga" => $data_rabs[$i]->harga,
+                                "total" => $data_rabs[$i]->total,
+                                "status" => "disetujui",
+                            );
 
-                        if (!$this->kerjasama_model->insert_rab_history($rab_history)) {
-                            return $this->response([
-                                'status' => "Gagal",
-                                'message' => 'Gagal Mengupdate History',
-                            ], REST_Controller::HTTP_OK);
+                            if (!$this->kerjasama_model->insert_rab_history($rab_history)) {
+                                return $this->response([
+                                    'status' => "Gagal",
+                                    'message' => 'Gagal Mengupdate History',
+                                ], REST_Controller::HTTP_OK);
+                            }
                         }
                     }
                 }
@@ -1394,6 +1411,7 @@ class Kerjasama extends REST_Controller
         $project_hunter = $this->post("project_hunter");
         $ruang_lingkup = $this->post("ruang_lingkup");
         $deskripsi = $this->post("deskripsi");
+        $keterangan = $this->post("keterangan");
         $lama_pekerjaan = $this->post("lama_pekerjaan");
         $satuan = $this->post("satuan");
         $tanggal_kontrak = $this->post("tanggal_kontrak");
@@ -1458,6 +1476,7 @@ class Kerjasama extends REST_Controller
                 "project_hunter" => $project_hunter,
                 "ruang_lingkup" => $ruang_lingkup,
                 "deskripsi" => $deskripsi,
+                "keterangan" => $keterangan,
                 "lama_pekerjaan" => $lama_pekerjaan,
                 "satuan" => $satuan,
                 "tanggal_kontrak" => $tanggal_kontrak,
