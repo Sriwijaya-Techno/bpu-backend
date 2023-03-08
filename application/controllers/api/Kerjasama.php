@@ -81,6 +81,16 @@ class Kerjasama extends REST_Controller
         if (!empty($id_kerjasama)) {
             $kerjasama = $this->kerjasama_model->get_rab_kerjasama($id_kerjasama);
 
+            for ($i = 0; $i < count($kerjasama); $i++) {
+                $rab_histori = $this->kerjasama_model->get_rab_history_kerjasama_by_rab($id_kerjasama, $kerjasama[$i]->id);
+                for ($j = 0; $j < count($rab_histori); $j++) {
+                    $rab_histori[$j]->tipe_data = "histori rab";
+                }
+
+                $kerjasama[$i]->tipe_data = "rab";
+                $kerjasama[$i]->history = $rab_histori;
+            }
+
             $this->response([
                 'status' => "Success",
                 'message' => 'Data Berhasil Dimuat',

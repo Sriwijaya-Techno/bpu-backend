@@ -72,6 +72,20 @@ class Kerjasama_model extends CI_Model
         return $query->result();
     }
 
+    public function get_rab_history_kerjasama_by_rab($id_kerjasama, $id_rab)
+    {
+        $this->db->select("rab_history.id_rab as id, rab_history.id_kerjasama, rab.nama, rab.satuan, rab_history.volume, rab_history.harga, rab_history.total, '' as keterangan, rab_history.status");
+        $this->db->from("rab_history");
+        $this->db->join("user", "user.id = rab_history.id_user");
+        $this->db->join("rab", "rab.id = rab_history.id_rab");
+        $this->db->where("rab_history.id_kerjasama", $id_kerjasama);
+        $this->db->where("rab_history.id_rab", $id_rab);
+        $this->db->order_by("rab_history.created_date, rab_history.id", "DESC");
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
     public function get_rab_kerjasama_by_id_rab($id_rab)
     {
         $this->db->select("*");
