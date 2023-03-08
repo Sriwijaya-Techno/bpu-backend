@@ -26,6 +26,10 @@ class Kerjasama extends REST_Controller
                 $data_pembayaran = $this->kerjasama_model->get_total_bayar_kerjasama($kerjasama[$i]->id_kerjasama);
                 $kerjasama[$i]->sisa_bayar = $kerjasama[$i]->nilai_kontrak - $data_pembayaran->total_bayar;
 
+                if (empty($kerjasama[$i]->judul_kegiatan)) {
+                    $kerjasama[$i]->judul_kegiatan = "-";
+                }
+
                 $date1 = strtotime(date('Y-m-d'));
                 $date2 = strtotime($kerjasama[$i]->tanggal_akhir);
                 $days = ($date2 - $date1) / 86400;
@@ -268,11 +272,31 @@ class Kerjasama extends REST_Controller
             $data_pembayaran = $this->kerjasama_model->get_total_bayar_kerjasama($kerjasama[$i]->id_kerjasama);
             $status_detail = $this->kerjasama_model->get_status_detail_kerjasama($kerjasama[$i]->id_kerjasama);
 
-            $date1 = strtotime(date('Y-m-d'));
-            $date2 = strtotime($kerjasama[$i]->tanggal_akhir);
-            $days = ($date2 - $date1) / 86400;
+            if (empty($kerjasama[$i]->judul_kegiatan)) {
+                $kerjasama[$i]->judul_kegiatan = "-";
+            }
 
-            $kerjasama[$i]->sisa_waktu = $days;
+            if (empty($kerjasama[$i]->nilai_kontrak)) {
+                $kerjasama[$i]->nilai_kontrak = "-";
+            }
+
+            if (empty($kerjasama[$i]->tanggal_mulai)) {
+                $kerjasama[$i]->tanggal_mulai = "-";
+            }
+
+            if (empty($kerjasama[$i]->tanggal_akhir)) {
+                $kerjasama[$i]->tanggal_akhir = "-";
+            }
+
+            if ($kerjasama[$i]->tanggal_mulai == "-" || $kerjasama[$i]->tanggal_akhir == "-") {
+                $kerjasama[$i]->sisa_waktu = "-";
+            } else {
+                $date1 = strtotime(date('Y-m-d'));
+                $date2 = strtotime($kerjasama[$i]->tanggal_akhir);
+                $days = ($date2 - $date1) / 86400;
+
+                $kerjasama[$i]->sisa_waktu = $days;
+            }
 
             if ($status_detail[0]->status == 'disetujui') {
                 $kerjasama[$i]->sisa_bayar = $kerjasama[$i]->nilai_kontrak - $data_pembayaran->total_bayar;
@@ -1349,19 +1373,56 @@ class Kerjasama extends REST_Controller
         }
     }
 
-    public function detail_put()
+    public function detail_post()
     {
-        $id_detail = $this->put("id_detail");
-        $judul_kegiatan = $this->put("judul_kegiatan");
-        $ruang_lingkup = $this->put("ruang_lingkup");
-        $deskripsi = $this->put("deskripsi");
-        $lama_pekerjaan = $this->put("lama_pekerjaan");
-        $tanggal_mulai = $this->put("tanggal_mulai");
-        $metode_pembayaran = $this->put("metode_pembayaran");
-        $jumlah_termin = $this->put("jumlah_termin");
-        $nilai_kontrak = $this->put("nilai_kontrak");
+        $id_detail = $this->post("id_detail");
+        $judul_kegiatan = $this->post("judul_kegiatan");
+        $project_hunter = $this->post("project_hunter");
+        $ruang_lingkup = $this->post("ruang_lingkup");
+        $deskripsi = $this->post("deskripsi");
+        $lama_pekerjaan = $this->post("lama_pekerjaan");
+        $tanggal_kontrak = $this->post("tanggal_kontrak");
+        $tanggal_mulai = $this->post("tanggal_mulai");
+        $metode_pembayaran = $this->post("metode_pembayaran");
+        $jumlah_termin = $this->post("jumlah_termin");
+        $nilai_kontrak = $this->post("nilai_kontrak");
 
-        if (!empty($id_detail) && !empty($judul_kegiatan) && !empty($ruang_lingkup) && !empty($deskripsi) && !empty($lama_pekerjaan) && !empty($tanggal_mulai) && !empty($metode_pembayaran) && !empty($nilai_kontrak)) {
+        if (!empty($id_detail) && !empty($judul_kegiatan) && !empty($project_hunter) && !empty($ruang_lingkup) && !empty($deskripsi) && !empty($lama_pekerjaan) && !empty($tanggal_kontrak) && !empty($tanggal_mulai) && !empty($metode_pembayaran) && !empty($nilai_kontrak)) {
+            $surat_file = '';
+            if (!empty($_FILES['surat_file']['name'])) {
+                $files = $_FILES;
+                $dir = realpath(APPPATH . '../assets/uploads');
+                $filename = $dir . '/surat/';
+
+                if (!file_exists($filename)) {
+                    mkdir($filename, 0775, true);
+                }
+
+                $_FILES['surat_file']['name'] = $files['surat_file']['name'];
+                $_FILES['surat_file']['type'] = $files['surat_file']['type'];
+                $_FILES['surat_file']['tmp_name'] = $files['surat_file']['tmp_name'];
+                $_FILES['surat_file']['error'] = $files['surat_file']['error'];
+                $_FILES['surat_file']['size'] = $files['surat_file']['size'];
+
+                $config['upload_path']          = $filename;
+                $config['allowed_types']        = 'jpg|jpeg|png|pdf';
+                $config['max_size']             = 1024 * 10;
+
+                $this->load->library('upload', $config);
+                $this->upload->initialize($config);
+                if (!$this->upload->do_upload('surat_file')) {
+                    $error = array('error' => $this->upload->display_errors());
+
+                    return $this->response([
+                        "status"    => "Gagal",
+                        "message"     => $error,
+                    ], REST_Controller::HTTP_OK);
+                } else {
+                    $upload_data = $this->upload->data();
+                    $surat_file = $upload_data['file_name'];
+                }
+            }
+
             if ($metode_pembayaran == 'sekaligus') {
                 $jumlah_termin = 0;
             } else {
@@ -1373,14 +1434,17 @@ class Kerjasama extends REST_Controller
             $tanggal_akhir = date('Y-m-d', strtotime($tanggal_mulai . ' + ' . $lama_pekerjaan . ' days'));
             $kerjasama = array(
                 "judul_kegiatan" => $judul_kegiatan,
+                "project_hunter" => $project_hunter,
                 "ruang_lingkup" => $ruang_lingkup,
                 "deskripsi" => $deskripsi,
                 "lama_pekerjaan" => $lama_pekerjaan,
+                "tanggal_kontrak" => $tanggal_kontrak,
                 "tanggal_mulai" => $tanggal_mulai,
                 "tanggal_akhir" => $tanggal_akhir,
                 "metode_pembayaran" => $metode_pembayaran,
                 "jumlah_termin" => $jumlah_termin,
                 "nilai_kontrak" => $nilai_kontrak,
+                "surat_penawaran" => $surat_file,
                 "status" => "usul",
             );
 
