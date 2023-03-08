@@ -25,7 +25,7 @@ class Kerjasama_model extends CI_Model
 
     public function get_detail_kerjasama($id_kerjasama)
     {
-        $this->db->select("id AS id_detail, id_kerjasama, judul_kegiatan, project_hunter, ruang_lingkup, deskripsi, tanggal_kontrak, tanggal_mulai, tanggal_akhir, lama_pekerjaan, satuan, metode_pembayaran, jumlah_termin, nilai_kontrak, surat_penawaran, no_surat, status");
+        $this->db->select("*");
         $this->db->from("detail_kerjasama");
         $this->db->where("id_kerjasama", $id_kerjasama);
         $query = $this->db->get();
