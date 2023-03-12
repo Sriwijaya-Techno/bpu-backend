@@ -80,7 +80,7 @@ class Kerjasama_model extends CI_Model
         $this->db->join("rab", "rab.id = rab_history.id_rab");
         $this->db->where("rab_history.id_kerjasama", $id_kerjasama);
         $this->db->where("rab_history.id_rab", $id_rab);
-        $this->db->order_by("rab_history.created_date, rab_history.id", "DESC");
+        $this->db->order_by("rab_history.created_date, rab_history.id");
         $query = $this->db->get();
 
         return $query->result();
