@@ -62,62 +62,123 @@ class Kerjasama extends REST_Controller
     {
         $id_kerjasama = $this->get("id_kerjasama");
 
-        $daftar_rekap = [];
         $data_rekap = new stdClass();
-        if (!empty($id_kerjasama)) {
-            $kerjasama = $this->kerjasama_model->get_detail_kerjasama($id_kerjasama);
-            if (count($kerjasama) > 0) {
-                if (!empty($kerjasama[0]->surat_penawaran)) {
-                    $kerjasama[0]->surat_penawaran = base_url() . 'assets/uploads/surat/' . $kerjasama[0]->surat_penawaran;
-                }
+        $kerjasama = $this->kerjasama_model->get_detail_kerjasama($id_kerjasama);
+        if (count($kerjasama) > 0) {
+            if (!empty($kerjasama[0]->surat_penawaran)) {
+                $kerjasama[0]->surat_penawaran = base_url() . 'assets/uploads/surat/' . $kerjasama[0]->surat_penawaran;
             }
-        } else {
-            return $this->response([
-                'status' => "Error",
-                'message' => 'Data Tidak Boleh Kosong',
-            ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
-        $data_rekap->no = '';
-        $data_rekap->project_hunter = '';
-        $data_rekap->nama_pekerjaan = '';
-        $data_rekap->jabatan_unsri = '';
-        $data_rekap->nama_unsri = '';
-        $data_rekap->ketua_tim = '';
-        $data_rekap->nama_instansi = '';
-        $data_rekap->jabatan_instansi = '';
-        $data_rekap->pimpinan_instansi = '';
-        $data_rekap->bentuk_kontrak = '';
-        $data_rekap->no_penawaran = '';
-        $data_rekap->tanggal_penawaran = '';
-        $data_rekap->nilai_penawaran = '';
-        $data_rekap->no_negosiasi = '';
-        $data_rekap->tanggal_negosiasi = '';
-        $data_rekap->no_kontrak_unsri = '';
-        $data_rekap->no_kontrak_instansi = '';
-        $data_rekap->tanggal_kontrak = '';
-        $data_rekap->masa_kontrak = '';
-        $data_rekap->mulai_kontrak = '';
-        $data_rekap->akhir_kontrak = '';
-        $data_rekap->no_kontrak_adendum_unsri = '';
-        $data_rekap->no_kontrak_adendum_instansi = '';
-        $data_rekap->tanggal_adendum_kontrak = '';
-        $data_rekap->nilai_kontrak = '';
-        $data_rekap->nilai_kontrak_adendum = '';
-        $data_rekap->instutional_fee = '';
-        $data_rekap->tahap_pembayaran = '';
-        $data_rekap->no_sp2d_pembayaran = '';
-        $data_rekap->tanngal_sp2d_pembayaran = '';
-        $data_rekap->no_slip_pembayaran = '';
-        $data_rekap->tanngal_slip_pembayaran = '';
-        $data_rekap->lainnya = '';
-        $data_rekap->keterangan = '';
+        $base_setting = $this->base_setting_model->get_base_settings($id_kerjasama);
+        for ($i = 0; $i < count($base_setting); $i++) {
+            $base_setting[$i]->bs_logo_url = base_url() . 'assets/uploads/base_setting/' . $base_setting[$i]->bs_logo;
+            $base_setting[$i]->bs_logo = $base_setting[$i]->bs_logo;
+        }
 
+        $company_profile = $this->kerjasama_model->get_company_profile_by_id_kerjasama($id_kerjasama);
+        for ($i = 0; $i < count($company_profile); $i++) {
+            $company_profile[$i]->logo_url = base_url() . 'assets/uploads/logo/' . $company_profile[$i]->logo;
+            $company_profile[$i]->logo = $company_profile[$i]->logo;
+        }
+
+        $draft = $this->kerjasama_model->get_draft_kerjasama($id_kerjasama);
+        for ($i = 0; $i < count($draft); $i++) {
+            $draft[$i]->draft_file_url = base_url() . 'assets/uploads/draft/' . $draft[$i]->draft_file;
+            $draft[$i]->draft_file = $draft[$i]->draft_file;
+        }
+
+        $pembayaran = $this->kerjasama_model->get_pembayaran_kerjasama($id_kerjasama);
+        $nPembayaran = count($pembayaran) - 1;
+        for ($i = 0; $i < count($pembayaran); $i++) {
+            if ($pembayaran[$i]->bukti_pembayaran != '') {
+                $pembayaran[$i]->bukti_pembayaran = $pembayaran[$i]->bukti_pembayaran;
+                $pembayaran[$i]->bukti_pembayaran_url = base_url() . 'assets/uploads/bukti_pembayaran/' . $pembayaran[$i]->bukti_pembayaran;
+            } else {
+                $pembayaran[$i]->bukti_pembayaran_url = '';
+            }
+        }
+
+        $data_rekap->no = ($i + 1);
+        if (count($kerjasama) > 0) {
+            $data_rekap->project_hunter = $kerjasama[0]->project_hunter;
+            $data_rekap->nama_pekerjaan = $kerjasama[0]->judul_kegiatan;
+            $data_rekap->no_penawaran = $kerjasama[0]->no_surat;
+            $data_rekap->tanggal_penawaran = $kerjasama[0]->tanggal_mulai;
+            $data_rekap->tanggal_kontrak = $kerjasama[0]->tanggal_kontrak;
+            $data_rekap->nilai_kontrak = $kerjasama[0]->nilai_kontrak;
+            $data_rekap->tahap_pembayaran = $kerjasama[0]->metode_pembayaran;
+            $data_rekap->keterangan = $kerjasama[0]->keterangan;
+        } else {
+            $data_rekap->project_hunter = '-';
+            $data_rekap->nama_pekerjaan = '-';
+            $data_rekap->no_penawaran = '-';
+            $data_rekap->tanggal_penawaran = '-';
+            $data_rekap->tanggal_kontrak = '-';
+            $data_rekap->nilai_kontrak = '-';
+            $data_rekap->tahap_pembayaran = '-';
+            $data_rekap->keterangan = '-';
+        }
+
+        if (count($base_setting) > 0) {
+            $data_rekap->jabatan_pihak_unsri = $base_setting[0]->bs_jabatan;
+            $data_rekap->nama_pihak_unsri = $base_setting[0]->bs_rektor;
+        } else {
+            $data_rekap->jabatan_pihak_unsri = '-';
+            $data_rekap->nama_pihak_unsri = '-';
+        }
+
+        if (count($company_profile) > 0) {
+            $data_rekap->ketua_tim_pihak_unsri = $draft[0]->ketua_tim;
+            $data_rekap->no_kontrak_unsri = $draft[0]->draft_nomorp1;
+            $data_rekap->no_kontrak_instansi = $draft[0]->draft_nomorp2;
+            $data_rekap->mulai_kontrak = $draft[0]->draft_tanggal_mulai;
+            $data_rekap->akhir_kontrak = $draft[0]->draft_tanggal_akhir;
+            $data_rekap->lainnya = $draft[0]->draft_info;
+        } else {
+            $data_rekap->ketua_tim_pihak_unsri = '-';
+            $data_rekap->no_kontrak_unsri = '-';
+            $data_rekap->no_kontrak_instansi = '-';
+            $data_rekap->mulai_kontrak = '-';
+            $data_rekap->akhir_kontrak = '-';
+            $data_rekap->lainnya = '-';
+        }
+
+        if (count($company_profile) > 0) {
+            $data_rekap->nama_instansi = $company_profile[0]->nama_perusahaan;
+            $data_rekap->jabatan_instansi = $company_profile[0]->jabatan;
+            $data_rekap->pimpinan_instansi = $company_profile[0]->nama_pimpinan;
+        } else {
+            $data_rekap->nama_instansi = '-';
+            $data_rekap->jabatan_instansi = '-';
+            $data_rekap->pimpinan_instansi = '-';
+        }
+
+        if (count($pembayaran) > 0) {
+            $data_rekap->tanngal_sp2d_pembayaran = $pembayaran[$nPembayaran]->tanggal;
+            $data_rekap->tanngal_slip_pembayaran = $pembayaran[$nPembayaran]->tanggal;
+        } else {
+            $data_rekap->tanngal_sp2d_pembayaran = '-';
+            $data_rekap->tanngal_slip_pembayaran = '-';
+        }
+
+        $data_rekap->bentuk_kontrak = 'MoA';
+        $data_rekap->nilai_penawaran = '-';
+        $data_rekap->no_negosiasi = '-';
+        $data_rekap->tanggal_negosiasi = '-';
+        $data_rekap->masa_kontrak = '-';
+        $data_rekap->no_kontrak_adendum_unsri = '-';
+        $data_rekap->no_kontrak_adendum_instansi = '-';
+        $data_rekap->tanggal_adendum_kontrak = '-';
+        $data_rekap->nilai_kontrak_adendum = '-';
+        $data_rekap->instutional_fee = '-';
+        $data_rekap->no_sp2d_pembayaran = '-';
+        $data_rekap->no_slip_pembayaran = '-';
 
         $this->response([
             'status' => "Success",
             'message' => 'Data Berhasil Dimuat',
-            'data' => $kerjasama,
+            'data' => $data_rekap,
         ], 200);
     }
 
