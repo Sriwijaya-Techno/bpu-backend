@@ -58,6 +58,69 @@ class Kerjasama extends REST_Controller
         }
     }
 
+    public function rekap_get()
+    {
+        $id_kerjasama = $this->get("id_kerjasama");
+
+        $daftar_rekap = [];
+        $data_rekap = new stdClass();
+        if (!empty($id_kerjasama)) {
+            $kerjasama = $this->kerjasama_model->get_detail_kerjasama($id_kerjasama);
+            if (count($kerjasama) > 0) {
+                if (!empty($kerjasama[0]->surat_penawaran)) {
+                    $kerjasama[0]->surat_penawaran = base_url() . 'assets/uploads/surat/' . $kerjasama[0]->surat_penawaran;
+                }
+            }
+        } else {
+            return $this->response([
+                'status' => "Error",
+                'message' => 'Data Tidak Boleh Kosong',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+
+        $data_rekap->no = '';
+        $data_rekap->project_hunter = '';
+        $data_rekap->nama_pekerjaan = '';
+        $data_rekap->jabatan_unsri = '';
+        $data_rekap->nama_unsri = '';
+        $data_rekap->ketua_tim = '';
+        $data_rekap->nama_instansi = '';
+        $data_rekap->jabatan_instansi = '';
+        $data_rekap->pimpinan_instansi = '';
+        $data_rekap->bentuk_kontrak = '';
+        $data_rekap->no_penawaran = '';
+        $data_rekap->tanggal_penawaran = '';
+        $data_rekap->nilai_penawaran = '';
+        $data_rekap->no_negosiasi = '';
+        $data_rekap->tanggal_negosiasi = '';
+        $data_rekap->no_kontrak_unsri = '';
+        $data_rekap->no_kontrak_instansi = '';
+        $data_rekap->tanggal_kontrak = '';
+        $data_rekap->masa_kontrak = '';
+        $data_rekap->mulai_kontrak = '';
+        $data_rekap->akhir_kontrak = '';
+        $data_rekap->no_kontrak_adendum_unsri = '';
+        $data_rekap->no_kontrak_adendum_instansi = '';
+        $data_rekap->tanggal_adendum_kontrak = '';
+        $data_rekap->nilai_kontrak = '';
+        $data_rekap->nilai_kontrak_adendum = '';
+        $data_rekap->instutional_fee = '';
+        $data_rekap->tahap_pembayaran = '';
+        $data_rekap->no_sp2d_pembayaran = '';
+        $data_rekap->tanngal_sp2d_pembayaran = '';
+        $data_rekap->no_slip_pembayaran = '';
+        $data_rekap->tanngal_slip_pembayaran = '';
+        $data_rekap->lainnya = '';
+        $data_rekap->keterangan = '';
+
+
+        $this->response([
+            'status' => "Success",
+            'message' => 'Data Berhasil Dimuat',
+            'data' => $kerjasama,
+        ], 200);
+    }
+
     public function detail_get()
     {
         $id_kerjasama = $this->get("id_kerjasama");
@@ -85,24 +148,32 @@ class Kerjasama extends REST_Controller
     public function rab_get()
     {
         $id_kerjasama = $this->get("id_kerjasama");
-
+        $rab_kerjasama = [];
         if (!empty($id_kerjasama)) {
             $kerjasama = $this->kerjasama_model->get_rab_kerjasama($id_kerjasama);
 
+            $dataCount = 0;
             for ($i = 0; $i < count($kerjasama); $i++) {
                 $rab_histori = $this->kerjasama_model->get_rab_history_kerjasama_by_rab($id_kerjasama, $kerjasama[$i]->id);
-                for ($j = 0; $j < count($rab_histori); $j++) {
-                    $rab_histori[$j]->tipe_data = "histori rab";
+
+                if (count($rab_histori) > 0) {
+                    for ($j = 0; $j < count($rab_histori); $j++) {
+                        $rab_histori[$j]->tipe_data = "histori rab";
+                        $rab_kerjasama[$dataCount] = $rab_histori[$j];
+                        $dataCount++;
+                    }
                 }
 
                 $kerjasama[$i]->tipe_data = "rab";
-                $kerjasama[$i]->history = $rab_histori;
+                $rab_kerjasama[$dataCount] = $kerjasama[$i];
+                // $kerjasama[$i]->history = $rab_histori;
+                $dataCount++;
             }
 
             $this->response([
                 'status' => "Success",
                 'message' => 'Data Berhasil Dimuat',
-                'data' => $kerjasama,
+                'data' => $rab_kerjasama,
             ], 200);
         } else {
             $this->response([
